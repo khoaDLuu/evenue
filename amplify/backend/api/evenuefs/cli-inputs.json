@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "serviceConfiguration": {
+    "apiName": "evenuefs",
+    "serviceName": "AppSync",
+    "gqlSchemaPath": "/mnt/kspace/Dev/EVENUE/evenuefs/amplify/backend/api/evenuefs/schema.graphql",
+    "defaultAuthType": {
+      "mode": "AMAZON_COGNITO_USER_POOLS",
+      "cognitoUserPoolId": "authevenuefs43bab20a"
+    },
+    "conflictResolution": {
+      "defaultResolutionStrategy": {
+        "type": "AUTOMERGE"
+      }
+    },
+    "additionalAuthTypes": [
+      {
+        "mode": "API_KEY",
+        "expirationTime": 7,
+        "apiKeyExpirationDate": "2021-12-15T01:48:44.722Z",
+        "keyDescription": "API key for sandbox"
+      }
+    ]
+  }
+}

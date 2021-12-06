@@ -1,0 +1,30 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-evenuefs-dev-230706-authRole",
+      "UnauthRoleArn": "arn:aws:iam::310761885902:role/amplify-evenuefs-dev-230706-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::310761885902:role/amplify-evenuefs-dev-230706-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-evenuefs-dev-230706-deployment",
+      "UnauthRoleName": "amplify-evenuefs-dev-230706-unauthRole",
+      "StackName": "amplify-evenuefs-dev-230706",
+      "StackId": "arn:aws:cloudformation:us-east-1:310761885902:stack/amplify-evenuefs-dev-230706/a213fd40-56ae-11ec-b7cb-0e9c4cff6121",
+      "AmplifyAppId": "d3krbgw5un11q3",
+      "AuthTriggerTemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-230706-deployment/amplify-cfn-templates/auth/auth-trigger-cloudformation-template.json"
+    },
+    "categories": {
+      "auth": {
+        "evenuefs43bab20a": {}
+      },
+      "function": {
+        "evenuefs43bab20aCustomMessage": {
+          "REDIRECTURL": "/",
+          "EMAILSUBJECT": "Evenue Account Confirmation",
+          "EMAILMESSAGE": "Hi, it is a pleasure to have you joining us! Click the link below to verify your email address. If you did not register for Evenue, please ignore this email.",
+          "deploymentBucketName": "amplify-evenuefs-dev-230706-deployment",
+          "s3Key": "amplify-builds/evenuefs43bab20aCustomMessage-7357567575536b4b386a-build.zip"
+        }
+      }
+    }
+  }
+}
