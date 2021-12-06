@@ -1,0 +1,13 @@
+{
+    "AppSyncApiName": "evenuefs",
+    "DynamoDBBillingMode": "PAY_PER_REQUEST",
+    "DynamoDBEnableServerSideEncryption": false,
+    "AuthCognitoUserPoolId": {
+        "Fn::GetAtt": [
+            "authevenuefs43bab20a",
+            "Outputs.UserPoolId"
+        ]
+    },
+    "S3DeploymentBucket": "amplify-evenuefs-dev-230706-deployment",
+    "S3DeploymentRootKey": "amplify-appsync-files/c3a0246c82823f8f8c137432d4c7522d5971dace"
+}

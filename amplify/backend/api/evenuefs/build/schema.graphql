@@ -1,0 +1,423 @@
+
+type User @aws_api_key {
+  name: String!
+  reviews(filter: ModelReviewFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelReviewConnection
+  id: ID!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+  _version: Int!
+  _deleted: Boolean
+  _lastChangedAt: AWSTimestamp!
+}
+
+type Venue @aws_api_key {
+  name: String!
+  headline: String!
+  description: String
+  photos: [String!]!
+  address: String!
+  city: String!
+  pricing: Pricing!
+  type: Category!
+  eventTypes: [String!]
+  published: Boolean!
+  extras: [Extra]
+  capacity: Capacity
+  operatingHours: [OperatingHour]
+  reviews(filter: ModelReviewFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelReviewConnection
+  id: ID!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+  _version: Int!
+  _deleted: Boolean
+  _lastChangedAt: AWSTimestamp!
+}
+
+type Category @aws_api_key {
+  name: String!
+}
+
+type Pricing @aws_api_key {
+  currency: SupportedCurrency!
+  perHour: [HourlyPricing]
+  perDay: Float
+}
+
+type HourlyPricing @aws_api_key {
+  startHour: AWSTime!
+  endHour: AWSTime!
+  price: Float!
+}
+
+type Extra @aws_api_key {
+  name: String!
+  type: String
+  price: Float!
+}
+
+type Capacity @aws_api_key {
+  unit: UnitOfArea
+  floorSize: Float
+  recommendedGuestCount: Int
+}
+
+enum UnitOfArea {
+  sqft
+  sqm
+}
+
+type OperatingHour @aws_api_key {
+  daysOfWeek: [DayOfWeek]
+  startHour: AWSTime
+  endHour: AWSTime
+}
+
+enum DayOfWeek {
+  Mon
+  Tue
+  Wed
+  Thu
+  Fri
+  Sat
+  Sun
+}
+
+enum SupportedCurrency {
+  USD
+  VND
+}
+
+type Review @aws_api_key {
+  venue: Venue
+  user: User
+  rating: Int!
+  review: String
+  id: ID!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+  _version: Int!
+  _deleted: Boolean
+  _lastChangedAt: AWSTimestamp!
+  userReviewsId: ID
+  venueReviewsId: ID
+}
+
+input ModelStringInput {
+  ne: String
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  contains: String
+  notContains: String
+  between: [String]
+  beginsWith: String
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  size: ModelSizeInput
+}
+
+input ModelIntInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  between: [Int]
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelFloatInput {
+  ne: Float
+  eq: Float
+  le: Float
+  lt: Float
+  ge: Float
+  gt: Float
+  between: [Float]
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelBooleanInput {
+  ne: Boolean
+  eq: Boolean
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelIDInput {
+  ne: ID
+  eq: ID
+  le: ID
+  lt: ID
+  ge: ID
+  gt: ID
+  contains: ID
+  notContains: ID
+  between: [ID]
+  beginsWith: ID
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  size: ModelSizeInput
+}
+
+enum ModelAttributeTypes {
+  binary
+  binarySet
+  bool
+  list
+  map
+  number
+  numberSet
+  string
+  stringSet
+  _null
+}
+
+input ModelSizeInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  between: [Int]
+}
+
+enum ModelSortDirection {
+  ASC
+  DESC
+}
+
+type ModelUserConnection @aws_api_key {
+  items: [User!]!
+  nextToken: String
+  startedAt: AWSTimestamp
+}
+
+input ModelUserFilterInput {
+  name: ModelStringInput
+  and: [ModelUserFilterInput]
+  or: [ModelUserFilterInput]
+  not: ModelUserFilterInput
+}
+
+type Query {
+  getUser(id: ID!): User @aws_api_key
+  listUsers(filter: ModelUserFilterInput, limit: Int, nextToken: String): ModelUserConnection @aws_api_key
+  syncUsers(filter: ModelUserFilterInput, limit: Int, nextToken: String, lastSync: AWSTimestamp): ModelUserConnection @aws_api_key
+  getVenue(id: ID!): Venue @aws_api_key
+  listVenues(filter: ModelVenueFilterInput, limit: Int, nextToken: String): ModelVenueConnection @aws_api_key
+  syncVenues(filter: ModelVenueFilterInput, limit: Int, nextToken: String, lastSync: AWSTimestamp): ModelVenueConnection @aws_api_key
+  getReview(id: ID!): Review @aws_api_key
+  listReviews(filter: ModelReviewFilterInput, limit: Int, nextToken: String): ModelReviewConnection @aws_api_key
+  syncReviews(filter: ModelReviewFilterInput, limit: Int, nextToken: String, lastSync: AWSTimestamp): ModelReviewConnection @aws_api_key
+}
+
+input ModelUserConditionInput {
+  name: ModelStringInput
+  and: [ModelUserConditionInput]
+  or: [ModelUserConditionInput]
+  not: ModelUserConditionInput
+}
+
+input CreateUserInput {
+  name: String!
+  id: ID
+  _version: Int
+}
+
+input UpdateUserInput {
+  name: String
+  _version: Int
+}
+
+input DeleteUserInput {
+  id: ID!
+  _version: Int
+}
+
+type Mutation {
+  createUser(input: CreateUserInput!, condition: ModelUserConditionInput): User @aws_api_key
+  updateUser(input: UpdateUserInput!, condition: ModelUserConditionInput): User @aws_api_key
+  deleteUser(input: DeleteUserInput!, condition: ModelUserConditionInput): User @aws_api_key
+  createVenue(input: CreateVenueInput!, condition: ModelVenueConditionInput): Venue @aws_api_key
+  updateVenue(input: UpdateVenueInput!, condition: ModelVenueConditionInput): Venue @aws_api_key
+  deleteVenue(input: DeleteVenueInput!, condition: ModelVenueConditionInput): Venue @aws_api_key
+  createReview(input: CreateReviewInput!, condition: ModelReviewConditionInput): Review @aws_api_key
+  updateReview(input: UpdateReviewInput!, condition: ModelReviewConditionInput): Review @aws_api_key
+  deleteReview(input: DeleteReviewInput!, condition: ModelReviewConditionInput): Review @aws_api_key
+}
+
+type Subscription {
+  onCreateUser: User @aws_subscribe(mutations: ["createUser"]) @aws_api_key
+  onUpdateUser: User @aws_subscribe(mutations: ["updateUser"]) @aws_api_key
+  onDeleteUser: User @aws_subscribe(mutations: ["deleteUser"]) @aws_api_key
+  onCreateVenue: Venue @aws_subscribe(mutations: ["createVenue"]) @aws_api_key
+  onUpdateVenue: Venue @aws_subscribe(mutations: ["updateVenue"]) @aws_api_key
+  onDeleteVenue: Venue @aws_subscribe(mutations: ["deleteVenue"]) @aws_api_key
+  onCreateReview: Review @aws_subscribe(mutations: ["createReview"]) @aws_api_key
+  onUpdateReview: Review @aws_subscribe(mutations: ["updateReview"]) @aws_api_key
+  onDeleteReview: Review @aws_subscribe(mutations: ["deleteReview"]) @aws_api_key
+}
+
+input PricingInput {
+  currency: SupportedCurrency!
+  perHour: [HourlyPricingInput]
+  perDay: Float
+}
+
+input HourlyPricingInput {
+  startHour: AWSTime!
+  endHour: AWSTime!
+  price: Float!
+}
+
+input CategoryInput {
+  name: String!
+}
+
+input ExtraInput {
+  name: String!
+  type: String
+  price: Float!
+}
+
+input CapacityInput {
+  unit: UnitOfArea
+  floorSize: Float
+  recommendedGuestCount: Int
+}
+
+input OperatingHourInput {
+  daysOfWeek: [DayOfWeek]
+  startHour: AWSTime
+  endHour: AWSTime
+}
+
+type ModelVenueConnection @aws_api_key {
+  items: [Venue!]!
+  nextToken: String
+  startedAt: AWSTimestamp
+}
+
+input ModelVenueFilterInput {
+  name: ModelStringInput
+  headline: ModelStringInput
+  description: ModelStringInput
+  photos: ModelStringInput
+  address: ModelStringInput
+  city: ModelStringInput
+  eventTypes: ModelStringInput
+  published: ModelBooleanInput
+  and: [ModelVenueFilterInput]
+  or: [ModelVenueFilterInput]
+  not: ModelVenueFilterInput
+}
+
+input ModelVenueConditionInput {
+  name: ModelStringInput
+  headline: ModelStringInput
+  description: ModelStringInput
+  photos: ModelStringInput
+  address: ModelStringInput
+  city: ModelStringInput
+  eventTypes: ModelStringInput
+  published: ModelBooleanInput
+  and: [ModelVenueConditionInput]
+  or: [ModelVenueConditionInput]
+  not: ModelVenueConditionInput
+}
+
+input CreateVenueInput {
+  name: String!
+  headline: String!
+  description: String
+  photos: [String!]!
+  address: String!
+  city: String!
+  pricing: PricingInput!
+  type: CategoryInput!
+  eventTypes: [String!]
+  published: Boolean!
+  extras: [ExtraInput]
+  capacity: CapacityInput
+  operatingHours: [OperatingHourInput]
+  id: ID
+  _version: Int
+}
+
+input UpdateVenueInput {
+  name: String
+  headline: String
+  description: String
+  photos: [String!]
+  address: String
+  city: String
+  pricing: PricingInput
+  type: CategoryInput
+  eventTypes: [String!]
+  published: Boolean
+  extras: [ExtraInput]
+  capacity: CapacityInput
+  operatingHours: [OperatingHourInput]
+  _version: Int
+}
+
+input DeleteVenueInput {
+  id: ID!
+  _version: Int
+}
+
+type ModelReviewConnection @aws_api_key {
+  items: [Review!]!
+  nextToken: String
+  startedAt: AWSTimestamp
+}
+
+input ModelReviewFilterInput {
+  rating: ModelIntInput
+  review: ModelStringInput
+  and: [ModelReviewFilterInput]
+  or: [ModelReviewFilterInput]
+  not: ModelReviewFilterInput
+  userReviewsId: ModelIDInput
+  venueReviewsId: ModelIDInput
+}
+
+input ModelReviewConditionInput {
+  rating: ModelIntInput
+  review: ModelStringInput
+  and: [ModelReviewConditionInput]
+  or: [ModelReviewConditionInput]
+  not: ModelReviewConditionInput
+  userReviewsId: ModelIDInput
+  venueReviewsId: ModelIDInput
+}
+
+input CreateReviewInput {
+  rating: Int!
+  review: String
+  id: ID
+  _version: Int
+  userReviewsId: ID
+  venueReviewsId: ID
+}
+
+input UpdateReviewInput {
+  rating: Int
+  review: String
+  _version: Int
+  userReviewsId: ID
+  venueReviewsId: ID
+}
+
+input DeleteReviewInput {
+  id: ID!
+  _version: Int
+}
+

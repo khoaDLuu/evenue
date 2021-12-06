@@ -1,0 +1,151 @@
+{
+  "providers": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-evenuefs-dev-230706-authRole",
+      "UnauthRoleArn": "arn:aws:iam::310761885902:role/amplify-evenuefs-dev-230706-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::310761885902:role/amplify-evenuefs-dev-230706-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-evenuefs-dev-230706-deployment",
+      "UnauthRoleName": "amplify-evenuefs-dev-230706-unauthRole",
+      "StackName": "amplify-evenuefs-dev-230706",
+      "StackId": "arn:aws:cloudformation:us-east-1:310761885902:stack/amplify-evenuefs-dev-230706/a213fd40-56ae-11ec-b7cb-0e9c4cff6121",
+      "AmplifyAppId": "d3krbgw5un11q3",
+      "AuthTriggerTemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-230706-deployment/amplify-cfn-templates/auth/auth-trigger-cloudformation-template.json"
+    }
+  },
+  "function": {
+    "evenuefs43bab20aCustomMessage": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda",
+      "lastBuildTimeStamp": "2021-12-06T16:33:27.162Z",
+      "lastBuildType": "PROD",
+      "lastPackageTimeStamp": "2021-12-06T16:33:27.338Z",
+      "distZipFilename": "evenuefs43bab20aCustomMessage-7357567575536b4b386a-build.zip",
+      "s3Bucket": {
+        "deploymentBucketName": "amplify-evenuefs-dev-230706-deployment",
+        "s3Key": "amplify-builds/evenuefs43bab20aCustomMessage-7357567575536b4b386a-build.zip"
+      },
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-230706-deployment/amplify-cfn-templates/function/evenuefs43bab20aCustomMessage-cloudformation-template.json",
+        "logicalId": "functionevenuefs43bab20aCustomMessage"
+      },
+      "lastPushTimeStamp": "2021-12-18T08:58:33.145Z",
+      "output": {
+        "Region": "us-east-1",
+        "Arn": "arn:aws:lambda:us-east-1:310761885902:function:evenuefs43bab20aCustomMessage-dev",
+        "Name": "evenuefs43bab20aCustomMessage-dev",
+        "LambdaExecutionRole": "evenuefs43bab20aCustomMessage-dev"
+      },
+      "lastPushDirHash": "sa3FSASp1/dJlT/jEzfL+sq4gy8="
+    }
+  },
+  "auth": {
+    "evenuefs43bab20a": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [
+        {
+          "category": "function",
+          "resourceName": "evenuefs43bab20aCustomMessage",
+          "triggerProvider": "Cognito",
+          "attributes": [
+            "Arn",
+            "Name"
+          ]
+        }
+      ],
+      "customAuth": false,
+      "frontendAuthConfig": {
+        "socialProviders": [],
+        "usernameAttributes": [
+          "EMAIL"
+        ],
+        "signupAttributes": [
+          "EMAIL",
+          "FAMILY_NAME",
+          "GIVEN_NAME"
+        ],
+        "passwordProtectionSettings": {
+          "passwordPolicyMinLength": 8,
+          "passwordPolicyCharacters": []
+        },
+        "mfaConfiguration": "OFF",
+        "mfaTypes": [
+          "SMS"
+        ],
+        "verificationMechanisms": [
+          "EMAIL"
+        ]
+      },
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-230706-deployment/amplify-cfn-templates/auth/evenuefs43bab20a-cloudformation-template.json",
+        "logicalId": "authevenuefs43bab20a"
+      },
+      "lastPushTimeStamp": "2021-12-18T08:58:33.149Z",
+      "output": {
+        "UserPoolId": "us-east-1_9SMRfxG8C",
+        "AppClientIDWeb": "7tln1js79i0fb3am0b87r556r0",
+        "AppClientID": "3n7btd6v9dvagtt6rrfdbk7jop",
+        "IdentityPoolId": "us-east-1:e8f368dd-f0c4-4d29-bfc7-4783add9af21",
+        "UserPoolArn": "arn:aws:cognito-idp:us-east-1:310761885902:userpool/us-east-1_9SMRfxG8C",
+        "IdentityPoolName": "evenuefs43bab20a_identitypool_43bab20a__dev",
+        "UserPoolName": "evenuefs43bab20a_userpool_43bab20a"
+      },
+      "lastPushDirHash": "WyAtqyEiUdTQUo++E0Hwrgj1F3M="
+    }
+  },
+  "api": {
+    "evenuefs": {
+      "service": "AppSync",
+      "providerPlugin": "awscloudformation",
+      "output": {
+        "authConfig": {
+          "defaultAuthentication": {
+            "authenticationType": "AMAZON_COGNITO_USER_POOLS",
+            "userPoolConfig": {
+              "userPoolId": "authevenuefs43bab20a"
+            }
+          },
+          "additionalAuthenticationProviders": [
+            {
+              "authenticationType": "API_KEY",
+              "apiKeyConfig": {
+                "apiKeyExpirationDays": 7,
+                "apiKeyExpirationDate": "2021-12-15T01:48:44.722Z",
+                "description": "API key for sandbox"
+              }
+            }
+          ]
+        },
+        "GraphQLAPIIdOutput": "zcfpgzto5veatbqkwb4cskchiu",
+        "GraphQLAPIEndpointOutput": "https://zkitogbwqjf6zo462ehlzbfwka.appsync-api.us-east-1.amazonaws.com/graphql",
+        "GraphQLAPIKeyOutput": "da2-xhjlq465ezfjfobbicq3pnmpnq"
+      },
+      "lastPushTimeStamp": "2021-12-18T08:58:33.153Z",
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-230706-deployment/amplify-cfn-templates/api/cloudformation-template.json",
+        "logicalId": "apievenuefs"
+      },
+      "lastPushDirHash": "uF4MtNtFfOvCS1nA8Og4m1g8IuE="
+    }
+  },
+  "hosting": {
+    "S3AndCloudFront": {
+      "service": "S3AndCloudFront",
+      "providerPlugin": "awscloudformation",
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-230706-deployment/amplify-cfn-templates/hosting/template.json",
+        "logicalId": "hostingS3AndCloudFront"
+      },
+      "lastPushTimeStamp": "2021-12-18T08:58:33.156Z",
+      "output": {
+        "S3BucketSecureURL": "https://evenuefs-20211215191307-hostingbucket-dev.s3.amazonaws.com",
+        "WebsiteURL": "http://evenuefs-20211215191307-hostingbucket-dev.s3-website-us-east-1.amazonaws.com",
+        "Region": "us-east-1",
+        "HostingBucketName": "evenuefs-20211215191307-hostingbucket-dev"
+      },
+      "lastPushDirHash": "+l23Xx/murszXQyY18ivmbEfbjc="
+    }
+  }
+}

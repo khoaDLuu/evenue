@@ -1,0 +1,86 @@
+# This "input" configures a global authorization rule to enable public access to
+# all models in this schema. Learn more about authorization rules here: https://docs.amplify.aws/cli/graphql/authorization-rules
+input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
+
+type User @model {
+  name: String!
+  reviews: [Review] @hasMany
+}
+
+type Venue @model {
+  name: String!
+  headline: String!
+  description: String
+  photos: [String!]!
+  address: String!
+  city: String!
+  pricing: Pricing!
+  type: Category!
+  eventTypes: [String!]
+  published: Boolean!
+  extras: [Extra]
+  capacity: Capacity
+  operatingHours: [OperatingHour]
+  reviews: [Review] @hasMany
+}
+
+type Category {
+  name: String!
+}
+
+type Pricing {
+  currency: SupportedCurrency!
+  perHour: [HourlyPricing]
+  perDay: Float
+}
+
+type HourlyPricing {
+  startHour: AWSTime!
+  endHour: AWSTime!
+  price: Float!
+}
+
+type Extra {
+  name: String!
+  type: String
+  price: Float!
+}
+
+type Capacity {
+  unit: UnitOfArea
+  floorSize: Float
+  recommendedGuestCount: Int
+}
+
+enum UnitOfArea {
+  sqft
+  sqm
+}
+
+type OperatingHour {
+  daysOfWeek: [DayOfWeek]
+  startHour: AWSTime
+  endHour: AWSTime
+}
+
+enum DayOfWeek {
+  Mon
+  Tue
+  Wed
+  Thu
+  Fri
+  Sat
+  Sun
+}
+
+enum SupportedCurrency {
+  USD
+  VND
+}
+
+type Review @model {
+  venue: Venue @belongsTo
+  user: User @belongsTo
+  rating: Int!
+  review: String
+}
