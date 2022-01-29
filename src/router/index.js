@@ -1,45 +1,53 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-import Home from "../views/Home"
-import Venues from "../views/Venues"
-import Auth from "../views/Auth"
-import VenueMngmt from "../views/VenueMngmt"
-import VenueList from "../views/VenueList"
-import VenueEdit from "../views/VenueEdit"
+import Home from "../views/Home.vue"
+import Venues from "../views/Venues.vue"
+import Auth from "../views/Auth.vue"
+import VenueMngmt from "../views/VenueMngmt.vue"
+import VenueList from "../views/VenueList.vue"
+import VenueEdit from "../views/VenueEdit.vue"
+import VenueDetails from "../views/VenueDetails.vue"
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    name: 'Home',
+    name: 'home',
     component: Home
   },
   {
     path: '/venues/search',
-    name: 'Venues',
+    name: 'venues',
     component: Venues
   },
   {
     path: '/auth',
-    name: 'Auth',
+    name: 'auth',
     component: Auth
   },
   {
     path: '/venue-mngmt',
-    name: 'Venue Management',
+    name: 'venue-mngmt',
     component: VenueMngmt
   },
   {
     path: '/venues/yours',
-    name: 'Your Venues',
+    name: 'venues-yours',
     component: VenueList
   },
   {
-    path: '/venues/new',
-    name: 'Add Venue',
-    component: VenueEdit
+    path: '/venues/edit',
+    name: 'venues-edit',
+    component: VenueEdit,
+    props: true,
+  },
+  {
+    path: '/venues/details',
+    name: 'venue-details',
+    component: VenueDetails,
+    props: true,
   },
 ]
 

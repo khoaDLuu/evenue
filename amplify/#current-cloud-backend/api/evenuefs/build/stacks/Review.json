@@ -235,10 +235,6 @@
               }
             ]
           ]
-        },
-        "TimeToLiveSpecification": {
-          "AttributeName": "_ttl",
-          "Enabled": true
         }
       },
       "UpdateReplacePolicy": "Delete",
@@ -391,50 +387,6 @@
                       }
                     }
                   ]
-                },
-                {
-                  "Fn::Sub": [
-                    "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${tablename}",
-                    {
-                      "tablename": {
-                        "Fn::Join": [
-                          "",
-                          [
-                            "AmplifyDataStore-",
-                            {
-                              "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
-                            },
-                            "-",
-                            {
-                              "Ref": "referencetotransformerrootstackenv10C5A902Ref"
-                            }
-                          ]
-                        ]
-                      }
-                    }
-                  ]
-                },
-                {
-                  "Fn::Sub": [
-                    "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${tablename}/*",
-                    {
-                      "tablename": {
-                        "Fn::Join": [
-                          "",
-                          [
-                            "AmplifyDataStore-",
-                            {
-                              "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
-                            },
-                            "-",
-                            {
-                              "Ref": "referencetotransformerrootstackenv10C5A902Ref"
-                            }
-                          ]
-                        ]
-                      }
-                    }
-                  ]
                 }
               ]
             }
@@ -461,29 +413,9 @@
           "AwsRegion": {
             "Ref": "AWS::Region"
           },
-          "DeltaSyncConfig": {
-            "BaseTableTTL": "43200",
-            "DeltaSyncTableName": {
-              "Fn::Join": [
-                "",
-                [
-                  "AmplifyDataStore-",
-                  {
-                    "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
-                  },
-                  "-",
-                  {
-                    "Ref": "referencetotransformerrootstackenv10C5A902Ref"
-                  }
-                ]
-              ]
-            },
-            "DeltaSyncTableTTL": "30"
-          },
           "TableName": {
             "Ref": "ReviewTable"
-          },
-          "Versioned": true
+          }
         },
         "ServiceRoleArn": {
           "Fn::GetAtt": [
@@ -495,6 +427,36 @@
       "DependsOn": [
         "ReviewIAMRole32E434A7"
       ]
+    },
+    "QuerygetReviewauth0FunctionQuerygetReviewauth0FunctionAppSyncFunction9FFA73D6": {
+      "Type": "AWS::AppSync::FunctionConfiguration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
+        },
+        "DataSourceName": {
+          "Ref": "referencetotransformerrootstackGraphQLAPINONEDS2BA9D1C8Name"
+        },
+        "FunctionVersion": "2018-05-29",
+        "Name": "QuerygetReviewauth0Function",
+        "RequestMappingTemplateS3Location": {
+          "Fn::Join": [
+            "",
+            [
+              "s3://",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentBucket7592718ARef"
+              },
+              "/",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentRootKeyA71EA735Ref"
+              },
+              "/resolvers/Query.getReview.auth.1.req.vtl"
+            ]
+          ]
+        },
+        "ResponseMappingTemplate": "$util.toJson({})"
+      }
     },
     "QuerygetReviewpostAuth0FunctionQuerygetReviewpostAuth0FunctionAppSyncFunction70679AB7": {
       "Type": "AWS::AppSync::FunctionConfiguration",
@@ -571,10 +533,6 @@
               "/resolvers/Query.getReview.res.vtl"
             ]
           ]
-        },
-        "SyncConfig": {
-          "ConflictDetection": "VERSION",
-          "ConflictHandler": "AUTOMERGE"
         }
       },
       "DependsOn": [
@@ -592,6 +550,12 @@
         "Kind": "PIPELINE",
         "PipelineConfig": {
           "Functions": [
+            {
+              "Fn::GetAtt": [
+                "QuerygetReviewauth0FunctionQuerygetReviewauth0FunctionAppSyncFunction9FFA73D6",
+                "FunctionId"
+              ]
+            },
             {
               "Fn::GetAtt": [
                 "QuerygetReviewpostAuth0FunctionQuerygetReviewpostAuth0FunctionAppSyncFunction70679AB7",
@@ -623,6 +587,36 @@
           ]
         },
         "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)"
+      }
+    },
+    "QuerylistReviewsauth0FunctionQuerylistReviewsauth0FunctionAppSyncFunction6C85F3A3": {
+      "Type": "AWS::AppSync::FunctionConfiguration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
+        },
+        "DataSourceName": {
+          "Ref": "referencetotransformerrootstackGraphQLAPINONEDS2BA9D1C8Name"
+        },
+        "FunctionVersion": "2018-05-29",
+        "Name": "QuerylistReviewsauth0Function",
+        "RequestMappingTemplateS3Location": {
+          "Fn::Join": [
+            "",
+            [
+              "s3://",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentBucket7592718ARef"
+              },
+              "/",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentRootKeyA71EA735Ref"
+              },
+              "/resolvers/Query.listReviews.auth.1.req.vtl"
+            ]
+          ]
+        },
+        "ResponseMappingTemplate": "$util.toJson({})"
       }
     },
     "QuerylistReviewspostAuth0FunctionQuerylistReviewspostAuth0FunctionAppSyncFunctionDFA68D3F": {
@@ -700,10 +694,6 @@
               "/resolvers/Query.listReviews.res.vtl"
             ]
           ]
-        },
-        "SyncConfig": {
-          "ConflictDetection": "VERSION",
-          "ConflictHandler": "AUTOMERGE"
         }
       },
       "DependsOn": [
@@ -723,6 +713,12 @@
           "Functions": [
             {
               "Fn::GetAtt": [
+                "QuerylistReviewsauth0FunctionQuerylistReviewsauth0FunctionAppSyncFunction6C85F3A3",
+                "FunctionId"
+              ]
+            },
+            {
+              "Fn::GetAtt": [
                 "QuerylistReviewspostAuth0FunctionQuerylistReviewspostAuth0FunctionAppSyncFunctionDFA68D3F",
                 "FunctionId"
               ]
@@ -740,135 +736,6 @@
             "",
             [
               "$util.qr($ctx.stash.put(\"typeName\", \"Query\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"listReviews\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"AMAZON_DYNAMODB\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
-              {
-                "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
-              },
-              "\"))\n$util.qr($ctx.stash.put(\"tableName\", \"",
-              {
-                "Ref": "ReviewTable"
-              },
-              "\"))\n$util.toJson({})"
-            ]
-          ]
-        },
-        "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)"
-      }
-    },
-    "QuerysyncReviewspostAuth0FunctionQuerysyncReviewspostAuth0FunctionAppSyncFunction79643020": {
-      "Type": "AWS::AppSync::FunctionConfiguration",
-      "Properties": {
-        "ApiId": {
-          "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
-        },
-        "DataSourceName": {
-          "Ref": "referencetotransformerrootstackGraphQLAPINONEDS2BA9D1C8Name"
-        },
-        "FunctionVersion": "2018-05-29",
-        "Name": "QuerysyncReviewspostAuth0Function",
-        "RequestMappingTemplateS3Location": {
-          "Fn::Join": [
-            "",
-            [
-              "s3://",
-              {
-                "Ref": "referencetotransformerrootstackS3DeploymentBucket7592718ARef"
-              },
-              "/",
-              {
-                "Ref": "referencetotransformerrootstackS3DeploymentRootKeyA71EA735Ref"
-              },
-              "/resolvers/Query.syncReviews.postAuth.1.req.vtl"
-            ]
-          ]
-        },
-        "ResponseMappingTemplate": "$util.toJson({})"
-      }
-    },
-    "QuerySyncReviewsDataResolverFnQuerySyncReviewsDataResolverFnAppSyncFunction9C8E85E9": {
-      "Type": "AWS::AppSync::FunctionConfiguration",
-      "Properties": {
-        "ApiId": {
-          "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
-        },
-        "DataSourceName": {
-          "Fn::GetAtt": [
-            "ReviewDataSource",
-            "Name"
-          ]
-        },
-        "FunctionVersion": "2018-05-29",
-        "Name": "QuerySyncReviewsDataResolverFn",
-        "RequestMappingTemplateS3Location": {
-          "Fn::Join": [
-            "",
-            [
-              "s3://",
-              {
-                "Ref": "referencetotransformerrootstackS3DeploymentBucket7592718ARef"
-              },
-              "/",
-              {
-                "Ref": "referencetotransformerrootstackS3DeploymentRootKeyA71EA735Ref"
-              },
-              "/resolvers/Query.syncReviews.req.vtl"
-            ]
-          ]
-        },
-        "ResponseMappingTemplateS3Location": {
-          "Fn::Join": [
-            "",
-            [
-              "s3://",
-              {
-                "Ref": "referencetotransformerrootstackS3DeploymentBucket7592718ARef"
-              },
-              "/",
-              {
-                "Ref": "referencetotransformerrootstackS3DeploymentRootKeyA71EA735Ref"
-              },
-              "/resolvers/Query.syncReviews.res.vtl"
-            ]
-          ]
-        },
-        "SyncConfig": {
-          "ConflictDetection": "VERSION",
-          "ConflictHandler": "AUTOMERGE"
-        }
-      },
-      "DependsOn": [
-        "ReviewDataSource"
-      ]
-    },
-    "SyncReviewResolver": {
-      "Type": "AWS::AppSync::Resolver",
-      "Properties": {
-        "ApiId": {
-          "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
-        },
-        "FieldName": "syncReviews",
-        "TypeName": "Query",
-        "Kind": "PIPELINE",
-        "PipelineConfig": {
-          "Functions": [
-            {
-              "Fn::GetAtt": [
-                "QuerysyncReviewspostAuth0FunctionQuerysyncReviewspostAuth0FunctionAppSyncFunction79643020",
-                "FunctionId"
-              ]
-            },
-            {
-              "Fn::GetAtt": [
-                "QuerySyncReviewsDataResolverFnQuerySyncReviewsDataResolverFnAppSyncFunction9C8E85E9",
-                "FunctionId"
-              ]
-            }
-          ]
-        },
-        "RequestMappingTemplate": {
-          "Fn::Join": [
-            "",
-            [
-              "$util.qr($ctx.stash.put(\"typeName\", \"Query\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"syncReviews\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"AMAZON_DYNAMODB\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
               {
                 "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
               },
@@ -907,6 +774,36 @@
                 "Ref": "referencetotransformerrootstackS3DeploymentRootKeyA71EA735Ref"
               },
               "/resolvers/Mutation.createReview.init.1.req.vtl"
+            ]
+          ]
+        },
+        "ResponseMappingTemplate": "$util.toJson({})"
+      }
+    },
+    "MutationcreateReviewauth0FunctionMutationcreateReviewauth0FunctionAppSyncFunction2524917F": {
+      "Type": "AWS::AppSync::FunctionConfiguration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
+        },
+        "DataSourceName": {
+          "Ref": "referencetotransformerrootstackGraphQLAPINONEDS2BA9D1C8Name"
+        },
+        "FunctionVersion": "2018-05-29",
+        "Name": "MutationcreateReviewauth0Function",
+        "RequestMappingTemplateS3Location": {
+          "Fn::Join": [
+            "",
+            [
+              "s3://",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentBucket7592718ARef"
+              },
+              "/",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentRootKeyA71EA735Ref"
+              },
+              "/resolvers/Mutation.createReview.auth.1.req.vtl"
             ]
           ]
         },
@@ -988,10 +885,6 @@
               "/resolvers/Mutation.createReview.res.vtl"
             ]
           ]
-        },
-        "SyncConfig": {
-          "ConflictDetection": "VERSION",
-          "ConflictHandler": "AUTOMERGE"
         }
       },
       "DependsOn": [
@@ -1012,6 +905,12 @@
             {
               "Fn::GetAtt": [
                 "MutationcreateReviewinit0FunctionMutationcreateReviewinit0FunctionAppSyncFunction6511C198",
+                "FunctionId"
+              ]
+            },
+            {
+              "Fn::GetAtt": [
+                "MutationcreateReviewauth0FunctionMutationcreateReviewauth0FunctionAppSyncFunction2524917F",
                 "FunctionId"
               ]
             },
@@ -1077,6 +976,57 @@
         },
         "ResponseMappingTemplate": "$util.toJson({})"
       }
+    },
+    "MutationupdateReviewauth0FunctionMutationupdateReviewauth0FunctionAppSyncFunctionB2333FE5": {
+      "Type": "AWS::AppSync::FunctionConfiguration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
+        },
+        "DataSourceName": {
+          "Fn::GetAtt": [
+            "ReviewDataSource",
+            "Name"
+          ]
+        },
+        "FunctionVersion": "2018-05-29",
+        "Name": "MutationupdateReviewauth0Function",
+        "RequestMappingTemplateS3Location": {
+          "Fn::Join": [
+            "",
+            [
+              "s3://",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentBucket7592718ARef"
+              },
+              "/",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentRootKeyA71EA735Ref"
+              },
+              "/resolvers/Mutation.updateReview.auth.1.req.vtl"
+            ]
+          ]
+        },
+        "ResponseMappingTemplateS3Location": {
+          "Fn::Join": [
+            "",
+            [
+              "s3://",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentBucket7592718ARef"
+              },
+              "/",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentRootKeyA71EA735Ref"
+              },
+              "/resolvers/Mutation.updateReview.auth.1.res.vtl"
+            ]
+          ]
+        }
+      },
+      "DependsOn": [
+        "ReviewDataSource"
+      ]
     },
     "MutationupdateReviewpostAuth0FunctionMutationupdateReviewpostAuth0FunctionAppSyncFunction31291088": {
       "Type": "AWS::AppSync::FunctionConfiguration",
@@ -1153,10 +1103,6 @@
               "/resolvers/Mutation.updateReview.res.vtl"
             ]
           ]
-        },
-        "SyncConfig": {
-          "ConflictDetection": "VERSION",
-          "ConflictHandler": "AUTOMERGE"
         }
       },
       "DependsOn": [
@@ -1177,6 +1123,12 @@
             {
               "Fn::GetAtt": [
                 "MutationupdateReviewinit0FunctionMutationupdateReviewinit0FunctionAppSyncFunction5014AEF4",
+                "FunctionId"
+              ]
+            },
+            {
+              "Fn::GetAtt": [
+                "MutationupdateReviewauth0FunctionMutationupdateReviewauth0FunctionAppSyncFunctionB2333FE5",
                 "FunctionId"
               ]
             },
@@ -1212,6 +1164,57 @@
         },
         "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)"
       }
+    },
+    "MutationdeleteReviewauth0FunctionMutationdeleteReviewauth0FunctionAppSyncFunction718844CE": {
+      "Type": "AWS::AppSync::FunctionConfiguration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
+        },
+        "DataSourceName": {
+          "Fn::GetAtt": [
+            "ReviewDataSource",
+            "Name"
+          ]
+        },
+        "FunctionVersion": "2018-05-29",
+        "Name": "MutationdeleteReviewauth0Function",
+        "RequestMappingTemplateS3Location": {
+          "Fn::Join": [
+            "",
+            [
+              "s3://",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentBucket7592718ARef"
+              },
+              "/",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentRootKeyA71EA735Ref"
+              },
+              "/resolvers/Mutation.deleteReview.auth.1.req.vtl"
+            ]
+          ]
+        },
+        "ResponseMappingTemplateS3Location": {
+          "Fn::Join": [
+            "",
+            [
+              "s3://",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentBucket7592718ARef"
+              },
+              "/",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentRootKeyA71EA735Ref"
+              },
+              "/resolvers/Mutation.deleteReview.auth.1.res.vtl"
+            ]
+          ]
+        }
+      },
+      "DependsOn": [
+        "ReviewDataSource"
+      ]
     },
     "MutationdeleteReviewpostAuth0FunctionMutationdeleteReviewpostAuth0FunctionAppSyncFunction0F593894": {
       "Type": "AWS::AppSync::FunctionConfiguration",
@@ -1288,10 +1291,6 @@
               "/resolvers/Mutation.deleteReview.res.vtl"
             ]
           ]
-        },
-        "SyncConfig": {
-          "ConflictDetection": "VERSION",
-          "ConflictHandler": "AUTOMERGE"
         }
       },
       "DependsOn": [
@@ -1309,6 +1308,12 @@
         "Kind": "PIPELINE",
         "PipelineConfig": {
           "Functions": [
+            {
+              "Fn::GetAtt": [
+                "MutationdeleteReviewauth0FunctionMutationdeleteReviewauth0FunctionAppSyncFunction718844CE",
+                "FunctionId"
+              ]
+            },
             {
               "Fn::GetAtt": [
                 "MutationdeleteReviewpostAuth0FunctionMutationdeleteReviewpostAuth0FunctionAppSyncFunction0F593894",
@@ -1340,6 +1345,36 @@
           ]
         },
         "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)"
+      }
+    },
+    "SubscriptiononCreateReviewauth0FunctionSubscriptiononCreateReviewauth0FunctionAppSyncFunction5B77175F": {
+      "Type": "AWS::AppSync::FunctionConfiguration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
+        },
+        "DataSourceName": {
+          "Ref": "referencetotransformerrootstackGraphQLAPINONEDS2BA9D1C8Name"
+        },
+        "FunctionVersion": "2018-05-29",
+        "Name": "SubscriptiononCreateReviewauth0Function",
+        "RequestMappingTemplateS3Location": {
+          "Fn::Join": [
+            "",
+            [
+              "s3://",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentBucket7592718ARef"
+              },
+              "/",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentRootKeyA71EA735Ref"
+              },
+              "/resolvers/Subscription.onCreateReview.auth.1.req.vtl"
+            ]
+          ]
+        },
+        "ResponseMappingTemplate": "$util.toJson({})"
       }
     },
     "SubscriptiononCreateReviewpostAuth0FunctionSubscriptiononCreateReviewpostAuth0FunctionAppSyncFunction15521604": {
@@ -1430,6 +1465,12 @@
           "Functions": [
             {
               "Fn::GetAtt": [
+                "SubscriptiononCreateReviewauth0FunctionSubscriptiononCreateReviewauth0FunctionAppSyncFunction5B77175F",
+                "FunctionId"
+              ]
+            },
+            {
+              "Fn::GetAtt": [
                 "SubscriptiononCreateReviewpostAuth0FunctionSubscriptiononCreateReviewpostAuth0FunctionAppSyncFunction15521604",
                 "FunctionId"
               ]
@@ -1455,6 +1496,36 @@
           ]
         },
         "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)"
+      }
+    },
+    "SubscriptiononUpdateReviewauth0FunctionSubscriptiononUpdateReviewauth0FunctionAppSyncFunction7D395BC9": {
+      "Type": "AWS::AppSync::FunctionConfiguration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
+        },
+        "DataSourceName": {
+          "Ref": "referencetotransformerrootstackGraphQLAPINONEDS2BA9D1C8Name"
+        },
+        "FunctionVersion": "2018-05-29",
+        "Name": "SubscriptiononUpdateReviewauth0Function",
+        "RequestMappingTemplateS3Location": {
+          "Fn::Join": [
+            "",
+            [
+              "s3://",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentBucket7592718ARef"
+              },
+              "/",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentRootKeyA71EA735Ref"
+              },
+              "/resolvers/Subscription.onUpdateReview.auth.1.req.vtl"
+            ]
+          ]
+        },
+        "ResponseMappingTemplate": "$util.toJson({})"
       }
     },
     "SubscriptiononUpdateReviewpostAuth0FunctionSubscriptiononUpdateReviewpostAuth0FunctionAppSyncFunctionA8F246AD": {
@@ -1545,6 +1616,12 @@
           "Functions": [
             {
               "Fn::GetAtt": [
+                "SubscriptiononUpdateReviewauth0FunctionSubscriptiononUpdateReviewauth0FunctionAppSyncFunction7D395BC9",
+                "FunctionId"
+              ]
+            },
+            {
+              "Fn::GetAtt": [
                 "SubscriptiononUpdateReviewpostAuth0FunctionSubscriptiononUpdateReviewpostAuth0FunctionAppSyncFunctionA8F246AD",
                 "FunctionId"
               ]
@@ -1570,6 +1647,36 @@
           ]
         },
         "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)"
+      }
+    },
+    "SubscriptiononDeleteReviewauth0FunctionSubscriptiononDeleteReviewauth0FunctionAppSyncFunctionFD9BE9D2": {
+      "Type": "AWS::AppSync::FunctionConfiguration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
+        },
+        "DataSourceName": {
+          "Ref": "referencetotransformerrootstackGraphQLAPINONEDS2BA9D1C8Name"
+        },
+        "FunctionVersion": "2018-05-29",
+        "Name": "SubscriptiononDeleteReviewauth0Function",
+        "RequestMappingTemplateS3Location": {
+          "Fn::Join": [
+            "",
+            [
+              "s3://",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentBucket7592718ARef"
+              },
+              "/",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentRootKeyA71EA735Ref"
+              },
+              "/resolvers/Subscription.onDeleteReview.auth.1.req.vtl"
+            ]
+          ]
+        },
+        "ResponseMappingTemplate": "$util.toJson({})"
       }
     },
     "SubscriptiononDeleteReviewpostAuth0FunctionSubscriptiononDeleteReviewpostAuth0FunctionAppSyncFunction48FB79C6": {
@@ -1658,6 +1765,12 @@
         "Kind": "PIPELINE",
         "PipelineConfig": {
           "Functions": [
+            {
+              "Fn::GetAtt": [
+                "SubscriptiononDeleteReviewauth0FunctionSubscriptiononDeleteReviewauth0FunctionAppSyncFunctionFD9BE9D2",
+                "FunctionId"
+              ]
+            },
             {
               "Fn::GetAtt": [
                 "SubscriptiononDeleteReviewpostAuth0FunctionSubscriptiononDeleteReviewpostAuth0FunctionAppSyncFunction48FB79C6",

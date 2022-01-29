@@ -20,7 +20,6 @@ export type AmplifyDependentResourcesAttributes = {
     },
     "api": {
         "evenuefs": {
-            "GraphQLAPIKeyOutput": "string",
             "GraphQLAPIIdOutput": "string",
             "GraphQLAPIEndpointOutput": "string"
         }
@@ -31,6 +30,12 @@ export type AmplifyDependentResourcesAttributes = {
             "HostingBucketName": "string",
             "WebsiteURL": "string",
             "S3BucketSecureURL": "string"
+        }
+    },
+    "storage": {
+        "staticcontent": {
+            "BucketName": "string",
+            "Region": "string"
         }
     }
 }

@@ -62,9 +62,9 @@
             {
               "authenticationType": "API_KEY",
               "apiKeyConfig": {
-                "apiKeyExpirationDays": 7,
-                "apiKeyExpirationDate": "2021-12-15T01:48:44.722Z",
-                "description": "API key for sandbox"
+                "apiKeyExpirationDays": 14,
+                "apiKeyExpirationDate": "2022-02-05T10:36:32.657Z",
+                "description": "devapikey"
               }
             }
           ]
@@ -76,6 +76,13 @@
     "S3AndCloudFront": {
       "service": "S3AndCloudFront",
       "providerPlugin": "awscloudformation"
+    }
+  },
+  "storage": {
+    "staticcontent": {
+      "service": "S3",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": []
     }
   }
 }

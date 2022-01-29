@@ -115,7 +115,7 @@
               <SfIcon
                 key="add_to_cart"
                 icon="more"
-                size="20px"
+                size="16px"
                 color="white"
               />
             </template>
@@ -543,7 +543,7 @@ export default {
           image: "https://picsum.photos/216/326",
           price: { regular: "$40.00" },
           rating: { max: 5, score: 5 },
-          reviewsCount: 8,
+          reviewsCount: Math.floor(Math.random() * 13),
           isInWishlist: true,
         },
         {
@@ -553,7 +553,7 @@ export default {
           image: "https://picsum.photos/216/326",
           price: { regular: "$30.00" },
           rating: { max: 5, score: 4 },
-          reviewsCount: 8,
+          reviewsCount: Math.floor(Math.random() * 13),
           isInWishlist: false,
         },
         {
@@ -563,7 +563,7 @@ export default {
           image: "https://picsum.photos/216/326",
           price: { regular: "$50.00" },
           rating: { max: 5, score: 4 },
-          reviewsCount: 8,
+          reviewsCount: Math.floor(Math.random() * 13),
           isInWishlist: false,
         },
         {
@@ -573,7 +573,7 @@ export default {
           image: "https://picsum.photos/216/326",
           price: { regular: "$50.00" },
           rating: { max: 5, score: 4 },
-          reviewsCount: 8,
+          reviewsCount: Math.floor(Math.random() * 13),
           isInWishlist: false,
         },
         {
@@ -583,7 +583,7 @@ export default {
           image: "https://picsum.photos/216/326",
           price: { regular: "$30.00" },
           rating: { max: 5, score: 4 },
-          reviewsCount: 8,
+          reviewsCount: Math.floor(Math.random() * 13),
           isInWishlist: false,
         },
         {
@@ -593,7 +593,7 @@ export default {
           image: "https://picsum.photos/216/326",
           price: { regular: "$50.00" },
           rating: { max: 5, score: 4 },
-          reviewsCount: 8,
+          reviewsCount: Math.floor(Math.random() * 13),
           isInWishlist: false,
         },
         {
@@ -603,7 +603,7 @@ export default {
           image: "https://picsum.photos/216/326",
           price: { regular: "$60.00" },
           rating: { max: 5, score: 4 },
-          reviewsCount: 6,
+          reviewsCount: Math.floor(Math.random() * 13),
           isInWishlist: false,
         },
         {
@@ -613,7 +613,7 @@ export default {
           image: "https://picsum.photos/216/326",
           price: { regular: "$60.00" },
           rating: { max: 5, score: 4 },
-          reviewsCount: 8,
+          reviewsCount: Math.floor(Math.random() * 13),
           isInWishlist: false,
         },
       ],

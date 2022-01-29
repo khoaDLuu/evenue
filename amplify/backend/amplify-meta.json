@@ -18,26 +18,21 @@
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda",
-      "lastBuildTimeStamp": "2021-12-06T16:33:27.162Z",
-      "lastBuildType": "PROD",
-      "lastPackageTimeStamp": "2021-12-06T16:33:27.338Z",
-      "distZipFilename": "evenuefs43bab20aCustomMessage-7357567575536b4b386a-build.zip",
-      "s3Bucket": {
-        "deploymentBucketName": "amplify-evenuefs-dev-230706-deployment",
-        "s3Key": "amplify-builds/evenuefs43bab20aCustomMessage-7357567575536b4b386a-build.zip"
-      },
-      "providerMetadata": {
-        "s3TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-230706-deployment/amplify-cfn-templates/function/evenuefs43bab20aCustomMessage-cloudformation-template.json",
-        "logicalId": "functionevenuefs43bab20aCustomMessage"
-      },
-      "lastPushTimeStamp": "2021-12-18T08:58:33.145Z",
       "output": {
         "Region": "us-east-1",
         "Arn": "arn:aws:lambda:us-east-1:310761885902:function:evenuefs43bab20aCustomMessage-dev",
         "Name": "evenuefs43bab20aCustomMessage-dev",
         "LambdaExecutionRole": "evenuefs43bab20aCustomMessage-dev"
       },
-      "lastPushDirHash": "sa3FSASp1/dJlT/jEzfL+sq4gy8="
+      "lastPushTimeStamp": "2022-01-29T02:48:30.510Z",
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-230706-deployment/amplify-cfn-templates/function/evenuefs43bab20aCustomMessage-cloudformation-template.json",
+        "logicalId": "functionevenuefs43bab20aCustomMessage"
+      },
+      "s3Bucket": {
+        "deploymentBucketName": "amplify-evenuefs-dev-230706-deployment",
+        "s3Key": "amplify-builds/evenuefs43bab20aCustomMessage-7357567575536b4b386a-build.zip"
+      }
     }
   },
   "auth": {
@@ -78,11 +73,6 @@
           "EMAIL"
         ]
       },
-      "providerMetadata": {
-        "s3TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-230706-deployment/amplify-cfn-templates/auth/evenuefs43bab20a-cloudformation-template.json",
-        "logicalId": "authevenuefs43bab20a"
-      },
-      "lastPushTimeStamp": "2021-12-18T08:58:33.149Z",
       "output": {
         "UserPoolId": "us-east-1_9SMRfxG8C",
         "AppClientIDWeb": "7tln1js79i0fb3am0b87r556r0",
@@ -92,7 +82,11 @@
         "IdentityPoolName": "evenuefs43bab20a_identitypool_43bab20a__dev",
         "UserPoolName": "evenuefs43bab20a_userpool_43bab20a"
       },
-      "lastPushDirHash": "WyAtqyEiUdTQUo++E0Hwrgj1F3M="
+      "lastPushTimeStamp": "2022-01-29T02:48:30.520Z",
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-230706-deployment/amplify-cfn-templates/auth/evenuefs43bab20a-cloudformation-template.json",
+        "logicalId": "authevenuefs43bab20a"
+      }
     }
   },
   "api": {
@@ -111,41 +105,55 @@
             {
               "authenticationType": "API_KEY",
               "apiKeyConfig": {
-                "apiKeyExpirationDays": 7,
-                "apiKeyExpirationDate": "2021-12-15T01:48:44.722Z",
-                "description": "API key for sandbox"
+                "apiKeyExpirationDays": 14,
+                "apiKeyExpirationDate": "2022-02-05T10:36:32.657Z",
+                "description": "devapikey"
               }
             }
           ]
         },
         "GraphQLAPIIdOutput": "zcfpgzto5veatbqkwb4cskchiu",
-        "GraphQLAPIEndpointOutput": "https://zkitogbwqjf6zo462ehlzbfwka.appsync-api.us-east-1.amazonaws.com/graphql",
-        "GraphQLAPIKeyOutput": "da2-xhjlq465ezfjfobbicq3pnmpnq"
+        "GraphQLAPIEndpointOutput": "https://zkitogbwqjf6zo462ehlzbfwka.appsync-api.us-east-1.amazonaws.com/graphql"
       },
-      "lastPushTimeStamp": "2021-12-18T08:58:33.153Z",
+      "lastPushTimeStamp": "2022-01-29T02:48:33.973Z",
       "providerMetadata": {
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-230706-deployment/amplify-cfn-templates/api/cloudformation-template.json",
         "logicalId": "apievenuefs"
       },
-      "lastPushDirHash": "uF4MtNtFfOvCS1nA8Og4m1g8IuE="
+      "lastPushDirHash": "TkJfPx6tqeeWKMnQXxvmW52L6Aw="
     }
   },
   "hosting": {
     "S3AndCloudFront": {
       "service": "S3AndCloudFront",
       "providerPlugin": "awscloudformation",
-      "providerMetadata": {
-        "s3TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-230706-deployment/amplify-cfn-templates/hosting/template.json",
-        "logicalId": "hostingS3AndCloudFront"
-      },
-      "lastPushTimeStamp": "2021-12-18T08:58:33.156Z",
       "output": {
         "S3BucketSecureURL": "https://evenuefs-20211215191307-hostingbucket-dev.s3.amazonaws.com",
         "WebsiteURL": "http://evenuefs-20211215191307-hostingbucket-dev.s3-website-us-east-1.amazonaws.com",
         "Region": "us-east-1",
         "HostingBucketName": "evenuefs-20211215191307-hostingbucket-dev"
       },
-      "lastPushDirHash": "+l23Xx/murszXQyY18ivmbEfbjc="
+      "lastPushTimeStamp": "2022-01-29T02:48:30.531Z",
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-230706-deployment/amplify-cfn-templates/hosting/template.json",
+        "logicalId": "hostingS3AndCloudFront"
+      }
+    }
+  },
+  "storage": {
+    "staticcontent": {
+      "service": "S3",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "output": {
+        "BucketName": "evenuestaticfiles230706-dev",
+        "Region": "us-east-1"
+      },
+      "lastPushTimeStamp": "2022-01-29T02:48:30.535Z",
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-230706-deployment/amplify-cfn-templates/storage/cloudformation-template.json",
+        "logicalId": "storagestaticcontent"
+      }
     }
   }
 }

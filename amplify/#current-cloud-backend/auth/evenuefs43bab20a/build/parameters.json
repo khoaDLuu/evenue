@@ -1,6 +1,6 @@
 {
   "identityPoolName": "evenuefs43bab20a_identitypool_43bab20a",
-  "allowUnauthenticatedIdentities": false,
+  "allowUnauthenticatedIdentities": true,
   "resourceNameTruncated": "evenue43bab20a",
   "userPoolName": "evenuefs43bab20a_userpool_43bab20a",
   "autoVerifiedAttributes": [

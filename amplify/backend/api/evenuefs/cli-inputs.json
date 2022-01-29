@@ -8,17 +8,13 @@
       "mode": "AMAZON_COGNITO_USER_POOLS",
       "cognitoUserPoolId": "authevenuefs43bab20a"
     },
-    "conflictResolution": {
-      "defaultResolutionStrategy": {
-        "type": "AUTOMERGE"
-      }
-    },
+    "conflictResolution": {},
     "additionalAuthTypes": [
       {
         "mode": "API_KEY",
-        "expirationTime": 7,
-        "apiKeyExpirationDate": "2021-12-15T01:48:44.722Z",
-        "keyDescription": "API key for sandbox"
+        "expirationTime": 14,
+        "apiKeyExpirationDate": "2022-02-05T10:36:32.657Z",
+        "keyDescription": "devapikey"
       }
     ]
   }

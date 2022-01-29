@@ -1,17 +1,38 @@
 # This "input" configures a global authorization rule to enable public access to
 # all models in this schema. Learn more about authorization rules here: https://docs.amplify.aws/cli/graphql/authorization-rules
-input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
+# input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
 
-type User @model {
+type User @model
+  @auth (
+    rules: [
+      { allow: owner, operations: [read, update] },
+      { allow: private, operations: [read] },
+      { allow: public, operations: [read] }
+    ]
+  ) {
   name: String!
   reviews: [Review] @hasMany
 }
 
-type Venue @model {
+type Venue @model
+  @auth (
+    rules: [
+      # allow all authenticated users ability to create venues
+      # allow owners ability to update and delete their venues
+      { allow: owner },
+
+      # allow all authenticated users to view venues
+      { allow: private, operations: [read] },
+
+      # allow all guest users (not authenticated) to view venues
+      { allow: public, operations: [read] }
+    ]
+  ) {
+  id: ID!
   name: String!
   headline: String!
   description: String
-  photos: [String!]!
+  photos: [Photo!]!
   address: String!
   city: String!
   pricing: Pricing!
@@ -22,6 +43,7 @@ type Venue @model {
   capacity: Capacity
   operatingHours: [OperatingHour]
   reviews: [Review] @hasMany
+  owner: String
 }
 
 type Category {
@@ -79,9 +101,35 @@ enum SupportedCurrency {
   EUR
 }
 
-type Review @model {
+type Review @model
+  @auth (
+    rules: [
+      # allow all authenticated users ability to create reviews
+      # allow owners ability to update and delete their reviews
+      { allow: owner },
+
+      # allow all authenticated users to view reviews
+      { allow: private, operations: [read] },
+
+      # allow all guest users (not authenticated) to view reviews
+      { allow: public, operations: [read] }
+    ]
+  ) {
   venue: Venue @belongsTo
   user: User @belongsTo
   rating: Int!
   review: String
+}
+
+type Photo {
+  name: String
+  fullsize: S3Object!
+  thumbnails: [S3Object]
+}
+
+# type S3Object @aws_iam @aws_cognito_user_pools {
+type S3Object {
+  region: String!
+  bucket: String!
+  key: String!
 }

@@ -1,9 +1,13 @@
 <template>
   <div class="flex flex-row flex-wrap">
-    <SfButton :class="'px-4 py-2 mr-4'" @click="$emit('edit-clicked')">
+    <SfButton class="px-4 py-2 mr-4 my-2" @click="$emit('edit-clicked')">
       Edit
     </SfButton>
-    <SfButton :class="'px-4 py-2 mr-4 color-light'"
+    <SfButton class="px-4 py-2 mr-4 my-2 color-secondary"
+      @click="$emit('del-clicked')">
+      Delete
+    </SfButton>
+    <SfButton class="px-4 py-2 mr-4 my-2 color-light"
       @click="$emit('view-clicked')">
       View
     </SfButton>

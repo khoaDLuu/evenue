@@ -1,0 +1,16 @@
+{
+  "resourceName": "staticcontent",
+  "policyUUID": "0f13d468",
+  "bucketName": "evenuestaticfiles",
+  "storageAccess": "authAndGuest",
+  "guestAccess": [
+    "READ"
+  ],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ],
+  "triggerFunction": "NONE",
+  "groupAccess": {}
+}

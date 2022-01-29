@@ -5,3 +5,10 @@
 input, textarea, select {
   @apply focus:outline-none;
 }
+input[style*="outline: none"]:focus + * {
+  outline: none !important;
+}
+input:focus + * {
+  outline-color: transparent !important;
+  outline-style: none !important;
+}

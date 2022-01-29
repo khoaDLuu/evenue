@@ -169,10 +169,6 @@
               }
             ]
           ]
-        },
-        "TimeToLiveSpecification": {
-          "AttributeName": "_ttl",
-          "Enabled": true
         }
       },
       "UpdateReplacePolicy": "Delete",
@@ -314,50 +310,6 @@
                       }
                     }
                   ]
-                },
-                {
-                  "Fn::Sub": [
-                    "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${tablename}",
-                    {
-                      "tablename": {
-                        "Fn::Join": [
-                          "",
-                          [
-                            "AmplifyDataStore-",
-                            {
-                              "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
-                            },
-                            "-",
-                            {
-                              "Ref": "referencetotransformerrootstackenv10C5A902Ref"
-                            }
-                          ]
-                        ]
-                      }
-                    }
-                  ]
-                },
-                {
-                  "Fn::Sub": [
-                    "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${tablename}/*",
-                    {
-                      "tablename": {
-                        "Fn::Join": [
-                          "",
-                          [
-                            "AmplifyDataStore-",
-                            {
-                              "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
-                            },
-                            "-",
-                            {
-                              "Ref": "referencetotransformerrootstackenv10C5A902Ref"
-                            }
-                          ]
-                        ]
-                      }
-                    }
-                  ]
                 }
               ]
             }
@@ -384,29 +336,9 @@
           "AwsRegion": {
             "Ref": "AWS::Region"
           },
-          "DeltaSyncConfig": {
-            "BaseTableTTL": "43200",
-            "DeltaSyncTableName": {
-              "Fn::Join": [
-                "",
-                [
-                  "AmplifyDataStore-",
-                  {
-                    "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
-                  },
-                  "-",
-                  {
-                    "Ref": "referencetotransformerrootstackenv10C5A902Ref"
-                  }
-                ]
-              ]
-            },
-            "DeltaSyncTableTTL": "30"
-          },
           "TableName": {
             "Ref": "VenueTable"
-          },
-          "Versioned": true
+          }
         },
         "ServiceRoleArn": {
           "Fn::GetAtt": [
@@ -418,6 +350,36 @@
       "DependsOn": [
         "VenueIAMRole844FE2A9"
       ]
+    },
+    "QuerygetVenueauth0FunctionQuerygetVenueauth0FunctionAppSyncFunction5274984A": {
+      "Type": "AWS::AppSync::FunctionConfiguration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
+        },
+        "DataSourceName": {
+          "Ref": "referencetotransformerrootstackGraphQLAPINONEDS2BA9D1C8Name"
+        },
+        "FunctionVersion": "2018-05-29",
+        "Name": "QuerygetVenueauth0Function",
+        "RequestMappingTemplateS3Location": {
+          "Fn::Join": [
+            "",
+            [
+              "s3://",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentBucket7592718ARef"
+              },
+              "/",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentRootKeyA71EA735Ref"
+              },
+              "/resolvers/Query.getVenue.auth.1.req.vtl"
+            ]
+          ]
+        },
+        "ResponseMappingTemplate": "$util.toJson({})"
+      }
     },
     "QuerygetVenuepostAuth0FunctionQuerygetVenuepostAuth0FunctionAppSyncFunctionB0423B27": {
       "Type": "AWS::AppSync::FunctionConfiguration",
@@ -494,10 +456,6 @@
               "/resolvers/Query.getVenue.res.vtl"
             ]
           ]
-        },
-        "SyncConfig": {
-          "ConflictDetection": "VERSION",
-          "ConflictHandler": "AUTOMERGE"
         }
       },
       "DependsOn": [
@@ -515,6 +473,12 @@
         "Kind": "PIPELINE",
         "PipelineConfig": {
           "Functions": [
+            {
+              "Fn::GetAtt": [
+                "QuerygetVenueauth0FunctionQuerygetVenueauth0FunctionAppSyncFunction5274984A",
+                "FunctionId"
+              ]
+            },
             {
               "Fn::GetAtt": [
                 "QuerygetVenuepostAuth0FunctionQuerygetVenuepostAuth0FunctionAppSyncFunctionB0423B27",
@@ -546,6 +510,36 @@
           ]
         },
         "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)"
+      }
+    },
+    "QuerylistVenuesauth0FunctionQuerylistVenuesauth0FunctionAppSyncFunction86458143": {
+      "Type": "AWS::AppSync::FunctionConfiguration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
+        },
+        "DataSourceName": {
+          "Ref": "referencetotransformerrootstackGraphQLAPINONEDS2BA9D1C8Name"
+        },
+        "FunctionVersion": "2018-05-29",
+        "Name": "QuerylistVenuesauth0Function",
+        "RequestMappingTemplateS3Location": {
+          "Fn::Join": [
+            "",
+            [
+              "s3://",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentBucket7592718ARef"
+              },
+              "/",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentRootKeyA71EA735Ref"
+              },
+              "/resolvers/Query.listVenues.auth.1.req.vtl"
+            ]
+          ]
+        },
+        "ResponseMappingTemplate": "$util.toJson({})"
       }
     },
     "QuerylistVenuespostAuth0FunctionQuerylistVenuespostAuth0FunctionAppSyncFunction63DC5BF2": {
@@ -623,10 +617,6 @@
               "/resolvers/Query.listVenues.res.vtl"
             ]
           ]
-        },
-        "SyncConfig": {
-          "ConflictDetection": "VERSION",
-          "ConflictHandler": "AUTOMERGE"
         }
       },
       "DependsOn": [
@@ -646,6 +636,12 @@
           "Functions": [
             {
               "Fn::GetAtt": [
+                "QuerylistVenuesauth0FunctionQuerylistVenuesauth0FunctionAppSyncFunction86458143",
+                "FunctionId"
+              ]
+            },
+            {
+              "Fn::GetAtt": [
                 "QuerylistVenuespostAuth0FunctionQuerylistVenuespostAuth0FunctionAppSyncFunction63DC5BF2",
                 "FunctionId"
               ]
@@ -663,135 +659,6 @@
             "",
             [
               "$util.qr($ctx.stash.put(\"typeName\", \"Query\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"listVenues\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"AMAZON_DYNAMODB\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
-              {
-                "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
-              },
-              "\"))\n$util.qr($ctx.stash.put(\"tableName\", \"",
-              {
-                "Ref": "VenueTable"
-              },
-              "\"))\n$util.toJson({})"
-            ]
-          ]
-        },
-        "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)"
-      }
-    },
-    "QuerysyncVenuespostAuth0FunctionQuerysyncVenuespostAuth0FunctionAppSyncFunction52DA7D59": {
-      "Type": "AWS::AppSync::FunctionConfiguration",
-      "Properties": {
-        "ApiId": {
-          "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
-        },
-        "DataSourceName": {
-          "Ref": "referencetotransformerrootstackGraphQLAPINONEDS2BA9D1C8Name"
-        },
-        "FunctionVersion": "2018-05-29",
-        "Name": "QuerysyncVenuespostAuth0Function",
-        "RequestMappingTemplateS3Location": {
-          "Fn::Join": [
-            "",
-            [
-              "s3://",
-              {
-                "Ref": "referencetotransformerrootstackS3DeploymentBucket7592718ARef"
-              },
-              "/",
-              {
-                "Ref": "referencetotransformerrootstackS3DeploymentRootKeyA71EA735Ref"
-              },
-              "/resolvers/Query.syncVenues.postAuth.1.req.vtl"
-            ]
-          ]
-        },
-        "ResponseMappingTemplate": "$util.toJson({})"
-      }
-    },
-    "QuerySyncVenuesDataResolverFnQuerySyncVenuesDataResolverFnAppSyncFunctionF86ACFDD": {
-      "Type": "AWS::AppSync::FunctionConfiguration",
-      "Properties": {
-        "ApiId": {
-          "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
-        },
-        "DataSourceName": {
-          "Fn::GetAtt": [
-            "VenueDataSource",
-            "Name"
-          ]
-        },
-        "FunctionVersion": "2018-05-29",
-        "Name": "QuerySyncVenuesDataResolverFn",
-        "RequestMappingTemplateS3Location": {
-          "Fn::Join": [
-            "",
-            [
-              "s3://",
-              {
-                "Ref": "referencetotransformerrootstackS3DeploymentBucket7592718ARef"
-              },
-              "/",
-              {
-                "Ref": "referencetotransformerrootstackS3DeploymentRootKeyA71EA735Ref"
-              },
-              "/resolvers/Query.syncVenues.req.vtl"
-            ]
-          ]
-        },
-        "ResponseMappingTemplateS3Location": {
-          "Fn::Join": [
-            "",
-            [
-              "s3://",
-              {
-                "Ref": "referencetotransformerrootstackS3DeploymentBucket7592718ARef"
-              },
-              "/",
-              {
-                "Ref": "referencetotransformerrootstackS3DeploymentRootKeyA71EA735Ref"
-              },
-              "/resolvers/Query.syncVenues.res.vtl"
-            ]
-          ]
-        },
-        "SyncConfig": {
-          "ConflictDetection": "VERSION",
-          "ConflictHandler": "AUTOMERGE"
-        }
-      },
-      "DependsOn": [
-        "VenueDataSource"
-      ]
-    },
-    "SyncVenueResolver": {
-      "Type": "AWS::AppSync::Resolver",
-      "Properties": {
-        "ApiId": {
-          "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
-        },
-        "FieldName": "syncVenues",
-        "TypeName": "Query",
-        "Kind": "PIPELINE",
-        "PipelineConfig": {
-          "Functions": [
-            {
-              "Fn::GetAtt": [
-                "QuerysyncVenuespostAuth0FunctionQuerysyncVenuespostAuth0FunctionAppSyncFunction52DA7D59",
-                "FunctionId"
-              ]
-            },
-            {
-              "Fn::GetAtt": [
-                "QuerySyncVenuesDataResolverFnQuerySyncVenuesDataResolverFnAppSyncFunctionF86ACFDD",
-                "FunctionId"
-              ]
-            }
-          ]
-        },
-        "RequestMappingTemplate": {
-          "Fn::Join": [
-            "",
-            [
-              "$util.qr($ctx.stash.put(\"typeName\", \"Query\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"syncVenues\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"AMAZON_DYNAMODB\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
               {
                 "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
               },
@@ -830,6 +697,36 @@
                 "Ref": "referencetotransformerrootstackS3DeploymentRootKeyA71EA735Ref"
               },
               "/resolvers/Mutation.createVenue.init.1.req.vtl"
+            ]
+          ]
+        },
+        "ResponseMappingTemplate": "$util.toJson({})"
+      }
+    },
+    "MutationcreateVenueauth0FunctionMutationcreateVenueauth0FunctionAppSyncFunction7A3B3BF0": {
+      "Type": "AWS::AppSync::FunctionConfiguration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
+        },
+        "DataSourceName": {
+          "Ref": "referencetotransformerrootstackGraphQLAPINONEDS2BA9D1C8Name"
+        },
+        "FunctionVersion": "2018-05-29",
+        "Name": "MutationcreateVenueauth0Function",
+        "RequestMappingTemplateS3Location": {
+          "Fn::Join": [
+            "",
+            [
+              "s3://",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentBucket7592718ARef"
+              },
+              "/",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentRootKeyA71EA735Ref"
+              },
+              "/resolvers/Mutation.createVenue.auth.1.req.vtl"
             ]
           ]
         },
@@ -911,10 +808,6 @@
               "/resolvers/Mutation.createVenue.res.vtl"
             ]
           ]
-        },
-        "SyncConfig": {
-          "ConflictDetection": "VERSION",
-          "ConflictHandler": "AUTOMERGE"
         }
       },
       "DependsOn": [
@@ -935,6 +828,12 @@
             {
               "Fn::GetAtt": [
                 "MutationcreateVenueinit0FunctionMutationcreateVenueinit0FunctionAppSyncFunction51D454FE",
+                "FunctionId"
+              ]
+            },
+            {
+              "Fn::GetAtt": [
+                "MutationcreateVenueauth0FunctionMutationcreateVenueauth0FunctionAppSyncFunction7A3B3BF0",
                 "FunctionId"
               ]
             },
@@ -1000,6 +899,57 @@
         },
         "ResponseMappingTemplate": "$util.toJson({})"
       }
+    },
+    "MutationupdateVenueauth0FunctionMutationupdateVenueauth0FunctionAppSyncFunctionFF5E0424": {
+      "Type": "AWS::AppSync::FunctionConfiguration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
+        },
+        "DataSourceName": {
+          "Fn::GetAtt": [
+            "VenueDataSource",
+            "Name"
+          ]
+        },
+        "FunctionVersion": "2018-05-29",
+        "Name": "MutationupdateVenueauth0Function",
+        "RequestMappingTemplateS3Location": {
+          "Fn::Join": [
+            "",
+            [
+              "s3://",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentBucket7592718ARef"
+              },
+              "/",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentRootKeyA71EA735Ref"
+              },
+              "/resolvers/Mutation.updateVenue.auth.1.req.vtl"
+            ]
+          ]
+        },
+        "ResponseMappingTemplateS3Location": {
+          "Fn::Join": [
+            "",
+            [
+              "s3://",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentBucket7592718ARef"
+              },
+              "/",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentRootKeyA71EA735Ref"
+              },
+              "/resolvers/Mutation.updateVenue.auth.1.res.vtl"
+            ]
+          ]
+        }
+      },
+      "DependsOn": [
+        "VenueDataSource"
+      ]
     },
     "MutationupdateVenuepostAuth0FunctionMutationupdateVenuepostAuth0FunctionAppSyncFunctionA8EDB6FA": {
       "Type": "AWS::AppSync::FunctionConfiguration",
@@ -1076,10 +1026,6 @@
               "/resolvers/Mutation.updateVenue.res.vtl"
             ]
           ]
-        },
-        "SyncConfig": {
-          "ConflictDetection": "VERSION",
-          "ConflictHandler": "AUTOMERGE"
         }
       },
       "DependsOn": [
@@ -1100,6 +1046,12 @@
             {
               "Fn::GetAtt": [
                 "MutationupdateVenueinit0FunctionMutationupdateVenueinit0FunctionAppSyncFunction11434544",
+                "FunctionId"
+              ]
+            },
+            {
+              "Fn::GetAtt": [
+                "MutationupdateVenueauth0FunctionMutationupdateVenueauth0FunctionAppSyncFunctionFF5E0424",
                 "FunctionId"
               ]
             },
@@ -1135,6 +1087,57 @@
         },
         "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)"
       }
+    },
+    "MutationdeleteVenueauth0FunctionMutationdeleteVenueauth0FunctionAppSyncFunctionB2A6B1E4": {
+      "Type": "AWS::AppSync::FunctionConfiguration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
+        },
+        "DataSourceName": {
+          "Fn::GetAtt": [
+            "VenueDataSource",
+            "Name"
+          ]
+        },
+        "FunctionVersion": "2018-05-29",
+        "Name": "MutationdeleteVenueauth0Function",
+        "RequestMappingTemplateS3Location": {
+          "Fn::Join": [
+            "",
+            [
+              "s3://",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentBucket7592718ARef"
+              },
+              "/",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentRootKeyA71EA735Ref"
+              },
+              "/resolvers/Mutation.deleteVenue.auth.1.req.vtl"
+            ]
+          ]
+        },
+        "ResponseMappingTemplateS3Location": {
+          "Fn::Join": [
+            "",
+            [
+              "s3://",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentBucket7592718ARef"
+              },
+              "/",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentRootKeyA71EA735Ref"
+              },
+              "/resolvers/Mutation.deleteVenue.auth.1.res.vtl"
+            ]
+          ]
+        }
+      },
+      "DependsOn": [
+        "VenueDataSource"
+      ]
     },
     "MutationdeleteVenuepostAuth0FunctionMutationdeleteVenuepostAuth0FunctionAppSyncFunction0361FF29": {
       "Type": "AWS::AppSync::FunctionConfiguration",
@@ -1211,10 +1214,6 @@
               "/resolvers/Mutation.deleteVenue.res.vtl"
             ]
           ]
-        },
-        "SyncConfig": {
-          "ConflictDetection": "VERSION",
-          "ConflictHandler": "AUTOMERGE"
         }
       },
       "DependsOn": [
@@ -1232,6 +1231,12 @@
         "Kind": "PIPELINE",
         "PipelineConfig": {
           "Functions": [
+            {
+              "Fn::GetAtt": [
+                "MutationdeleteVenueauth0FunctionMutationdeleteVenueauth0FunctionAppSyncFunctionB2A6B1E4",
+                "FunctionId"
+              ]
+            },
             {
               "Fn::GetAtt": [
                 "MutationdeleteVenuepostAuth0FunctionMutationdeleteVenuepostAuth0FunctionAppSyncFunction0361FF29",
@@ -1263,6 +1268,36 @@
           ]
         },
         "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)"
+      }
+    },
+    "SubscriptiononCreateVenueauth0FunctionSubscriptiononCreateVenueauth0FunctionAppSyncFunctionBAAA14F5": {
+      "Type": "AWS::AppSync::FunctionConfiguration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
+        },
+        "DataSourceName": {
+          "Ref": "referencetotransformerrootstackGraphQLAPINONEDS2BA9D1C8Name"
+        },
+        "FunctionVersion": "2018-05-29",
+        "Name": "SubscriptiononCreateVenueauth0Function",
+        "RequestMappingTemplateS3Location": {
+          "Fn::Join": [
+            "",
+            [
+              "s3://",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentBucket7592718ARef"
+              },
+              "/",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentRootKeyA71EA735Ref"
+              },
+              "/resolvers/Subscription.onCreateVenue.auth.1.req.vtl"
+            ]
+          ]
+        },
+        "ResponseMappingTemplate": "$util.toJson({})"
       }
     },
     "SubscriptiononCreateVenuepostAuth0FunctionSubscriptiononCreateVenuepostAuth0FunctionAppSyncFunctionEFF84EC0": {
@@ -1353,6 +1388,12 @@
           "Functions": [
             {
               "Fn::GetAtt": [
+                "SubscriptiononCreateVenueauth0FunctionSubscriptiononCreateVenueauth0FunctionAppSyncFunctionBAAA14F5",
+                "FunctionId"
+              ]
+            },
+            {
+              "Fn::GetAtt": [
                 "SubscriptiononCreateVenuepostAuth0FunctionSubscriptiononCreateVenuepostAuth0FunctionAppSyncFunctionEFF84EC0",
                 "FunctionId"
               ]
@@ -1378,6 +1419,36 @@
           ]
         },
         "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)"
+      }
+    },
+    "SubscriptiononUpdateVenueauth0FunctionSubscriptiononUpdateVenueauth0FunctionAppSyncFunctionFE2692DC": {
+      "Type": "AWS::AppSync::FunctionConfiguration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
+        },
+        "DataSourceName": {
+          "Ref": "referencetotransformerrootstackGraphQLAPINONEDS2BA9D1C8Name"
+        },
+        "FunctionVersion": "2018-05-29",
+        "Name": "SubscriptiononUpdateVenueauth0Function",
+        "RequestMappingTemplateS3Location": {
+          "Fn::Join": [
+            "",
+            [
+              "s3://",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentBucket7592718ARef"
+              },
+              "/",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentRootKeyA71EA735Ref"
+              },
+              "/resolvers/Subscription.onUpdateVenue.auth.1.req.vtl"
+            ]
+          ]
+        },
+        "ResponseMappingTemplate": "$util.toJson({})"
       }
     },
     "SubscriptiononUpdateVenuepostAuth0FunctionSubscriptiononUpdateVenuepostAuth0FunctionAppSyncFunction6CB50A10": {
@@ -1468,6 +1539,12 @@
           "Functions": [
             {
               "Fn::GetAtt": [
+                "SubscriptiononUpdateVenueauth0FunctionSubscriptiononUpdateVenueauth0FunctionAppSyncFunctionFE2692DC",
+                "FunctionId"
+              ]
+            },
+            {
+              "Fn::GetAtt": [
                 "SubscriptiononUpdateVenuepostAuth0FunctionSubscriptiononUpdateVenuepostAuth0FunctionAppSyncFunction6CB50A10",
                 "FunctionId"
               ]
@@ -1493,6 +1570,36 @@
           ]
         },
         "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)"
+      }
+    },
+    "SubscriptiononDeleteVenueauth0FunctionSubscriptiononDeleteVenueauth0FunctionAppSyncFunction7343C71C": {
+      "Type": "AWS::AppSync::FunctionConfiguration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
+        },
+        "DataSourceName": {
+          "Ref": "referencetotransformerrootstackGraphQLAPINONEDS2BA9D1C8Name"
+        },
+        "FunctionVersion": "2018-05-29",
+        "Name": "SubscriptiononDeleteVenueauth0Function",
+        "RequestMappingTemplateS3Location": {
+          "Fn::Join": [
+            "",
+            [
+              "s3://",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentBucket7592718ARef"
+              },
+              "/",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentRootKeyA71EA735Ref"
+              },
+              "/resolvers/Subscription.onDeleteVenue.auth.1.req.vtl"
+            ]
+          ]
+        },
+        "ResponseMappingTemplate": "$util.toJson({})"
       }
     },
     "SubscriptiononDeleteVenuepostAuth0FunctionSubscriptiononDeleteVenuepostAuth0FunctionAppSyncFunction91114653": {
@@ -1581,6 +1688,12 @@
         "Kind": "PIPELINE",
         "PipelineConfig": {
           "Functions": [
+            {
+              "Fn::GetAtt": [
+                "SubscriptiononDeleteVenueauth0FunctionSubscriptiononDeleteVenueauth0FunctionAppSyncFunction7343C71C",
+                "FunctionId"
+              ]
+            },
             {
               "Fn::GetAtt": [
                 "SubscriptiononDeleteVenuepostAuth0FunctionSubscriptiononDeleteVenuepostAuth0FunctionAppSyncFunction91114653",

@@ -5,7 +5,8 @@
       :title="appName"
       :search-placeholder="searchPlaceholder"
       cartIcon="list"
-      active-icon="account">
+      active-icon="cart"
+      @click:cart="showVenueList">
       <template #navigation>
         <SfHeaderNavigationItem
           v-for="(category, key) in rootCategories"
@@ -34,6 +35,11 @@ export default {
       rootCategories: ["Bookings", "Messages", "Schedule", "Venues"],
       searchPlaceholder: "Search for venues"
     };
+  },
+  methods: {
+    showVenueList() {
+      this.$router.push({ path: `/venues/yours` })
+    }
   }
 };
 </script>

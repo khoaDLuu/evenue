@@ -2,7 +2,7 @@
   "version": "1",
   "cognitoConfig": {
     "identityPoolName": "evenuefs43bab20a_identitypool_43bab20a",
-    "allowUnauthenticatedIdentities": false,
+    "allowUnauthenticatedIdentities": true,
     "resourceNameTruncated": "evenue43bab20a",
     "userPoolName": "evenuefs43bab20a_userpool_43bab20a",
     "autoVerifiedAttributes": [
@@ -51,6 +51,34 @@
     "serviceName": "Cognito",
     "verificationBucketName": "evenuefs43bab20averificationbucket",
     "usernameCaseSensitive": false,
-    "useEnabledMfas": true
+    "useEnabledMfas": true,
+    "authRoleArn": {
+      "Fn::GetAtt": [
+        "AuthRole",
+        "Arn"
+      ]
+    },
+    "unauthRoleArn": {
+      "Fn::GetAtt": [
+        "UnauthRole",
+        "Arn"
+      ]
+    },
+    "breakCircularDependency": true,
+    "dependsOn": [
+      {
+        "category": "function",
+        "resourceName": "evenuefs43bab20aCustomMessage",
+        "triggerProvider": "Cognito",
+        "attributes": [
+          "Arn",
+          "Name"
+        ]
+      }
+    ],
+    "permissions": [],
+    "authTriggerConnections": [
+      "{\"triggerType\":\"CustomMessage\",\"lambdaFunctionName\":\"evenuefs43bab20aCustomMessage\"}"
+    ]
   }
 }

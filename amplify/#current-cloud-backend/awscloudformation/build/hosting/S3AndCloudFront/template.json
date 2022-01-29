@@ -46,7 +46,7 @@
             }
           ]
         },
-        "AccessControl": "Private",
+        "AccessControl": "PublicRead",
         "WebsiteConfiguration": {
           "IndexDocument": "index.html",
           "ErrorDocument": "index.html"
@@ -56,10 +56,22 @@
             {
               "AllowedHeaders": [
                 "Authorization",
-                "Content-Length"
+                "Content-Length",
+                "Content-Type",
+                "X-Amz-Date",
+                "X-Api-Key",
+                "X-Amz-Security-Token",
+                "X-Amz-User-Agent",
+                "Access-Control-Allow-Origin",
+                "Access-Control-Request-Method",
+                "Origin"
               ],
               "AllowedMethods": [
-                "GET"
+                "DELETE",
+                "GET",
+                "HEAD",
+                "POST",
+                "PUT"
               ],
               "AllowedOrigins": [
                 "*"

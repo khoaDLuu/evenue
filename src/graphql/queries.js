@@ -12,21 +12,16 @@ export const getUser = /* GraphQL */ `
           id
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
           userReviewsId
           venueReviewsId
+          owner
         }
         nextToken
-        startedAt
       }
       id
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
+      owner
     }
   }
 `;
@@ -41,58 +36,36 @@ export const listUsers = /* GraphQL */ `
         name
         reviews {
           nextToken
-          startedAt
         }
         id
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
+        owner
       }
       nextToken
-      startedAt
-    }
-  }
-`;
-export const syncUsers = /* GraphQL */ `
-  query SyncUsers(
-    $filter: ModelUserFilterInput
-    $limit: Int
-    $nextToken: String
-    $lastSync: AWSTimestamp
-  ) {
-    syncUsers(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-      lastSync: $lastSync
-    ) {
-      items {
-        name
-        reviews {
-          nextToken
-          startedAt
-        }
-        id
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      nextToken
-      startedAt
     }
   }
 `;
 export const getVenue = /* GraphQL */ `
   query GetVenue($id: ID!) {
     getVenue(id: $id) {
+      id
       name
       headline
       description
-      photos
+      photos {
+        name
+        fullsize {
+          region
+          bucket
+          key
+        }
+        thumbnails {
+          region
+          bucket
+          key
+        }
+      }
       address
       city
       pricing {
@@ -131,21 +104,15 @@ export const getVenue = /* GraphQL */ `
           id
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
           userReviewsId
           venueReviewsId
+          owner
         }
         nextToken
-        startedAt
       }
-      id
+      owner
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
     }
   }
 `;
@@ -157,10 +124,13 @@ export const listVenues = /* GraphQL */ `
   ) {
     listVenues(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
+        id
         name
         headline
         description
-        photos
+        photos {
+          name
+        }
         address
         city
         pricing {
@@ -189,77 +159,12 @@ export const listVenues = /* GraphQL */ `
         }
         reviews {
           nextToken
-          startedAt
         }
-        id
+        owner
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       nextToken
-      startedAt
-    }
-  }
-`;
-export const syncVenues = /* GraphQL */ `
-  query SyncVenues(
-    $filter: ModelVenueFilterInput
-    $limit: Int
-    $nextToken: String
-    $lastSync: AWSTimestamp
-  ) {
-    syncVenues(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-      lastSync: $lastSync
-    ) {
-      items {
-        name
-        headline
-        description
-        photos
-        address
-        city
-        pricing {
-          currency
-          perDay
-        }
-        type {
-          name
-        }
-        eventTypes
-        published
-        extras {
-          name
-          type
-          price
-        }
-        capacity {
-          unit
-          floorSize
-          recommendedGuestCount
-        }
-        operatingHours {
-          daysOfWeek
-          startHour
-          endHour
-        }
-        reviews {
-          nextToken
-          startedAt
-        }
-        id
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      nextToken
-      startedAt
     }
   }
 `;
@@ -267,10 +172,13 @@ export const getReview = /* GraphQL */ `
   query GetReview($id: ID!) {
     getReview(id: $id) {
       venue {
+        id
         name
         headline
         description
-        photos
+        photos {
+          name
+        }
         address
         city
         pricing {
@@ -299,38 +207,29 @@ export const getReview = /* GraphQL */ `
         }
         reviews {
           nextToken
-          startedAt
         }
-        id
+        owner
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       user {
         name
         reviews {
           nextToken
-          startedAt
         }
         id
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
+        owner
       }
       rating
       review
       id
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
       userReviewsId
       venueReviewsId
+      owner
     }
   }
 `;
@@ -343,98 +242,35 @@ export const listReviews = /* GraphQL */ `
     listReviews(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         venue {
+          id
           name
           headline
           description
-          photos
           address
           city
           eventTypes
           published
-          id
+          owner
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
         }
         user {
           name
           id
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
+          owner
         }
         rating
         review
         id
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
         userReviewsId
         venueReviewsId
+        owner
       }
       nextToken
-      startedAt
-    }
-  }
-`;
-export const syncReviews = /* GraphQL */ `
-  query SyncReviews(
-    $filter: ModelReviewFilterInput
-    $limit: Int
-    $nextToken: String
-    $lastSync: AWSTimestamp
-  ) {
-    syncReviews(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-      lastSync: $lastSync
-    ) {
-      items {
-        venue {
-          name
-          headline
-          description
-          photos
-          address
-          city
-          eventTypes
-          published
-          id
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        user {
-          name
-          id
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        rating
-        review
-        id
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        userReviewsId
-        venueReviewsId
-      }
-      nextToken
-      startedAt
     }
   }
 `;

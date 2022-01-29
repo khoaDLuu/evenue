@@ -1,7 +1,6 @@
 <template>
   <amplify-authenticator :authConfig="configurationOptions">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-
+    <p>Hello World!</p>
     <amplify-sign-out></amplify-sign-out>
   </amplify-authenticator>
 </template>

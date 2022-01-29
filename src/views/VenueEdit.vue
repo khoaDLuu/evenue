@@ -1,16 +1,18 @@
 <template>
-  <div class="container mx-auto mt-4">
-    <div class="flex w-11/12 md:w-full">
-      <div class="w-3/10 pr-4">
+  <div class="container-lg md:container mx-auto mt-4">
+    <div class="flex w-full">
+      <div class="hidden md:block md:w-3/10 md:px-4">
+        <!-- Component: PageHeading START -->
         <div class="relative">
           <p class="text-3xl border-b-2 pb-4 pt-2.5 mb-6">Edit Venue</p>
           <p class="my-6 text-gray-900">
-            A 'venue' is a building (or some other unified location) that has more than one space available to book.
+            A <strong>venue</strong> is a building (or some other unified location) that has more than one space available to book.
           </p>
           <div class="absolute top-1.5 right-0">
             <building classes="text-green-400" />
           </div>
         </div>
+        <!-- Component: PageHeading END -->
         <div v-for="guideStep in guideSteps" :key="guideStep.number" class="relative">
           <div class="text-xl text-gray-600 border border-current rounded-full mr-2 inline-block align-middle">
             <div class="h-0 py-50p">
@@ -22,38 +24,48 @@
         </div>
       </div>
 
-      <div class="w-7/10 border-l border-gray-300 pl-8">
+      <div class="w-full md:w-7/10 md:border-l md:border-gray-300 px-4 md:pl-8 md:pr-4">
         <div class="my-8">
           <SfBreadcrumbs :breadcrumbs="breadcrumbs" />
+        </div>
+        <!-- Component: PageHeading -->
+        <div class="relative md:hidden">
+          <p class="text-3xl border-b-2 pb-4 pt-2.5 mb-6">Edit Venue</p>
+          <p class="my-6 text-gray-900">
+            A <strong>venue</strong> is a building (or some other unified location) that has more than one space available to book.
+          </p>
+          <div class="absolute top-1.5 right-0">
+            <building classes="text-green-400" />
+          </div>
         </div>
         <div id="form-template">
           <form class="form">
             <p class="text-xl text-gray-800 font-semibold mt-4 w-full">Content</p>
             <SfInput
-              v-model="firstName"
+              v-model="name"
               label="Venue name"
-              name="firstName"
+              name="name"
               class="form__element form__element--half"
               required
-              :valid="firstNameBlur || validFirstName(firstName)"
+              :valid="nameBlur || validName(name)"
               error-message="Please type your name"
-              @blur="firstNameBlur = false"
+              @blur="nameBlur = false"
             />
             <SfInput
-              v-model="lastName"
+              v-model="headline"
               label="Venue headline"
-              name="lastName"
+              name="headline"
               class="form__element form__element--half form__element--half-even"
               required
-              :valid="lastNameBlur || validLastName(lastName)"
+              :valid="headlineBlur || validHeadline(headline)"
               error-message="Please type your last name. Your name should have at least one character."
-              @blur="lastNameBlur = false"
+              @blur="headlineBlur = false"
             />
             <SfTextarea
-              v-model="message"
-              class="form__element max-w-full"
+              v-model="description"
+              class="form__element max-w-full mt-4"
               label="Description"
-              name="message"
+              name="description"
               cols="120"
               rows="6"
               maxlength="400"
@@ -62,11 +74,56 @@
               :readonly="true"
               placeholder="Type in the venue's description"
               required
-              :valid="messageBlur || validMessage(message)"
+              :valid="descriptionBlur || validDescription(description)"
               error-message="Please type minimum 10 characters and maximum 400."
-              @blur="messageBlur = false"
+              @blur="descriptionBlur = false"
             >
             </SfTextarea>
+            <p class="text-xl text-gray-800 font-semibold mt-4 w-full">Photos</p>
+            <div class="w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 mb-4">
+              <div class="flex items-center justify-center md:h-48 2xl:h-64 bg-grey-lighter">
+                <form class="w-full h-full" enctype="multipart/form-data" novalidate>
+                  <label
+                    class="
+                      w-full h-full flex flex-col items-center justify-center
+                      px-4 py-6 bg-gray-100 text-gray-500 tracking-wide
+                      text-gray-500 cursor-pointer
+                      hover:text-gray-500 hover:text-green-600
+                    "
+                  >
+                    <svg
+                      class="w-8 h-8"
+                      fill="currentColor"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        d="M16.88 9.1A4 4 0 0 1 16 17H5a5 5 0 0 1-1-9.9V7a3 3 0 0 1 4.52-2.59A4.98 4.98 0 0 1 17 8c0 .38-.04.74-.12 1.1zM11 11h3l-4-4-4 4h3v3h2v-3z"
+                      />
+                    </svg>
+                    <span class="mt-2 text-base leading-normal">
+                      {{ uploadDone ? "Add venue photo" : "Uploading photo..." }}
+                    </span>
+                    <input @change="onFileChange" accept="image/*" type="file" class="hidden" />
+                  </label>
+                </form>
+              </div>
+              <div
+                v-for="photo in photos"
+                :key="photo.fullsize.key"
+                class="relative flex items-center justify-center overflow-hidden md:h-48 2xl:h-64 bg:black"
+              >
+                <div class="object-cover">
+                  <amplify-s3-image level="public" :img-key="photo.fullsize.key">
+                  </amplify-s3-image>
+                </div>
+                <div
+                  class="absolute top-2 right-2 sf-address__icon-container hover:bg-green-400"
+                  @click.prevent="_removePhoto(photo.fullsize.key)">
+                  <SfIcon icon="cross" class="sf-address__icon" />
+                </div>
+              </div>
+            </div>
             <p class="text-xl text-gray-800 font-semibold mt-4 w-full">Address</p>
             <SfInput
               v-model="streetName"
@@ -93,15 +150,24 @@
               v-model="city"
               label="City"
               name="city"
-              class="form__element"
+              class="form__element form__element--half"
               required
               :valid="cityBlur || validCity(city)"
               error-message="Please type your city."
               @blur="cityBlur = false"
             />
             <SfInput
+              v-model="state"
+              label="State/Province"
+              name="state"
+              class="form__element form__element--half form__element--half-even"
+              :valid="stateBlur || validState(state)"
+              error-message="Please type your state."
+              @blur="stateBlur = false"
+            />
+            <SfInput
               v-model="zipCode"
-              label="Zip code"
+              label="Zip code / postal code"
               name="zipCode"
               type="number"
               class="form__element form__element--half"
@@ -133,50 +199,132 @@
                 {{ countryOption }}
               </SfComponentSelectOption>
             </SfComponentSelect>
-            <p class="text-xl text-gray-800 font-semibold mt-4 w-full">Contact</p>
-            <!-- TODO: Should have default values as user's personal contact info -->
+            <p class="text-xl text-gray-800 font-semibold mt-4 w-full">Pricing</p>
             <SfInput
-              v-model="phoneNumber"
-              label="Phone number"
-              name="phone"
+              v-model="prices.perHour"
+              label="Venue price per hour"
+              name="prices.perHour"
               type="number"
               class="form__element form__element--half"
               required
-              :valid="phoneNumberBlur || validPhoneNumber(phoneNumber)"
-              error-message="Please type your phone number."
-              @blur="phoneNumberBlur = false"
+              :valid="priceHBlur || validPrice(prices.perHour)"
+              error-message="Please enter the venue's price per hour"
+              @blur="priceHBlur = false"
             />
             <SfInput
-              v-model="email"
-              label="Email"
-              name="email"
+              v-model="prices.perDay"
+              label="Venue price per day"
+              name="prices.perDay"
+              type="number"
               class="form__element form__element--half form__element--half-even"
+              :valid="true"
+              @blur="priceDBlur = false"
+            />
+            <p class="text-xl text-gray-800 font-semibold mt-4 w-full">Venue type</p>
+            <SfComponentSelect
+              v-model="venueType"
+              label="Venue type"
+              class="
+                form__element
+                form__select
+                sf-component-select--underlined
+                pb-0
+              "
               required
-              :valid="emailBlur || validEmail(email)"
-              error-message="Please enter a valid email address."
-              @blur="emailBlur = false"
-            />
-            <p class="text-xl text-gray-800 font-semibold mt-4 w-full">Pricing</p>
-            <SfHeading title="Prices" :level="5" />
-            <SfRange
-              v-model="range"
-              class="form__element--range"
-              :config="rangeConfig"
-            />
-            <div class="form__action mt-4">
-              <SfButton type="submit" @click.prevent="publish">Publish</SfButton>
-              <SfButton
-                class="
-                  sf-button color-secondary
-                  form__action-button form__action-button--secondary
-                " type="submit" @click.prevent="save">Save and go to list</SfButton>
-              <SfButton
-                class="
-                  sf-button color-light
-                  form__action-button form__action-button--secondary
-                "
-                @click="reset">Reset</SfButton
+              :valid="venueTypeBlur || validVenueType(venueType)"
+              error-message="Please choose the venue type"
+              @blur="venueTypeBlur = false"
+            >
+              <SfComponentSelectOption
+                v-for="venueTypeOption in venueTypeOptions"
+                :key="venueTypeOption"
+                :value="venueTypeOption"
               >
+                {{ venueTypeOption }}
+              </SfComponentSelectOption>
+            </SfComponentSelect>
+            <p class="text-xl text-gray-800 font-semibold mt-4 w-full">Suitable event types</p>
+            <div class="w-full flex flex-row flex-wrap mb-4">
+              <SfCheckbox
+                name="eventCheckbox"
+                v-for="eventTypeOption in eventTypeOptions"
+                :key="eventTypeOption"
+                :label="eventTypeOption"
+                class="mr-4"
+                hintMessage=""
+                :required="false"
+                infoMessage=""
+                errorMessage=""
+                valid
+                :disabled="false"
+                :selected="eventSet.has(eventTypeOption)"
+                @change="eventSelected(eventTypeOption)"
+              />
+            </div>
+            <p class="text-xl text-gray-800 font-semibold mt-4 w-full">Extras</p>
+            <div class="w-full flex flex-row flex-wrap">
+              <p class="pr-4">Type</p>
+              <SfRadio
+                v-for="extraType in extraTypes"
+                :key="extraType"
+                v-model="extraInput.type"
+                :label="extraType"
+                :value="extraType"
+                name="extraType"
+                class="form__radio"
+              />
+            </div>
+            <SfInput
+              v-model="extraInput.name"
+              label="Extra name"
+              name="extraInputName"
+              type="text"
+              class="form__element form__element--half"
+              :valid="extraInput.nameBlur || validName(extraInput.name)"
+              @blur="extraInput.nameBlur = false"
+              error-message="Please enter a valid extra item name"
+              @keydown.enter.prevent="addExtra(extraInput.id, $event)"
+            />
+            <SfInput
+              v-model="extraInput.price"
+              label="Extra price"
+              name="extraInputPrice"
+              type="number"
+              class="form__element form__element--half form__element--half-even"
+              :valid="extraInput.priceBlur || validPrice(extraInput.price)"
+              error-message="Please enter a valid extra item price"
+              @blur="extraInput.priceBlur = false"
+              @keydown.enter.prevent="addExtra(extraInput.id, $event)"
+            />
+            <SfAddressPicker
+              :selected="extraInput.id"
+              class="
+                w-full grid gap-4 grid-cols-1
+                md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+              @change="editExtra">
+              <SfAddress
+                v-for="extra in extras"
+                :key="extra.id"
+                :name="extra.id"
+                class="w-full">
+                <span class="font-medium text-sfui-primary-green">{{ extra.name }}</span>
+                <div class="sf-property--without-suffix sf-property">
+                  <span class="sf-property__name">{{ extra.type }}</span>
+                </div>
+                <span class="sf-price__regular">${{ extra.price }}</span>
+                <template #icon>
+                  <div
+                    class="sf-address__icon-container hover:bg-green-400"
+                    @click.prevent="removeExtra(extra.id)">
+                    <SfIcon icon="cross" class="sf-address__icon" />
+                  </div>
+                </template>
+              </SfAddress>
+            </SfAddressPicker>
+            <div class="form__action mt-12">
+              <SfButton class="mr-4 mb-4" type="submit" @click.prevent="publishToggle">{{ publishLabel }}</SfButton>
+              <SfButton class="sf-button mr-4 mb-4 color-secondary" type="submit" @click.prevent="save">Save</SfButton>
+              <SfButton class="sf-button mr-4 mb-4 color-light" @click="reset">Reset</SfButton>
             </div>
           </form>
         </div>
@@ -192,10 +340,17 @@ import {
   SfComponentSelect,
   SfButton,
   SfTextarea,
-  SfHeading,
-  SfRange,
+  SfCheckbox,
+  SfAddressPicker,
+  SfRadio,
+  SfIcon,
 } from "@storefront-ui/vue";
 import Building from '../components/icons/Building.vue'
+import { API, Storage } from 'aws-amplify'
+import { getVenue } from '../graphql/queries'
+import { createVenue, updateVenue } from '../graphql/mutations'
+import { v4 as uuidv4 } from "uuid"
+import config from "../aws-exports";
 
 export default {
   name: "VenueEdit",
@@ -206,13 +361,15 @@ export default {
     SfComponentSelect,
     SfButton,
     SfTextarea,
-    SfHeading,
-    SfRange
+    SfCheckbox,
+    SfAddressPicker,
+    SfRadio,
+    SfIcon,
   },
   props: {
-    venue: {
-      default: () => ({}),
-      type: Object
+    venueId: {
+      default: "",
+      type: String,
     }
   },
   data() {
@@ -227,7 +384,7 @@ export default {
         {
           number: 2,
           title: "Provide required information",
-          comment: "Required fields are marked with a red asterisk. Please remember to click save button at the bottom of the page.",
+          comment: "Required fields are marked with an asterisk (*). Please remember to click save button at the bottom of the page.",
           done: false
         },
         {
@@ -243,16 +400,20 @@ export default {
           link: '/venues/yours'
         },
         {
-          text: '#:ID - Edit',
-          link: '/venues/yours/:ID'
+          text: this.venueId ? `${this.venueId} - Edit` : "New",
+          link: `/venues/yours/${this.venueId}`
         }
       ],
       valid: false,
       submitted: false,
-      firstName: "",
-      firstNameBlur: true,
-      lastName: "",
-      lastNameBlur: true,
+      name: "",
+      nameBlur: true,
+      headline: "",
+      descriptionBlur: true,
+      description: "",
+      photosBlur: true,
+      photos: [],
+      headlineBlur: true,
       streetName: "",
       streetNameBlur: true,
       apartment: "",
@@ -265,10 +426,6 @@ export default {
       zipCodeBlur: true,
       country: "",
       countryBlur: true,
-      phoneNumber: "",
-      phoneNumberBlur: true,
-      email: "",
-      emailBlur: true,
       countries: [
         "Austria",
         "Azerbaijan",
@@ -318,72 +475,179 @@ export default {
         "United Kingdom",
         "Vatican City",
       ],
-      message: "",
-      messageBlur: true,
-      range: [0, 1],
-      rangeConfig: {
-        start: [10, 500],
-        range: {
-          min: 10,
-          max: 1000,
-        },
-        step: 5,
-        connect: true,
-        direction: "ltr",
-        orientation: "horizontal",
-        behaviour: "tap-drag",
-        tooltips: true,
-        keyboardSupport: true,
-        format: {
-          to: function (range) {
-            return new Intl.NumberFormat("de-DE", {
-              style: "currency",
-              currency: "EUR",
-            }).format(range);
-          },
-          from: function (range) {
-            const parsedValue = new Intl.NumberFormat("de-DE", {
-              style: "currency",
-              currency: "EUR",
-            }).formatToParts(range);
-            return parsedValue[0].value;
-          },
-        },
-      }
+      eventTypeOptions: [
+        "Meeting",
+        "Workshop",
+        "Conference",
+        "Party",
+      ],
+      venueTypeOptions: [
+        "Bar",
+        "Hotel",
+        "Office",
+        "Coffee shop",
+      ],
+      prices: {
+        perHour: null,
+        perDay: null,
+      },
+      priceHBlur: true,
+      priceDBlur: true,
+      venueType: "",
+      venueTypeBlur: true,
+      eventSet: new Set(),
+      extras: [],
+      extraInput: {
+        id: "0",
+        name: "",
+        type: "",
+        price: "",
+        nameBlur: true,
+        priceBlur: true,
+      },
+      defaultExtraInput: {
+        id: "0",
+        name: "",
+        type: "",
+        price: "",
+        nameBlur: true,
+        priceBlur: true,
+      },
+      extraTypes: ["Catering", "Equipment"],
+      published: false,
+      uploadDone: true,
     }
+  },
+  computed: {
+    address() {
+      return `${this.apartment},\n${this.streetName},\n${this.city},\n${this.state || ''},\n${this.zipCode},\n${this.country}`
+    },
+    pricing() {
+      let venuePricing = {
+        currency: "USD",
+        perHour: [
+          {
+            startHour: "00:00:00",
+            endHour: "23:59:59",
+            price: this.prices.perHour,
+          }
+        ],
+      }
+      if (this.prices.perDay) {
+        venuePricing.perDay = this.prices.perDay
+      }
+      return venuePricing
+    },
+    type() {
+      return {
+        name: this.venueType,
+      }
+    },
+    publishLabel() {
+      return this.published === false ? "publish" : "unpublish"
+    },
+    eventTypes() {
+      return [...this.eventSet]
+    },
+  },
+  created() {
+    if (this.venueId) {
+      API.graphql({
+        query: getVenue,
+        variables: {id: this.venueId},
+      })
+      .then(result => {
+        console.info(`Venue retrieved`)
+        console.info(result)
+        const { data: { getVenue: venue } } = result
+
+        const [apt, str, cty, sta, zip, ctr] = venue.address.split(',\n').map(e => e.trim())
+        this.apartment = apt
+        this.streetName = str
+        this.city = cty
+        // const [sta, zip, ctr] = gen.length == 2 ? ["", ...gen] : gen
+        this.state = sta
+        this.zipCode = zip
+        this.country = ctr
+
+        this.name = venue.name
+        this.headline = venue.headline
+        this.description = venue.description
+        this.prices = {
+          perHour: venue.pricing.perHour[0].price,
+          perDay: venue.pricing.perDay
+        }
+        this.photos = venue.photos
+        this.venueType = venue.type.name
+        this.eventSet = new Set(venue.eventTypes)
+        this.extras = venue.extras.map(
+          (extra, i) => ({...this.defaultExtraInput, id: String(i), ...extra})
+        )
+        this.extraInput = {...this.defaultExtraInput}
+        this.published = venue.published
+      })
+      .catch(error => {
+        console.error("An unexpected error occurred")
+        console.error(error)
+      })
+    }
+
+    // let vm = this
+    // Hub.listen("storage", ({payload}) => {
+    //   if (
+    //     payload.event === "upload"
+    //     && payload.data.method === "put"
+    //     && payload.data.result === "success"
+    //   ) {
+    //     const photoKey = payload.message
+    //     console.log(`Upload success for ${photoKey}`)
+    //     vm.photos.push({
+    //       name: vm.photos.length ? photoKey : `featured_${photoKey}`,
+    //       fullsize: {
+    //         region: "us-east-1",
+    //         bucket: "evenuestaticfiles230706-dev",
+    //         key: photoKey,
+    //       }
+    //     })
+    //   }
+    // });
   },
   methods: {
     validate() {
-      this.firstNameBlur = false;
-      this.lastNameBlur = false;
+      this.nameBlur = false;
+      this.headlineBlur = false;
       this.streetNameBlur = false;
       this.apartmentBlur = false;
       this.cityBlur = false;
       this.zipCodeBlur = false;
       this.countryBlur = false;
-      this.phoneNumberBlur = false;
-      this.emailBlur = false;
-      this.messageBlur = false;
+      this.descriptionBlur = false;
+      this.priceHBlur = false;
+      this.priceDBlur = false;
+      this.venueTypeBlur = false;
+      this.extraInput.nameBlur = false;
+      this.extraInput.priceBlur = false;
       if (
-        this.validEmail(this.email) &&
-        this.validPhoneNumber(this.phoneNumber) &&
-        this.validFirstName(this.firstName) &&
-        this.validLastName(this.lastName) &&
+        this.validName(this.name) &&
+        this.validHeadline(this.headline) &&
         this.validStreetName(this.streetName) &&
         this.validApartment(this.apartment) &&
         this.validCity(this.city) &&
         this.validZipCode(this.zipCode) &&
         this.validCountry(this.country) &&
-        this.validMessage(this.message)
+        this.validState(this.country) &&
+        this.validDescription(this.description) &&
+        this.validVenueType(this.venueType) &&
+        this.validPrice(this.prices.perHour)
       ) {
         this.valid = true;
       }
     },
-    validFirstName(firstName) {
-      return firstName.length > 2;
+    validName(name) {
+      return name.length > 2;
     },
-    validLastName(lastName) {
-      return lastName.length > 2;
+    validHeadline(headline) {
+      return headline.length > 2;
     },
     validStreetName(streetName) {
       return streetName.length > 2;
@@ -395,6 +659,9 @@ export default {
     validCity(city) {
       return !!city && city.length > 2;
     },
+    validState(state) {
+      return !!state && state.length >= 2;
+    },
     validZipCode(zipCode) {
       const regex = /^[0-9]/;
       return regex.test(zipCode);
@@ -402,41 +669,199 @@ export default {
     validCountry(country) {
       return !!country;
     },
-    validPhoneNumber(phone) {
-      const regex = /^[0-9]{9}$/;
-      return regex.test(phone);
+    validDescription(description) {
+      return !!description && description.length > 10 && description.length <= 400;
     },
-    validEmail(email) {
-      const regex = /(.+)@(.+){2,}\.(.+){2,}/;
-      return regex.test(email.toLowerCase());
+    validPrice(price) {
+      return price > 0
     },
-    validMessage(message) {
-      return !!message && message.length > 10 && message.length <= 400;
+    validVenueType(venueType) {
+      return !!venueType
     },
-    save() {
+    validExtraInput(extraInput) {
+      return (
+        this.validName(extraInput.name)
+        && this.validPrice(extraInput.price)
+        && extraInput.type !== ""
+      )
+    },
+    async save() {
       this.validate();
       if (this.valid) {
-        this.submitted = true;
+        // this.submitted = true;
+        const venueInputData = {
+          name: this.name,
+          headline: this.headline,
+          description: this.description,
+          photos: this.photos,
+          address: this.address,
+          city: this.city,
+          pricing: this.pricing,
+          type: this.type,
+          eventTypes: this.eventTypes,
+          published: this.published,
+          extras: this.extras.map(ex => ({
+            name: ex.name,
+            type: ex.type,
+            price: ex.price,
+          })),
+        };
+
+        let query = createVenue
+        let inputData = venueInputData
+        if (this.venueId) {
+          query = updateVenue
+          inputData = {id: this.venueId, ...venueInputData}
+        }
+        API.graphql({
+          query: query,
+          variables: {input: inputData},
+        })
+        .then(result => {
+          console.info(`Venue created/updated`)
+          console.info(result)
+          this.$router.push({ path: `/venues/yours` })
+        })
+        .catch(error => {
+          console.error("An error occurred when creating/updating venue")
+          console.error(error)
+        }) // this is useless since GraphQL almost always returns 200
+        // this.reset()
       }
     },
-    publish() {
-      // TODO
-      this.validate();
-      if (this.valid) {
-        this.submitted = true;
-      }
+    publishToggle() {
+      // should redirect to detail view page?
+      this.published = !this.published
+      this.save()
     },
     reset() {
-      this.email = "";
-      this.phoneNumber = "";
-      this.zipCode = "";
-      this.country = "";
-      this.streetName = "";
-      this.city = "";
-      this.lastName = "";
-      this.firstName = "";
-      this.apartment = "";
-      this.message = "";
+      this.zipCode = ""
+      this.country = ""
+      this.streetName = ""
+      this.city = ""
+      this.headline = ""
+      this.name = ""
+      this.apartment = ""
+      this.description = ""
+      this.prices = {}
+      this.venueType = ""
+      this.eventSet = new Set()
+      this.extras = []
+      this.extraInput = {...this.defaultExtraInput}
+    },
+    eventSelected(eventTypeOption) {
+      if (this.eventSet.has(eventTypeOption)) {
+        /*
+         * NOTE: don't do `this.eventSet.delete(eventTypeOption)`
+         * because reactivity doesn't seem to work with that
+         */
+        this.eventSet = new Set(
+          [...this.eventSet].filter(e => e != eventTypeOption)
+        )
+      }
+      else {
+        this.eventSet = new Set([...this.eventSet, eventTypeOption])
+      }
+    },
+    removeExtra(extraId) {
+      this.extras = this.extras.filter(e => e.id != extraId)
+      if (this.extraInput.id == extraId) {
+        this.extraInput = {...this.defaultExtraInput}
+      }
+    },
+    addExtra(extraId, event) {
+      event.target.blur()
+      if (this.validExtraInput(this.extraInput)) {
+        if (extraId != 0) {
+          let editExtra = this.extras.find(e => e.id == extraId)
+          editExtra.name = this.extraInput.name
+          editExtra.type = this.extraInput.type
+          editExtra.price = this.extraInput.price
+        }
+        else {
+          this.extraInput.id = uuidv4()
+          const newExtra = {...this.extraInput}
+          this.extras = [...this.extras, newExtra]
+        }
+        this.extraInput = {...this.defaultExtraInput}
+      }
+    },
+    editExtra(extraId) {
+      const selectedExtra = this.extras.find(e => e.id == extraId)
+      if (selectedExtra) {
+        if (this.extraInput.id == selectedExtra.id) {
+          this.extraInput = {...this.defaultExtraInput}
+        }
+        else {
+          this.extraInput = {...selectedExtra}
+        }
+      }
+    },
+    async onFileChange(file) {
+      if (!file.target || !file.target.files[0]) {
+        return;
+      }
+      try {
+        const {
+          aws_user_files_s3_bucket_region: region,
+          aws_user_files_s3_bucket: bucket
+        } = config;
+        const { objKey: photoKey, fileName, photoId } = await this._createPhoto({
+          file: file.target.files[0],
+        });
+        const photoData = {
+          name: `${fileName}${photoId}`,
+          fullsize: {
+            key: photoKey,
+            region,
+            bucket
+          }
+        }
+        this.photos.unshift(photoData)
+      }
+      catch (error) {
+        console.log("Error creating photo", error);
+      }
+    },
+    async _createPhoto(fileData) {
+      const { file } = fileData;
+      const extension = file.name.substr(file.name.lastIndexOf(".") + 1);
+      const fileName = file.name.substr(0, file.name.lastIndexOf("."));
+      const photoId = uuidv4();
+      const key = `images/${fileName}-${photoId}.${extension}`;
+
+      try {
+        let vm = this
+        vm.uploadDone = false;
+        const {key: objKey} = await Storage.put(key, file, {
+          metadata: { fileName, photoId },
+          progressCallback(progress) {
+            console.log(`Uploaded: ${progress.loaded}/${progress.total}`);
+            if (progress.loaded == progress.total) { vm.uploadDone = true }
+          },
+        })
+        // await Storage.put(key, file, {
+        //   level: "protected",
+        //   contentType: mimeType,
+        //   metadata: { photoId }
+        // })
+        console.log(objKey)
+        return Promise.resolve({ objKey, fileName, photoId });
+      }
+      catch (error) {
+        console.log("createPhoto error", error)
+        return Promise.reject(error);
+      }
+    },
+    async _removePhoto(imgKey) {
+      try {
+        console.info("Removing photo")
+        Storage.remove(imgKey)
+        this.photos = this.photos.filter(p => p.fullsize.key != imgKey)
+      }
+      catch (error) {
+        console.warn("Failed to delete photo")
+      }
     }
   }
 };
@@ -461,25 +886,18 @@ export default {
     display: flex;
     align-items: flex-start;
   }
-  &__action-button {
-    &:first-child {
-      margin: var(--spacer-sm) 0 0 0;
-    }
-    &--secondary {
-      margin: 0 0 0 var(--spacer-sm);
-    }
-  }
   &__button {
     --button-width: 100%;
+  }
+  &__element {
+    & textarea {
+      @apply max-w-full border-0 border-b;
+    }
   }
   @include for-desktop {
     display: flex;
     flex-wrap: wrap;
     align-items: flex-start;
-    margin: 0 var(--spacer-2xl) 0 0;
-    &:last-of-type {
-      margin: 0 calc(var(--spacer-2xl) - var(--spacer-sm)) 0 0;
-    }
     &__element {
       margin: 0 0 var(--spacer-sm) 0;
       flex: 0 0 100%;
@@ -492,9 +910,6 @@ export default {
       &--range {
         margin: var(--spacer-xl) var(--spacer-base) var(--spacer-2xl);
       }
-      & textarea {
-        @apply box-border max-w-full;
-      }
     }
     &__action {
       flex: 0 0 100%;
@@ -504,5 +919,8 @@ export default {
       --button-width: auto;
     }
   }
+}
+amplify-s3-image {
+  --width: 100%;
 }
 </style>

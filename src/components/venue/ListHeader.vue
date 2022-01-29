@@ -45,7 +45,12 @@ export default {
   },
   methods: {
     openCreatePage() {
-      this.$router.push({ path: '/venues/new' })
+      this.$router.push({
+        name: 'venues-edit',
+        params: {
+          // venueId: Math.floor(Math.random() * 1000).toString(),
+        }
+      })
     }
   }
 };

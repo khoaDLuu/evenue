@@ -15,21 +15,16 @@ export const createUser = /* GraphQL */ `
           id
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
           userReviewsId
           venueReviewsId
+          owner
         }
         nextToken
-        startedAt
       }
       id
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
+      owner
     }
   }
 `;
@@ -47,21 +42,16 @@ export const updateUser = /* GraphQL */ `
           id
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
           userReviewsId
           venueReviewsId
+          owner
         }
         nextToken
-        startedAt
       }
       id
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
+      owner
     }
   }
 `;
@@ -79,21 +69,16 @@ export const deleteUser = /* GraphQL */ `
           id
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
           userReviewsId
           venueReviewsId
+          owner
         }
         nextToken
-        startedAt
       }
       id
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
+      owner
     }
   }
 `;
@@ -103,10 +88,23 @@ export const createVenue = /* GraphQL */ `
     $condition: ModelVenueConditionInput
   ) {
     createVenue(input: $input, condition: $condition) {
+      id
       name
       headline
       description
-      photos
+      photos {
+        name
+        fullsize {
+          region
+          bucket
+          key
+        }
+        thumbnails {
+          region
+          bucket
+          key
+        }
+      }
       address
       city
       pricing {
@@ -145,21 +143,15 @@ export const createVenue = /* GraphQL */ `
           id
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
           userReviewsId
           venueReviewsId
+          owner
         }
         nextToken
-        startedAt
       }
-      id
+      owner
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
     }
   }
 `;
@@ -169,10 +161,23 @@ export const updateVenue = /* GraphQL */ `
     $condition: ModelVenueConditionInput
   ) {
     updateVenue(input: $input, condition: $condition) {
+      id
       name
       headline
       description
-      photos
+      photos {
+        name
+        fullsize {
+          region
+          bucket
+          key
+        }
+        thumbnails {
+          region
+          bucket
+          key
+        }
+      }
       address
       city
       pricing {
@@ -211,21 +216,15 @@ export const updateVenue = /* GraphQL */ `
           id
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
           userReviewsId
           venueReviewsId
+          owner
         }
         nextToken
-        startedAt
       }
-      id
+      owner
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
     }
   }
 `;
@@ -235,10 +234,23 @@ export const deleteVenue = /* GraphQL */ `
     $condition: ModelVenueConditionInput
   ) {
     deleteVenue(input: $input, condition: $condition) {
+      id
       name
       headline
       description
-      photos
+      photos {
+        name
+        fullsize {
+          region
+          bucket
+          key
+        }
+        thumbnails {
+          region
+          bucket
+          key
+        }
+      }
       address
       city
       pricing {
@@ -277,21 +289,15 @@ export const deleteVenue = /* GraphQL */ `
           id
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
           userReviewsId
           venueReviewsId
+          owner
         }
         nextToken
-        startedAt
       }
-      id
+      owner
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
     }
   }
 `;
@@ -302,10 +308,13 @@ export const createReview = /* GraphQL */ `
   ) {
     createReview(input: $input, condition: $condition) {
       venue {
+        id
         name
         headline
         description
-        photos
+        photos {
+          name
+        }
         address
         city
         pricing {
@@ -334,38 +343,29 @@ export const createReview = /* GraphQL */ `
         }
         reviews {
           nextToken
-          startedAt
         }
-        id
+        owner
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       user {
         name
         reviews {
           nextToken
-          startedAt
         }
         id
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
+        owner
       }
       rating
       review
       id
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
       userReviewsId
       venueReviewsId
+      owner
     }
   }
 `;
@@ -376,10 +376,13 @@ export const updateReview = /* GraphQL */ `
   ) {
     updateReview(input: $input, condition: $condition) {
       venue {
+        id
         name
         headline
         description
-        photos
+        photos {
+          name
+        }
         address
         city
         pricing {
@@ -408,38 +411,29 @@ export const updateReview = /* GraphQL */ `
         }
         reviews {
           nextToken
-          startedAt
         }
-        id
+        owner
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       user {
         name
         reviews {
           nextToken
-          startedAt
         }
         id
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
+        owner
       }
       rating
       review
       id
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
       userReviewsId
       venueReviewsId
+      owner
     }
   }
 `;
@@ -450,10 +444,13 @@ export const deleteReview = /* GraphQL */ `
   ) {
     deleteReview(input: $input, condition: $condition) {
       venue {
+        id
         name
         headline
         description
-        photos
+        photos {
+          name
+        }
         address
         city
         pricing {
@@ -482,38 +479,29 @@ export const deleteReview = /* GraphQL */ `
         }
         reviews {
           nextToken
-          startedAt
         }
-        id
+        owner
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       user {
         name
         reviews {
           nextToken
-          startedAt
         }
         id
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
+        owner
       }
       rating
       review
       id
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
       userReviewsId
       venueReviewsId
+      owner
     }
   }
 `;

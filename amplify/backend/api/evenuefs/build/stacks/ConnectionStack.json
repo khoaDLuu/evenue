@@ -1,5 +1,35 @@
 {
   "Resources": {
+    "Reviewvenueauth0FunctionReviewvenueauth0FunctionAppSyncFunction3EEFC640": {
+      "Type": "AWS::AppSync::FunctionConfiguration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
+        },
+        "DataSourceName": {
+          "Ref": "referencetotransformerrootstackGraphQLAPINONEDS2BA9D1C8Name"
+        },
+        "FunctionVersion": "2018-05-29",
+        "Name": "Reviewvenueauth0Function",
+        "RequestMappingTemplateS3Location": {
+          "Fn::Join": [
+            "",
+            [
+              "s3://",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentBucket7592718ARef"
+              },
+              "/",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentRootKeyA71EA735Ref"
+              },
+              "/resolvers/Review.venue.auth.1.req.vtl"
+            ]
+          ]
+        },
+        "ResponseMappingTemplate": "$util.toJson({})"
+      }
+    },
     "ReviewVenueDataResolverFnReviewVenueDataResolverFnAppSyncFunction19D486DC": {
       "Type": "AWS::AppSync::FunctionConfiguration",
       "Properties": {
@@ -42,10 +72,6 @@
               "/resolvers/Review.venue.res.vtl"
             ]
           ]
-        },
-        "SyncConfig": {
-          "ConflictDetection": "VERSION",
-          "ConflictHandler": "AUTOMERGE"
         }
       }
     },
@@ -60,6 +86,12 @@
         "Kind": "PIPELINE",
         "PipelineConfig": {
           "Functions": [
+            {
+              "Fn::GetAtt": [
+                "Reviewvenueauth0FunctionReviewvenueauth0FunctionAppSyncFunction3EEFC640",
+                "FunctionId"
+              ]
+            },
             {
               "Fn::GetAtt": [
                 "ReviewVenueDataResolverFnReviewVenueDataResolverFnAppSyncFunction19D486DC",
@@ -85,6 +117,36 @@
           ]
         },
         "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)"
+      }
+    },
+    "Reviewuserauth0FunctionReviewuserauth0FunctionAppSyncFunction2892C8D3": {
+      "Type": "AWS::AppSync::FunctionConfiguration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
+        },
+        "DataSourceName": {
+          "Ref": "referencetotransformerrootstackGraphQLAPINONEDS2BA9D1C8Name"
+        },
+        "FunctionVersion": "2018-05-29",
+        "Name": "Reviewuserauth0Function",
+        "RequestMappingTemplateS3Location": {
+          "Fn::Join": [
+            "",
+            [
+              "s3://",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentBucket7592718ARef"
+              },
+              "/",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentRootKeyA71EA735Ref"
+              },
+              "/resolvers/Review.user.auth.1.req.vtl"
+            ]
+          ]
+        },
+        "ResponseMappingTemplate": "$util.toJson({})"
       }
     },
     "ReviewUserDataResolverFnReviewUserDataResolverFnAppSyncFunction3FDA042C": {
@@ -129,10 +191,6 @@
               "/resolvers/Review.user.res.vtl"
             ]
           ]
-        },
-        "SyncConfig": {
-          "ConflictDetection": "VERSION",
-          "ConflictHandler": "AUTOMERGE"
         }
       }
     },
@@ -147,6 +205,12 @@
         "Kind": "PIPELINE",
         "PipelineConfig": {
           "Functions": [
+            {
+              "Fn::GetAtt": [
+                "Reviewuserauth0FunctionReviewuserauth0FunctionAppSyncFunction2892C8D3",
+                "FunctionId"
+              ]
+            },
             {
               "Fn::GetAtt": [
                 "ReviewUserDataResolverFnReviewUserDataResolverFnAppSyncFunction3FDA042C",
@@ -172,6 +236,36 @@
           ]
         },
         "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)"
+      }
+    },
+    "Userreviewsauth0FunctionUserreviewsauth0FunctionAppSyncFunction187E05D0": {
+      "Type": "AWS::AppSync::FunctionConfiguration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
+        },
+        "DataSourceName": {
+          "Ref": "referencetotransformerrootstackGraphQLAPINONEDS2BA9D1C8Name"
+        },
+        "FunctionVersion": "2018-05-29",
+        "Name": "Userreviewsauth0Function",
+        "RequestMappingTemplateS3Location": {
+          "Fn::Join": [
+            "",
+            [
+              "s3://",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentBucket7592718ARef"
+              },
+              "/",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentRootKeyA71EA735Ref"
+              },
+              "/resolvers/User.reviews.auth.1.req.vtl"
+            ]
+          ]
+        },
+        "ResponseMappingTemplate": "$util.toJson({})"
       }
     },
     "UserReviewsDataResolverFnUserReviewsDataResolverFnAppSyncFunction98D03831": {
@@ -216,10 +310,6 @@
               "/resolvers/User.reviews.res.vtl"
             ]
           ]
-        },
-        "SyncConfig": {
-          "ConflictDetection": "VERSION",
-          "ConflictHandler": "AUTOMERGE"
         }
       }
     },
@@ -234,6 +324,12 @@
         "Kind": "PIPELINE",
         "PipelineConfig": {
           "Functions": [
+            {
+              "Fn::GetAtt": [
+                "Userreviewsauth0FunctionUserreviewsauth0FunctionAppSyncFunction187E05D0",
+                "FunctionId"
+              ]
+            },
             {
               "Fn::GetAtt": [
                 "UserReviewsDataResolverFnUserReviewsDataResolverFnAppSyncFunction98D03831",
@@ -259,6 +355,36 @@
           ]
         },
         "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)"
+      }
+    },
+    "Venuereviewsauth0FunctionVenuereviewsauth0FunctionAppSyncFunction77CB0F49": {
+      "Type": "AWS::AppSync::FunctionConfiguration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "referencetotransformerrootstackGraphQLAPI20497F53ApiId"
+        },
+        "DataSourceName": {
+          "Ref": "referencetotransformerrootstackGraphQLAPINONEDS2BA9D1C8Name"
+        },
+        "FunctionVersion": "2018-05-29",
+        "Name": "Venuereviewsauth0Function",
+        "RequestMappingTemplateS3Location": {
+          "Fn::Join": [
+            "",
+            [
+              "s3://",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentBucket7592718ARef"
+              },
+              "/",
+              {
+                "Ref": "referencetotransformerrootstackS3DeploymentRootKeyA71EA735Ref"
+              },
+              "/resolvers/Venue.reviews.auth.1.req.vtl"
+            ]
+          ]
+        },
+        "ResponseMappingTemplate": "$util.toJson({})"
       }
     },
     "VenueReviewsDataResolverFnVenueReviewsDataResolverFnAppSyncFunction012E9DD8": {
@@ -303,10 +429,6 @@
               "/resolvers/Venue.reviews.res.vtl"
             ]
           ]
-        },
-        "SyncConfig": {
-          "ConflictDetection": "VERSION",
-          "ConflictHandler": "AUTOMERGE"
         }
       }
     },
@@ -321,6 +443,12 @@
         "Kind": "PIPELINE",
         "PipelineConfig": {
           "Functions": [
+            {
+              "Fn::GetAtt": [
+                "Venuereviewsauth0FunctionVenuereviewsauth0FunctionAppSyncFunction77CB0F49",
+                "FunctionId"
+              ]
+            },
             {
               "Fn::GetAtt": [
                 "VenueReviewsDataResolverFnVenueReviewsDataResolverFnAppSyncFunction012E9DD8",
@@ -353,13 +481,16 @@
     "referencetotransformerrootstackGraphQLAPI20497F53ApiId": {
       "Type": "String"
     },
-    "referencetotransformerrootstackVenueNestedStackVenueNestedStackResourceF52E71AAOutputstransformerrootstackVenueVenueDataSourceB768340CName": {
+    "referencetotransformerrootstackGraphQLAPINONEDS2BA9D1C8Name": {
       "Type": "String"
     },
     "referencetotransformerrootstackS3DeploymentBucket7592718ARef": {
       "Type": "String"
     },
     "referencetotransformerrootstackS3DeploymentRootKeyA71EA735Ref": {
+      "Type": "String"
+    },
+    "referencetotransformerrootstackVenueNestedStackVenueNestedStackResourceF52E71AAOutputstransformerrootstackVenueVenueDataSourceB768340CName": {
       "Type": "String"
     },
     "referencetotransformerrootstackVenueNestedStackVenueNestedStackResourceF52E71AAOutputstransformerrootstackVenueVenueTableCE174226Ref": {

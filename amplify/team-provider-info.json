@@ -14,7 +14,8 @@
     },
     "categories": {
       "auth": {
-        "evenuefs43bab20a": {}
+        "evenuefs43bab20a": {},
+        "true": {}
       },
       "function": {
         "evenuefs43bab20aCustomMessage": {

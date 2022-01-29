@@ -1,14 +1,14 @@
 <template>
   <div>
     <div class="flex flex-row justify-between shadow-lg p-6">
-      <div class="flex-1">
+      <div class="flex-auto basis-3/4">
         <p class="text-2xl">
           <span class="text-base px-2 mr-2 bg-red-600 text-white align-middle">VENUE</span>
           {{ venue.name }}
         </p>
         <p class="text-md">
           <location-marker classes="text-gray-600" />
-          {{ venue.location }}
+          {{ venue.city }}
         </p>
         <p>
           <span class="text-base align-middle" :class="venue.published ? 'text-green-600' : 'text-blue-600'">
@@ -19,8 +19,12 @@
           </span>
         </p>
       </div>
-      <div class="flex-1 flex justify-end items-center">
-        <actions @edit-clicked="openEditPage" @view-clicked="openViewPage" />
+      <div class="flex-auto flex justify-end items-center">
+        <actions
+          @edit-clicked="openEditPage"
+          @del-clicked="delClicked"
+          @view-clicked="openViewPage"
+        />
       </div>
     </div>
   </div>
@@ -47,10 +51,23 @@ export default {
   },
   methods: {
     openEditPage() {
-      this.$router.push({ path: `/venues/${this.venue.id}` })
+      this.$router.push({
+        name: 'venues-edit',
+        params: {
+          venueId: this.venue.id,
+        }
+      })
+    },
+    delClicked() {
+      return this.$emit('del-clicked', this.venue.id)
     },
     openViewPage() {
-      return
+      this.$router.push({
+        name: 'venue-details',
+        params: {
+          // venueId: Math.floor(Math.random() * 1000).toString(),
+        }
+      })
     }
   }
 };
