@@ -37,6 +37,13 @@ const awsmobile = {
     "aws_content_delivery_url": "http://evenuefs-20211215191307-hostingbucket-dev.s3-website-us-east-1.amazonaws.com",
     "aws_user_files_s3_bucket": "evenuestaticfiles230706-dev",
     "aws_user_files_s3_bucket_region": "us-east-1",
+    "aws_dynamodb_all_tables_region": "us-east-1",
+    "aws_dynamodb_table_schemas": [
+        {
+            "tableName": "rsratings-dev",
+            "region": "us-east-1"
+        }
+    ],
     "aws_cognito_verification_mechnanisms": [
         "EMAIL"
     ]

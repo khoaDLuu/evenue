@@ -1,0 +1,23 @@
+[
+  {
+    "Action": [
+      "dynamodb:Get*",
+      "dynamodb:BatchGetItem",
+      "dynamodb:List*",
+      "dynamodb:Describe*",
+      "dynamodb:Scan",
+      "dynamodb:Query"
+    ],
+    "Resource": [
+      "arn:aws:dynamodb:us-east-1:310761885902:table/*"
+    ]
+  },
+  {
+    "Action": [
+      "lambda:InvokeFunction"
+    ],
+    "Resource": [
+      "arn:aws:lambda:us-east-1:310761885902:function:venueRecommendationProcessing"
+    ]
+  }
+]

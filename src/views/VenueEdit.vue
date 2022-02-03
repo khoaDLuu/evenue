@@ -81,7 +81,7 @@
             </SfTextarea>
             <p class="text-xl text-gray-800 font-semibold mt-4 w-full">Photos</p>
             <div class="w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 mb-4">
-              <div class="flex items-center justify-center md:h-48 2xl:h-64 bg-grey-lighter">
+              <div class="flex items-center justify-center h-48 2xl:h-64 bg-grey-lighter">
                 <form class="w-full h-full" enctype="multipart/form-data" novalidate>
                   <label
                     class="
@@ -262,7 +262,7 @@
               />
             </div>
             <p class="text-xl text-gray-800 font-semibold mt-4 w-full">Extras</p>
-            <div class="w-full flex flex-row flex-wrap">
+            <div class="w-full flex flex-col md:flex-row md:flex-wrap">
               <p class="pr-4">Type</p>
               <SfRadio
                 v-for="extraType in extraTypes"
@@ -321,6 +321,51 @@
                 </template>
               </SfAddress>
             </SfAddressPicker>
+            <p class="text-xl text-gray-800 font-semibold mt-4 w-full">Capacity</p>
+            <SfComponentSelect
+              v-model="capacity.unit"
+              label="Unit of area"
+              class="
+                form__element
+                form__element--half
+                form__select
+                sf-component-select--underlined
+              "
+              required
+              :valid="capacity.unitBlur || !!capacity.unit"
+              error-message="Please choose the area unit used for your venue."
+              @blur="capacity.unitBlur = false"
+            >
+              <SfComponentSelectOption
+                v-for="unitOption in units"
+                :key="unitOption"
+                :value="unitOption"
+              >
+                {{ unitOption }}
+              </SfComponentSelectOption>
+            </SfComponentSelect>
+            <SfInput
+              v-model="capacity.floorSize"
+              label="Floor size"
+              name="floorSize"
+              type="number"
+              required
+              class="form__element form__element--half form__element--half-even"
+              :valid="capacity.sizeBlur || capacity.floorSize > 0"
+              error-message="Please type in the floor size in the unit selected."
+              @blur="capacity.sizeBlur = false"
+            />
+            <SfInput
+              v-model="capacity.recommendedGuestCount"
+              label="Recommended number of guests"
+              name="recommendedGuestCount"
+              type="number"
+              class="form__element form__element--half"
+              required
+              :valid="capacity.guestCountBlur || capacity.recommendedGuestCount > 0"
+              error-message="Please type in the recommended (often max) number of guests."
+              @blur="capacity.guestCountBlur = false"
+            />
             <div class="form__action mt-12">
               <SfButton class="mr-4 mb-4" type="submit" @click.prevent="publishToggle">{{ publishLabel }}</SfButton>
               <SfButton class="sf-button mr-4 mb-4 color-secondary" type="submit" @click.prevent="save">Save</SfButton>
@@ -350,7 +395,7 @@ import { API, Storage } from 'aws-amplify'
 import { getVenue } from '../graphql/queries'
 import { createVenue, updateVenue } from '../graphql/mutations'
 import { v4 as uuidv4 } from "uuid"
-import config from "../aws-exports";
+import config from "../aws-exports"
 
 export default {
   name: "VenueEdit",
@@ -496,6 +541,15 @@ export default {
       venueType: "",
       venueTypeBlur: true,
       eventSet: new Set(),
+      capacity: {
+        unit: undefined,
+        floorSize: undefined,
+        recommendedGuestCount: undefined,
+        unitBlur: true,
+        sizeBlur: true,
+        guestCountBlur: true,
+      },
+      units: ["sqm", "sqft"],
       extras: [],
       extraInput: {
         id: "0",
@@ -580,6 +634,7 @@ export default {
         this.photos = venue.photos
         this.venueType = venue.type.name
         this.eventSet = new Set(venue.eventTypes)
+        this.capacity = {...this.capacity, ...venue.capacity}
         this.extras = venue.extras.map(
           (extra, i) => ({...this.defaultExtraInput, id: String(i), ...extra})
         )
@@ -614,19 +669,22 @@ export default {
   },
   methods: {
     validate() {
-      this.nameBlur = false;
-      this.headlineBlur = false;
-      this.streetNameBlur = false;
-      this.apartmentBlur = false;
-      this.cityBlur = false;
-      this.zipCodeBlur = false;
-      this.countryBlur = false;
-      this.descriptionBlur = false;
-      this.priceHBlur = false;
-      this.priceDBlur = false;
-      this.venueTypeBlur = false;
-      this.extraInput.nameBlur = false;
-      this.extraInput.priceBlur = false;
+      this.nameBlur = false
+      this.headlineBlur = false
+      this.streetNameBlur = false
+      this.apartmentBlur = false
+      this.cityBlur = false
+      this.zipCodeBlur = false
+      this.countryBlur = false
+      this.descriptionBlur = false
+      this.priceHBlur = false
+      this.priceDBlur = false
+      this.venueTypeBlur = false
+      // this.extraInput.nameBlur = false
+      // this.extraInput.priceBlur = false
+      this.capacity.unitBlur = false
+      this.capacity.sizeBlur = false
+      this.capacity.guestCountBlur = false
       if (
         this.validName(this.name) &&
         this.validHeadline(this.headline) &&
@@ -638,7 +696,8 @@ export default {
         this.validState(this.country) &&
         this.validDescription(this.description) &&
         this.validVenueType(this.venueType) &&
-        this.validPrice(this.prices.perHour)
+        this.validPrice(this.prices.perHour) &&
+        this.validCapacity(this.capacity)
       ) {
         this.valid = true;
       }
@@ -685,6 +744,13 @@ export default {
         && extraInput.type !== ""
       )
     },
+    validCapacity(cap) {
+      return (
+        !!cap.unit
+        && cap.floorSize > 0
+        && cap.recommendedGuestCount > 0
+      )
+    },
     async save() {
       this.validate();
       if (this.valid) {
@@ -705,6 +771,11 @@ export default {
             type: ex.type,
             price: ex.price,
           })),
+          capacity: {
+            unit: this.capacity.unit,
+            floorSize: this.capacity.floorSize,
+            recommendedGuestCount: this.capacity.recommendedGuestCount,
+          },
         };
 
         let query = createVenue
@@ -746,6 +817,7 @@ export default {
       this.prices = {}
       this.venueType = ""
       this.eventSet = new Set()
+      this.capacity = {}
       this.extras = []
       this.extraInput = {...this.defaultExtraInput}
     },

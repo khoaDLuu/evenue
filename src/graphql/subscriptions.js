@@ -8,7 +8,7 @@ export const onCreateUser = /* GraphQL */ `
       reviews {
         items {
           rating
-          review
+          comment
           id
           createdAt
           updatedAt
@@ -32,7 +32,7 @@ export const onUpdateUser = /* GraphQL */ `
       reviews {
         items {
           rating
-          review
+          comment
           id
           createdAt
           updatedAt
@@ -56,7 +56,7 @@ export const onDeleteUser = /* GraphQL */ `
       reviews {
         items {
           rating
-          review
+          comment
           id
           createdAt
           updatedAt
@@ -127,7 +127,7 @@ export const onCreateVenue = /* GraphQL */ `
       reviews {
         items {
           rating
-          review
+          comment
           id
           createdAt
           updatedAt
@@ -197,7 +197,7 @@ export const onUpdateVenue = /* GraphQL */ `
       reviews {
         items {
           rating
-          review
+          comment
           id
           createdAt
           updatedAt
@@ -267,7 +267,7 @@ export const onDeleteVenue = /* GraphQL */ `
       reviews {
         items {
           rating
-          review
+          comment
           id
           createdAt
           updatedAt
@@ -338,7 +338,7 @@ export const onCreateReview = /* GraphQL */ `
         owner
       }
       rating
-      review
+      comment
       id
       createdAt
       updatedAt
@@ -403,7 +403,7 @@ export const onUpdateReview = /* GraphQL */ `
         owner
       }
       rating
-      review
+      comment
       id
       createdAt
       updatedAt
@@ -468,12 +468,93 @@ export const onDeleteReview = /* GraphQL */ `
         owner
       }
       rating
-      review
+      comment
       id
       createdAt
       updatedAt
       userReviewsId
       venueReviewsId
+      owner
+    }
+  }
+`;
+export const onCreateBooking = /* GraphQL */ `
+  subscription OnCreateBooking($owner: String) {
+    onCreateBooking(owner: $owner) {
+      venueId
+      user
+      checkIn
+      checkOut
+      guestCount
+      extras {
+        extra {
+          name
+          type
+          price
+        }
+        number
+      }
+      totalCharge
+      paymentCurrency
+      paymentToken
+      status
+      id
+      createdAt
+      updatedAt
+      owner
+    }
+  }
+`;
+export const onUpdateBooking = /* GraphQL */ `
+  subscription OnUpdateBooking($owner: String) {
+    onUpdateBooking(owner: $owner) {
+      venueId
+      user
+      checkIn
+      checkOut
+      guestCount
+      extras {
+        extra {
+          name
+          type
+          price
+        }
+        number
+      }
+      totalCharge
+      paymentCurrency
+      paymentToken
+      status
+      id
+      createdAt
+      updatedAt
+      owner
+    }
+  }
+`;
+export const onDeleteBooking = /* GraphQL */ `
+  subscription OnDeleteBooking($owner: String) {
+    onDeleteBooking(owner: $owner) {
+      venueId
+      user
+      checkIn
+      checkOut
+      guestCount
+      extras {
+        extra {
+          name
+          type
+          price
+        }
+        number
+      }
+      totalCharge
+      paymentCurrency
+      paymentToken
+      status
+      id
+      createdAt
+      updatedAt
       owner
     }
   }

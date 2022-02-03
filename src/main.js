@@ -5,8 +5,8 @@ import {
   applyPolyfills,
   defineCustomElements,
 } from '@aws-amplify/ui-components/loader';
-import FileSelector from 'vue-file-selector';
 import "@storefront-ui/vue/styles.scss";
+import 'leaflet/dist/leaflet.css'
 import router from './router'
 import App from './App'
 import './main.css'
@@ -18,9 +18,7 @@ applyPolyfills().then(() => {
 });
 
 Vue.config.productionTip = false
-Vue.config.ignoredElements = [/amplify-\w*/];
-
-Vue.use(FileSelector)
+Vue.config.ignoredElements = [/amplify-\w*/]
 
 new Vue({
   router,

@@ -5,6 +5,37 @@ export type AmplifyDependentResourcesAttributes = {
             "Arn": "string",
             "LambdaExecutionRole": "string",
             "Region": "string"
+        },
+        "processPayment": {
+            "Name": "string",
+            "Arn": "string",
+            "Region": "string",
+            "LambdaExecutionRole": "string"
+        },
+        "createBooking": {
+            "Name": "string",
+            "Arn": "string",
+            "Region": "string",
+            "LambdaExecutionRole": "string"
+        },
+        "sentimentScoring": {
+            "Name": "string",
+            "Arn": "string",
+            "Region": "string",
+            "LambdaExecutionRole": "string"
+        },
+        "modelBuilding": {
+            "Name": "string",
+            "Arn": "string",
+            "Region": "string",
+            "LambdaExecutionRole": "string",
+            "CloudWatchEventRule": "string"
+        },
+        "recommendVenues": {
+            "Name": "string",
+            "Arn": "string",
+            "Region": "string",
+            "LambdaExecutionRole": "string"
         }
     },
     "auth": {
@@ -36,6 +67,25 @@ export type AmplifyDependentResourcesAttributes = {
         "staticcontent": {
             "BucketName": "string",
             "Region": "string"
+        },
+        "rsratings": {
+            "Name": "string",
+            "Arn": "string",
+            "StreamArn": "string",
+            "PartitionKeyName": "string",
+            "PartitionKeyType": "string",
+            "Region": "string"
+        }
+    },
+    "custom": {
+        "sentimentScoringLambdaContainer": {
+            "SSPArn": "string"
+        },
+        "modelBuildingLambdaContainer": {
+            "MBPArn": "string"
+        },
+        "venueRecommendationLambdaContainer": {
+            "VRPArn": "string"
         }
     }
 }

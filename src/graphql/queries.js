@@ -8,7 +8,7 @@ export const getUser = /* GraphQL */ `
       reviews {
         items {
           rating
-          review
+          comment
           id
           createdAt
           updatedAt
@@ -100,7 +100,7 @@ export const getVenue = /* GraphQL */ `
       reviews {
         items {
           rating
-          review
+          comment
           id
           createdAt
           updatedAt
@@ -223,7 +223,7 @@ export const getReview = /* GraphQL */ `
         owner
       }
       rating
-      review
+      comment
       id
       createdAt
       updatedAt
@@ -262,12 +262,68 @@ export const listReviews = /* GraphQL */ `
           owner
         }
         rating
-        review
+        comment
         id
         createdAt
         updatedAt
         userReviewsId
         venueReviewsId
+        owner
+      }
+      nextToken
+    }
+  }
+`;
+export const getBooking = /* GraphQL */ `
+  query GetBooking($id: ID!) {
+    getBooking(id: $id) {
+      venueId
+      user
+      checkIn
+      checkOut
+      guestCount
+      extras {
+        extra {
+          name
+          type
+          price
+        }
+        number
+      }
+      totalCharge
+      paymentCurrency
+      paymentToken
+      status
+      id
+      createdAt
+      updatedAt
+      owner
+    }
+  }
+`;
+export const listBookings = /* GraphQL */ `
+  query ListBookings(
+    $filter: ModelBookingFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listBookings(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        venueId
+        user
+        checkIn
+        checkOut
+        guestCount
+        extras {
+          number
+        }
+        totalCharge
+        paymentCurrency
+        paymentToken
+        status
+        id
+        createdAt
+        updatedAt
         owner
       }
       nextToken

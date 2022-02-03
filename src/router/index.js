@@ -4,10 +4,11 @@ import VueRouter from 'vue-router'
 import Home from "../views/Home.vue"
 import Venues from "../views/Venues.vue"
 import Auth from "../views/Auth.vue"
-import VenueMngmt from "../views/VenueMngmt.vue"
 import VenueList from "../views/VenueList.vue"
 import VenueEdit from "../views/VenueEdit.vue"
 import VenueDetails from "../views/VenueDetails.vue"
+import Booking from "../views/Booking.vue"
+import NotFound from "../views/NotFound.vue"
 
 Vue.use(VueRouter)
 
@@ -18,19 +19,14 @@ const routes = [
     component: Home
   },
   {
-    path: '/venues/search',
-    name: 'venues',
-    component: Venues
-  },
-  {
     path: '/auth',
     name: 'auth',
     component: Auth
   },
   {
-    path: '/venue-mngmt',
-    name: 'venue-mngmt',
-    component: VenueMngmt
+    path: '/venues/search',
+    name: 'venues',
+    component: Venues
   },
   {
     path: '/venues/yours',
@@ -44,10 +40,24 @@ const routes = [
     props: true,
   },
   {
-    path: '/venues/details',
+    path: '/venues/:venueId(\\b[0-9a-f]{8}\\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\\b[0-9a-f]{12}\\b)',
     name: 'venue-details',
     component: VenueDetails,
     props: true,
+  },
+  {
+    path: '/bookings/new',
+    name: 'booking',
+    component: Booking,
+    props: true,
+  },
+  {
+    path: '/:catchAll(.*)',
+    component: NotFound,
+    name: 'not-found',
+    meta: {
+      requiresAuth: false
+    }
   },
 ]
 

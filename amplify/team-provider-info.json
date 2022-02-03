@@ -24,6 +24,26 @@
           "EMAILMESSAGE": "Hi, it is a pleasure to have you joining us! Click the link below to verify your email address. If you did not register for Evenue, please ignore this email.",
           "deploymentBucketName": "amplify-evenuefs-dev-230706-deployment",
           "s3Key": "amplify-builds/evenuefs43bab20aCustomMessage-7357567575536b4b386a-build.zip"
+        },
+        "createBooking": {
+          "deploymentBucketName": "amplify-evenuefs-dev-230706-deployment",
+          "s3Key": "amplify-builds/createBooking-386c7a416e52636c6e5a-build.zip"
+        },
+        "processPayment": {
+          "deploymentBucketName": "amplify-evenuefs-dev-230706-deployment",
+          "s3Key": "amplify-builds/processPayment-6e39763931534d726837-build.zip"
+        },
+        "sentimentScoring": {
+          "deploymentBucketName": "amplify-evenuefs-dev-230706-deployment",
+          "s3Key": "amplify-builds/sentimentScoring-37716d557471364e7a2b-build.zip"
+        },
+        "modelBuilding": {
+          "deploymentBucketName": "amplify-evenuefs-dev-230706-deployment",
+          "s3Key": "amplify-builds/modelBuilding-6c2b2b717259557a5071-build.zip"
+        },
+        "recommendVenues": {
+          "deploymentBucketName": "amplify-evenuefs-dev-230706-deployment",
+          "s3Key": "amplify-builds/recommendVenues-53754b5a555562324d35-build.zip"
         }
       }
     }

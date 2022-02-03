@@ -10,8 +10,17 @@ type User @model
       { allow: public, operations: [read] }
     ]
   ) {
-  name: String!
+  name: String
+  profile: Profile!
   reviews: [Review] @hasMany
+}
+
+type Profile {
+  firstName: String!
+  lastName: String!
+  email: String!
+  phone: String
+  picture: Photo!
 }
 
 type Venue @model
@@ -25,7 +34,9 @@ type Venue @model
       { allow: private, operations: [read] },
 
       # allow all guest users (not authenticated) to view venues
-      { allow: public, operations: [read] }
+      { allow: public, operations: [read] },
+
+      { allow: groups, groups: ["admin"] }
     ]
   ) {
   id: ID!
@@ -118,7 +129,7 @@ type Review @model
   venue: Venue @belongsTo
   user: User @belongsTo
   rating: Int!
-  review: String
+  comment: String
 }
 
 type Photo {
@@ -132,4 +143,83 @@ type S3Object {
   region: String!
   bucket: String!
   key: String!
+}
+
+type Booking @model
+  @auth (
+    rules: [
+      { allow: owner },
+      { allow: groups, groups: ["admin"] },
+      { allow: public, operations: [read] }
+    ]
+  ) {
+  venueId: ID!
+  user: String!
+  checkIn: AWSDateTime!
+  checkOut: AWSDateTime!
+  guestCount: Int!
+  extras: [BookingExtra!]
+  totalCharge: Float!
+  paymentCurrency: SupportedCurrency!
+  paymentToken: String!
+  status: BookingStatus!
+}
+
+type BookingExtra {
+  extra: Extra!
+  number: Int
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+input CreateBookingInput {
+  venueId: ID!
+  checkIn: AWSDateTime
+  checkOut: AWSDateTime
+  guestCount: Int
+  extras: [BookingExtraInput]
+  totalCharge: Float
+  paymentCurrency: SupportedCurrency
+  paymentToken: String!
+}
+
+input BookingExtraInput {
+  extra: ExtraInput
+  number: Int
+}
+
+input ExtraInput {
+  name: String
+  type: String
+  price: Float
+}
+
+type Mutation {
+  processBooking(input: CreateBookingInput!): BookingStatus
+    @function(name: "processPayment-${env}")
+    @function(name: "createBooking-${env}")
+}
+
+type VenueRecommendation {
+  id: ID
+  name: String
+  headline: String
+  description: String
+  photos: [Photo]
+  city: String
+  pricing: Pricing
+  type: Category
+  published: Boolean
+  capacity: Capacity
+  reviews: [Review]
+  owner: String
+}
+
+type Query {
+  recommendVenues(limit: Int): [VenueRecommendation]
+    @function(name: "recommendVenues-${env}")
 }

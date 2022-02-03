@@ -1,11 +1,20 @@
 
 type User @aws_api_key @aws_cognito_user_pools {
-  name: String!
+  name: String
+  profile: Profile!
   reviews(filter: ModelReviewFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelReviewConnection
   id: ID!
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
   owner: String
+}
+
+type Profile @aws_api_key @aws_cognito_user_pools {
+  firstName: String!
+  lastName: String!
+  email: String!
+  phone: String
+  picture: Photo!
 }
 
 type Venue @aws_api_key @aws_cognito_user_pools {
@@ -88,7 +97,7 @@ type Review @aws_api_key @aws_cognito_user_pools {
   venue: Venue
   user: User
   rating: Int!
-  review: String
+  comment: String
   id: ID!
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
@@ -107,6 +116,99 @@ type S3Object @aws_api_key @aws_cognito_user_pools {
   region: String!
   bucket: String!
   key: String!
+}
+
+type Booking @aws_api_key @aws_cognito_user_pools {
+  venueId: ID!
+  user: String!
+  checkIn: AWSDateTime!
+  checkOut: AWSDateTime!
+  guestCount: Int!
+  extras: [BookingExtra!]
+  totalCharge: Float!
+  paymentCurrency: SupportedCurrency!
+  paymentToken: String!
+  status: BookingStatus!
+  id: ID!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+  owner: String
+}
+
+type BookingExtra @aws_api_key @aws_cognito_user_pools {
+  extra: Extra!
+  number: Int
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+input CreateBookingInput {
+  venueId: ID!
+  checkIn: AWSDateTime
+  checkOut: AWSDateTime
+  guestCount: Int
+  extras: [BookingExtraInput]
+  totalCharge: Float
+  paymentCurrency: SupportedCurrency
+  paymentToken: String!
+}
+
+input BookingExtraInput {
+  extra: ExtraInput
+  number: Int
+}
+
+input ExtraInput {
+  name: String
+  type: String
+  price: Float
+}
+
+type Mutation {
+  processBooking(input: CreateBookingInput!): BookingStatus
+  createUser(input: CreateUserInput!, condition: ModelUserConditionInput): User
+  updateUser(input: UpdateUserInput!, condition: ModelUserConditionInput): User
+  deleteUser(input: DeleteUserInput!, condition: ModelUserConditionInput): User
+  createVenue(input: CreateVenueInput!, condition: ModelVenueConditionInput): Venue
+  updateVenue(input: UpdateVenueInput!, condition: ModelVenueConditionInput): Venue
+  deleteVenue(input: DeleteVenueInput!, condition: ModelVenueConditionInput): Venue
+  createReview(input: CreateReviewInput!, condition: ModelReviewConditionInput): Review
+  updateReview(input: UpdateReviewInput!, condition: ModelReviewConditionInput): Review
+  deleteReview(input: DeleteReviewInput!, condition: ModelReviewConditionInput): Review
+  createBooking(input: CreateBookingInput!, condition: ModelBookingConditionInput): Booking
+  updateBooking(input: UpdateBookingInput!, condition: ModelBookingConditionInput): Booking
+  deleteBooking(input: DeleteBookingInput!, condition: ModelBookingConditionInput): Booking
+}
+
+type VenueRecommendation {
+  id: ID
+  name: String
+  headline: String
+  description: String
+  photos: [Photo]
+  city: String
+  pricing: Pricing
+  type: Category
+  published: Boolean
+  capacity: Capacity
+  reviews: [Review]
+  owner: String
+}
+
+type Query {
+  recommendVenues(limit: Int): [VenueRecommendation]
+  getUser(id: ID!): User @aws_api_key @aws_cognito_user_pools
+  listUsers(filter: ModelUserFilterInput, limit: Int, nextToken: String): ModelUserConnection @aws_api_key @aws_cognito_user_pools
+  getVenue(id: ID!): Venue @aws_api_key @aws_cognito_user_pools
+  listVenues(filter: ModelVenueFilterInput, limit: Int, nextToken: String): ModelVenueConnection @aws_api_key @aws_cognito_user_pools
+  getReview(id: ID!): Review @aws_api_key @aws_cognito_user_pools
+  listReviews(filter: ModelReviewFilterInput, limit: Int, nextToken: String): ModelReviewConnection @aws_api_key @aws_cognito_user_pools
+  getBooking(id: ID!): Booking @aws_api_key @aws_cognito_user_pools
+  listBookings(filter: ModelBookingFilterInput, limit: Int, nextToken: String): ModelBookingConnection @aws_api_key @aws_cognito_user_pools
 }
 
 input ModelStringInput {
@@ -200,69 +302,12 @@ enum ModelSortDirection {
   DESC
 }
 
-type ModelUserConnection @aws_api_key @aws_cognito_user_pools {
-  items: [User!]!
-  nextToken: String
-}
-
-input ModelUserFilterInput {
-  name: ModelStringInput
-  and: [ModelUserFilterInput]
-  or: [ModelUserFilterInput]
-  not: ModelUserFilterInput
-}
-
-type Query {
-  getUser(id: ID!): User @aws_api_key @aws_cognito_user_pools
-  listUsers(filter: ModelUserFilterInput, limit: Int, nextToken: String): ModelUserConnection @aws_api_key @aws_cognito_user_pools
-  getVenue(id: ID!): Venue @aws_api_key @aws_cognito_user_pools
-  listVenues(filter: ModelVenueFilterInput, limit: Int, nextToken: String): ModelVenueConnection @aws_api_key @aws_cognito_user_pools
-  getReview(id: ID!): Review @aws_api_key @aws_cognito_user_pools
-  listReviews(filter: ModelReviewFilterInput, limit: Int, nextToken: String): ModelReviewConnection @aws_api_key @aws_cognito_user_pools
-}
-
-input ModelUserConditionInput {
-  name: ModelStringInput
-  and: [ModelUserConditionInput]
-  or: [ModelUserConditionInput]
-  not: ModelUserConditionInput
-}
-
-input CreateUserInput {
-  name: String!
-  id: ID
-}
-
-input UpdateUserInput {
-  name: String
-}
-
-input DeleteUserInput {
-  id: ID!
-}
-
-type Mutation {
-  createUser(input: CreateUserInput!, condition: ModelUserConditionInput): User
-  updateUser(input: UpdateUserInput!, condition: ModelUserConditionInput): User
-  deleteUser(input: DeleteUserInput!, condition: ModelUserConditionInput): User
-  createVenue(input: CreateVenueInput!, condition: ModelVenueConditionInput): Venue
-  updateVenue(input: UpdateVenueInput!, condition: ModelVenueConditionInput): Venue
-  deleteVenue(input: DeleteVenueInput!, condition: ModelVenueConditionInput): Venue
-  createReview(input: CreateReviewInput!, condition: ModelReviewConditionInput): Review
-  updateReview(input: UpdateReviewInput!, condition: ModelReviewConditionInput): Review
-  deleteReview(input: DeleteReviewInput!, condition: ModelReviewConditionInput): Review
-}
-
-type Subscription {
-  onCreateUser(owner: String): User @aws_subscribe(mutations: ["createUser"]) @aws_api_key @aws_cognito_user_pools
-  onUpdateUser(owner: String): User @aws_subscribe(mutations: ["updateUser"]) @aws_api_key @aws_cognito_user_pools
-  onDeleteUser(owner: String): User @aws_subscribe(mutations: ["deleteUser"]) @aws_api_key @aws_cognito_user_pools
-  onCreateVenue(owner: String): Venue @aws_subscribe(mutations: ["createVenue"]) @aws_api_key @aws_cognito_user_pools
-  onUpdateVenue(owner: String): Venue @aws_subscribe(mutations: ["updateVenue"]) @aws_api_key @aws_cognito_user_pools
-  onDeleteVenue(owner: String): Venue @aws_subscribe(mutations: ["deleteVenue"]) @aws_api_key @aws_cognito_user_pools
-  onCreateReview(owner: String): Review @aws_subscribe(mutations: ["createReview"]) @aws_api_key @aws_cognito_user_pools
-  onUpdateReview(owner: String): Review @aws_subscribe(mutations: ["updateReview"]) @aws_api_key @aws_cognito_user_pools
-  onDeleteReview(owner: String): Review @aws_subscribe(mutations: ["deleteReview"]) @aws_api_key @aws_cognito_user_pools
+input ProfileInput {
+  firstName: String!
+  lastName: String!
+  email: String!
+  phone: String
+  picture: PhotoInput!
 }
 
 input PhotoInput {
@@ -275,6 +320,55 @@ input S3ObjectInput {
   region: String!
   bucket: String!
   key: String!
+}
+
+type ModelUserConnection @aws_api_key @aws_cognito_user_pools {
+  items: [User!]!
+  nextToken: String
+}
+
+input ModelUserFilterInput {
+  name: ModelStringInput
+  and: [ModelUserFilterInput]
+  or: [ModelUserFilterInput]
+  not: ModelUserFilterInput
+}
+
+input ModelUserConditionInput {
+  name: ModelStringInput
+  and: [ModelUserConditionInput]
+  or: [ModelUserConditionInput]
+  not: ModelUserConditionInput
+}
+
+input CreateUserInput {
+  name: String
+  profile: ProfileInput!
+  id: ID
+}
+
+input UpdateUserInput {
+  name: String
+  profile: ProfileInput
+}
+
+input DeleteUserInput {
+  id: ID!
+}
+
+type Subscription {
+  onCreateUser(owner: String): User @aws_subscribe(mutations: ["createUser"]) @aws_api_key @aws_cognito_user_pools
+  onUpdateUser(owner: String): User @aws_subscribe(mutations: ["updateUser"]) @aws_api_key @aws_cognito_user_pools
+  onDeleteUser(owner: String): User @aws_subscribe(mutations: ["deleteUser"]) @aws_api_key @aws_cognito_user_pools
+  onCreateVenue(owner: String): Venue @aws_subscribe(mutations: ["createVenue"]) @aws_api_key @aws_cognito_user_pools
+  onUpdateVenue(owner: String): Venue @aws_subscribe(mutations: ["updateVenue"]) @aws_api_key @aws_cognito_user_pools
+  onDeleteVenue(owner: String): Venue @aws_subscribe(mutations: ["deleteVenue"]) @aws_api_key @aws_cognito_user_pools
+  onCreateReview(owner: String): Review @aws_subscribe(mutations: ["createReview"]) @aws_api_key @aws_cognito_user_pools
+  onUpdateReview(owner: String): Review @aws_subscribe(mutations: ["updateReview"]) @aws_api_key @aws_cognito_user_pools
+  onDeleteReview(owner: String): Review @aws_subscribe(mutations: ["deleteReview"]) @aws_api_key @aws_cognito_user_pools
+  onCreateBooking(owner: String): Booking @aws_subscribe(mutations: ["createBooking"]) @aws_api_key @aws_cognito_user_pools
+  onUpdateBooking(owner: String): Booking @aws_subscribe(mutations: ["updateBooking"]) @aws_api_key @aws_cognito_user_pools
+  onDeleteBooking(owner: String): Booking @aws_subscribe(mutations: ["deleteBooking"]) @aws_api_key @aws_cognito_user_pools
 }
 
 input PricingInput {
@@ -291,12 +385,6 @@ input HourlyPricingInput {
 
 input CategoryInput {
   name: String!
-}
-
-input ExtraInput {
-  name: String!
-  type: String
-  price: Float!
 }
 
 input CapacityInput {
@@ -392,7 +480,7 @@ type ModelReviewConnection @aws_api_key @aws_cognito_user_pools {
 
 input ModelReviewFilterInput {
   rating: ModelIntInput
-  review: ModelStringInput
+  comment: ModelStringInput
   and: [ModelReviewFilterInput]
   or: [ModelReviewFilterInput]
   not: ModelReviewFilterInput
@@ -402,7 +490,7 @@ input ModelReviewFilterInput {
 
 input ModelReviewConditionInput {
   rating: ModelIntInput
-  review: ModelStringInput
+  comment: ModelStringInput
   and: [ModelReviewConditionInput]
   or: [ModelReviewConditionInput]
   not: ModelReviewConditionInput
@@ -412,7 +500,7 @@ input ModelReviewConditionInput {
 
 input CreateReviewInput {
   rating: Int!
-  review: String
+  comment: String
   id: ID
   userReviewsId: ID
   venueReviewsId: ID
@@ -420,12 +508,74 @@ input CreateReviewInput {
 
 input UpdateReviewInput {
   rating: Int
-  review: String
+  comment: String
   userReviewsId: ID
   venueReviewsId: ID
 }
 
 input DeleteReviewInput {
+  id: ID!
+}
+
+type ModelBookingConnection @aws_api_key @aws_cognito_user_pools {
+  items: [Booking!]!
+  nextToken: String
+}
+
+input ModelSupportedCurrencyInput {
+  eq: SupportedCurrency
+  ne: SupportedCurrency
+}
+
+input ModelBookingStatusInput {
+  eq: BookingStatus
+  ne: BookingStatus
+}
+
+input ModelBookingFilterInput {
+  venueId: ModelIDInput
+  user: ModelStringInput
+  checkIn: ModelStringInput
+  checkOut: ModelStringInput
+  guestCount: ModelIntInput
+  totalCharge: ModelFloatInput
+  paymentCurrency: ModelSupportedCurrencyInput
+  paymentToken: ModelStringInput
+  status: ModelBookingStatusInput
+  and: [ModelBookingFilterInput]
+  or: [ModelBookingFilterInput]
+  not: ModelBookingFilterInput
+}
+
+input ModelBookingConditionInput {
+  venueId: ModelIDInput
+  user: ModelStringInput
+  checkIn: ModelStringInput
+  checkOut: ModelStringInput
+  guestCount: ModelIntInput
+  totalCharge: ModelFloatInput
+  paymentCurrency: ModelSupportedCurrencyInput
+  paymentToken: ModelStringInput
+  status: ModelBookingStatusInput
+  and: [ModelBookingConditionInput]
+  or: [ModelBookingConditionInput]
+  not: ModelBookingConditionInput
+}
+
+input UpdateBookingInput {
+  venueId: ID
+  user: String
+  checkIn: AWSDateTime
+  checkOut: AWSDateTime
+  guestCount: Int
+  extras: [BookingExtraInput!]
+  totalCharge: Float
+  paymentCurrency: SupportedCurrency
+  paymentToken: String
+  status: BookingStatus
+}
+
+input DeleteBookingInput {
   id: ID!
 }
 

@@ -1,6 +1,11 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const processBooking = /* GraphQL */ `
+  mutation ProcessBooking($input: CreateBookingInput!) {
+    processBooking(input: $input)
+  }
+`;
 export const createUser = /* GraphQL */ `
   mutation CreateUser(
     $input: CreateUserInput!
@@ -11,7 +16,7 @@ export const createUser = /* GraphQL */ `
       reviews {
         items {
           rating
-          review
+          comment
           id
           createdAt
           updatedAt
@@ -38,7 +43,7 @@ export const updateUser = /* GraphQL */ `
       reviews {
         items {
           rating
-          review
+          comment
           id
           createdAt
           updatedAt
@@ -65,7 +70,7 @@ export const deleteUser = /* GraphQL */ `
       reviews {
         items {
           rating
-          review
+          comment
           id
           createdAt
           updatedAt
@@ -139,7 +144,7 @@ export const createVenue = /* GraphQL */ `
       reviews {
         items {
           rating
-          review
+          comment
           id
           createdAt
           updatedAt
@@ -212,7 +217,7 @@ export const updateVenue = /* GraphQL */ `
       reviews {
         items {
           rating
-          review
+          comment
           id
           createdAt
           updatedAt
@@ -285,7 +290,7 @@ export const deleteVenue = /* GraphQL */ `
       reviews {
         items {
           rating
-          review
+          comment
           id
           createdAt
           updatedAt
@@ -359,7 +364,7 @@ export const createReview = /* GraphQL */ `
         owner
       }
       rating
-      review
+      comment
       id
       createdAt
       updatedAt
@@ -427,7 +432,7 @@ export const updateReview = /* GraphQL */ `
         owner
       }
       rating
-      review
+      comment
       id
       createdAt
       updatedAt
@@ -495,12 +500,102 @@ export const deleteReview = /* GraphQL */ `
         owner
       }
       rating
-      review
+      comment
       id
       createdAt
       updatedAt
       userReviewsId
       venueReviewsId
+      owner
+    }
+  }
+`;
+export const createBooking = /* GraphQL */ `
+  mutation CreateBooking(
+    $input: CreateBookingInput!
+    $condition: ModelBookingConditionInput
+  ) {
+    createBooking(input: $input, condition: $condition) {
+      venueId
+      user
+      checkIn
+      checkOut
+      guestCount
+      extras {
+        extra {
+          name
+          type
+          price
+        }
+        number
+      }
+      totalCharge
+      paymentCurrency
+      paymentToken
+      status
+      id
+      createdAt
+      updatedAt
+      owner
+    }
+  }
+`;
+export const updateBooking = /* GraphQL */ `
+  mutation UpdateBooking(
+    $input: UpdateBookingInput!
+    $condition: ModelBookingConditionInput
+  ) {
+    updateBooking(input: $input, condition: $condition) {
+      venueId
+      user
+      checkIn
+      checkOut
+      guestCount
+      extras {
+        extra {
+          name
+          type
+          price
+        }
+        number
+      }
+      totalCharge
+      paymentCurrency
+      paymentToken
+      status
+      id
+      createdAt
+      updatedAt
+      owner
+    }
+  }
+`;
+export const deleteBooking = /* GraphQL */ `
+  mutation DeleteBooking(
+    $input: DeleteBookingInput!
+    $condition: ModelBookingConditionInput
+  ) {
+    deleteBooking(input: $input, condition: $condition) {
+      venueId
+      user
+      checkIn
+      checkOut
+      guestCount
+      extras {
+        extra {
+          name
+          type
+          price
+        }
+        number
+      }
+      totalCharge
+      paymentCurrency
+      paymentToken
+      status
+      id
+      createdAt
+      updatedAt
       owner
     }
   }

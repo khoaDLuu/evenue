@@ -15,11 +15,15 @@
     "@aws-amplify/ui-components": "^1.9.6",
     "@storefront-ui/vue": "^0.11.4",
     "@types/leaflet": "^1.7.6",
+    "@vue-stripe/vue-stripe": "^4.4.1",
     "aws-amplify": "^4.3.10",
     "core-js": "^3.6.5",
+    "leaflet": "^1.7.1",
     "uuid": "^8.3.2",
     "vue": "^2.6.11",
-    "vue-router": "^3.5.3"
+    "vue-cal": "^3.10.1",
+    "vue-router": "^3.5.3",
+    "vue2-leaflet": "^2.7.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss7-compat": "^2.2.17",

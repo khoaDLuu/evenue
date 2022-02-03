@@ -21,7 +21,7 @@
       <p>
         The action is irreversible
         and will be successful only when the venue has no bookings.
-        Are you sure to continue?
+        Are you sure you want to continue?
       </p>
       <div class="flex flex-row justify-center mb-4">
         <SfButton

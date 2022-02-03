@@ -1,0 +1,98 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Parameters": {
+    "env": {
+      "Type": "String"
+    }
+  },
+  "Resources": {
+    "VenueRecommendationFCon": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "ImageUri": "310761885902.dkr.ecr.us-east-1.amazonaws.com/venuerecommendationprocessing:latest"
+        },
+        "FunctionName": "venueRecommendationProcessing",
+        "MemorySize": 10240,
+        "Timeout": 900,
+        "PackageType": "Image",
+        "Role": {
+          "Fn::GetAtt": [
+            "VRPRole",
+            "Arn"
+          ]
+        }
+      }
+    },
+    "VRPRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path": "/",
+        "Policies": [
+          {
+            "PolicyName": "VRPPolicy",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "ecr-public:BatchGetImage",
+                    "ecr-public:GetDownloadUrlForLayer",
+                    "ecr-public:InitiateLayerUpload"
+                  ],
+                  "Resource": [
+                    "arn:aws:ecr-public::310761885902:repository/*"
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "s3:ListBucket",
+                    "s3:PutObject",
+                    "s3:GetObject",
+                    "s3:DeleteObject"
+                  ],
+                  "Resource": [
+                    "arn:aws:s3:::evenuefs-recsys/*"
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+        ]
+      }
+    }
+  },
+  "Outputs": {
+    "VRPArn": {
+      "Description": "The Arn of VRP",
+      "Value": {
+        "Fn::GetAtt": [
+          "VenueRecommendationFCon",
+          "Arn"
+        ]
+      }
+    }
+  },
+  "Description": "{\"createdOn\":\"Linux\",\"createdBy\":\"Amplify\",\"createdWith\":\"7.5.3\",\"stackType\":\"custom-customCloudformation\",\"metadata\":{}}"
+}

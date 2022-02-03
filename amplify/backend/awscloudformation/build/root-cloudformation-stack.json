@@ -205,6 +205,68 @@
         }
       }
     },
+    "functionprocessPayment": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-230706-deployment/amplify-cfn-templates/function/processPayment-cloudformation-template.json",
+        "Parameters": {
+          "deploymentBucketName": "amplify-evenuefs-dev-230706-deployment",
+          "s3Key": "amplify-builds/processPayment-6e39763931534d726837-build.zip",
+          "env": "dev"
+        }
+      }
+    },
+    "functioncreateBooking": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-230706-deployment/amplify-cfn-templates/function/createBooking-cloudformation-template.json",
+        "Parameters": {
+          "deploymentBucketName": "amplify-evenuefs-dev-230706-deployment",
+          "s3Key": "amplify-builds/createBooking-386c7a416e52636c6e5a-build.zip",
+          "env": "dev"
+        }
+      }
+    },
+    "functionsentimentScoring": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-230706-deployment/amplify-cfn-templates/function/sentimentScoring-cloudformation-template.json",
+        "Parameters": {
+          "deploymentBucketName": "amplify-evenuefs-dev-230706-deployment",
+          "s3Key": "amplify-builds/sentimentScoring-37716d557471364e7a2b-build.zip",
+          "apievenuefsGraphQLAPIIdOutput": {
+            "Fn::GetAtt": [
+              "apievenuefs",
+              "Outputs.GraphQLAPIIdOutput"
+            ]
+          },
+          "env": "dev"
+        }
+      }
+    },
+    "functionmodelBuilding": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-230706-deployment/amplify-cfn-templates/function/modelBuilding-cloudformation-template.json",
+        "Parameters": {
+          "CloudWatchRule": "cron(32 2 * * ? *)",
+          "deploymentBucketName": "amplify-evenuefs-dev-230706-deployment",
+          "s3Key": "amplify-builds/modelBuilding-6c2b2b717259557a5071-build.zip",
+          "env": "dev"
+        }
+      }
+    },
+    "functionrecommendVenues": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-230706-deployment/amplify-cfn-templates/function/recommendVenues-cloudformation-template.json",
+        "Parameters": {
+          "deploymentBucketName": "amplify-evenuefs-dev-230706-deployment",
+          "s3Key": "amplify-builds/recommendVenues-53754b5a555562324d35-build.zip",
+          "env": "dev"
+        }
+      }
+    },
     "authevenuefs43bab20a": {
       "Type": "AWS::CloudFormation::Stack",
       "Properties": {
@@ -278,7 +340,7 @@
             ]
           },
           "S3DeploymentBucket": "amplify-evenuefs-dev-230706-deployment",
-          "S3DeploymentRootKey": "amplify-appsync-files/b670234583a462fe8c28629d4984b404f5383712",
+          "S3DeploymentRootKey": "amplify-appsync-files/231105affa1f008445edd14c66b5231d957ee01d",
           "env": "dev"
         }
       }
@@ -322,6 +384,45 @@
           "s3PermissionsAuthenticatedUploads": "s3:PutObject",
           "s3PermissionsGuestPublic": "s3:GetObject",
           "s3PermissionsGuestUploads": "DISALLOW",
+          "env": "dev"
+        }
+      }
+    },
+    "storagersratings": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-230706-deployment/amplify-cfn-templates/storage/rsratings-cloudformation-template.json",
+        "Parameters": {
+          "tableName": "rsratings",
+          "partitionKeyName": "id",
+          "partitionKeyType": "S",
+          "env": "dev"
+        }
+      }
+    },
+    "customsentimentScoringLambdaContainer": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-230706-deployment/amplify-cfn-templates/custom/sentimentScoringLambdaContainer-cloudformation-template.json",
+        "Parameters": {
+          "env": "dev"
+        }
+      }
+    },
+    "custommodelBuildingLambdaContainer": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-230706-deployment/amplify-cfn-templates/custom/modelBuildingLambdaContainer-cloudformation-template.json",
+        "Parameters": {
+          "env": "dev"
+        }
+      }
+    },
+    "customvenueRecommendationLambdaContainer": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-230706-deployment/amplify-cfn-templates/custom/venueRecommendationLambdaContainer-cloudformation-template.json",
+        "Parameters": {
           "env": "dev"
         }
       }

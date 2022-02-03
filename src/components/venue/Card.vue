@@ -64,9 +64,7 @@ export default {
     openViewPage() {
       this.$router.push({
         name: 'venue-details',
-        params: {
-          // venueId: Math.floor(Math.random() * 1000).toString(),
-        }
+        params: { venueId: this.venue.id },
       })
     }
   }
