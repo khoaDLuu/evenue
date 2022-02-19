@@ -15,7 +15,7 @@ const retrieveRecommendations = async (user) => {
 const retrieveVenues = async (venueIds) => {
     let queryParams = {
         "RequestItems": {
-            "Venue-zcfpgzto5veatbqkwb4cskchiu-dev": {
+            "Venue-2u7klnf7oba3lc5r5jvdeirwa4-dev": {
                 Keys: venueIds.map(vid => ({ 'id': vid })),
                 ProjectionExpression: 'id, name, headline, description, photos, city, pricing, type, published, capacity, reviews, owner'
             }

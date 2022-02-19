@@ -5,8 +5,10 @@
     "fieldName": "id",
     "fieldType": "string"
   },
+  "sortKey": {
+    "fieldName": "created_at",
+    "fieldType": "string"
+  },
   "gsi": [],
-  "triggerFunctions": [
-    "rsratingsTrigger975fa8a4"
-  ]
+  "triggerFunctions": []
 }

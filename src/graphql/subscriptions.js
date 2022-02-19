@@ -5,6 +5,15 @@ export const onCreateUser = /* GraphQL */ `
   subscription OnCreateUser($owner: String) {
     onCreateUser(owner: $owner) {
       name
+      profile {
+        firstName
+        lastName
+        email
+        phone
+        picture {
+          name
+        }
+      }
       reviews {
         items {
           rating
@@ -29,6 +38,15 @@ export const onUpdateUser = /* GraphQL */ `
   subscription OnUpdateUser($owner: String) {
     onUpdateUser(owner: $owner) {
       name
+      profile {
+        firstName
+        lastName
+        email
+        phone
+        picture {
+          name
+        }
+      }
       reviews {
         items {
           rating
@@ -53,6 +71,15 @@ export const onDeleteUser = /* GraphQL */ `
   subscription OnDeleteUser($owner: String) {
     onDeleteUser(owner: $owner) {
       name
+      profile {
+        firstName
+        lastName
+        email
+        phone
+        picture {
+          name
+        }
+      }
       reviews {
         items {
           rating
@@ -329,6 +356,12 @@ export const onCreateReview = /* GraphQL */ `
       }
       user {
         name
+        profile {
+          firstName
+          lastName
+          email
+          phone
+        }
         reviews {
           nextToken
         }
@@ -394,6 +427,12 @@ export const onUpdateReview = /* GraphQL */ `
       }
       user {
         name
+        profile {
+          firstName
+          lastName
+          email
+          phone
+        }
         reviews {
           nextToken
         }
@@ -459,6 +498,12 @@ export const onDeleteReview = /* GraphQL */ `
       }
       user {
         name
+        profile {
+          firstName
+          lastName
+          email
+          phone
+        }
         reviews {
           nextToken
         }

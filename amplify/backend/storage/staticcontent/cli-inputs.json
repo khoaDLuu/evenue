@@ -1,6 +1,6 @@
 {
   "resourceName": "staticcontent",
-  "policyUUID": "0f13d468",
+  "policyUUID": "29e22e4c",
   "bucketName": "evenuestaticfiles",
   "storageAccess": "authAndGuest",
   "guestAccess": [

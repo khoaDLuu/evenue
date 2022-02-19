@@ -79,7 +79,8 @@
                   :key="j"
                   class="list__item"
                 >
-                  <SfMenuItem :label="item.label" :count="item.count" />
+                  <!-- <SfMenuItem :label="item.label" :count="item.count" /> -->
+                  <SfMenuItem :label="item.label" />
                 </SfListItem>
               </SfList>
             </template>

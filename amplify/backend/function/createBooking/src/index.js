@@ -2,7 +2,7 @@ const { v4: uuidv4 } = require("uuid");
 const AWS = require("aws-sdk");
 const documentClient = new AWS.DynamoDB.DocumentClient();
 
-const BOOKING_TABLE = "Booking-zcfpgzto5veatbqkwb4cskchiu-dev";
+const BOOKING_TABLE = "Booking-2u7klnf7oba3lc5r5jvdeirwa4-dev";
 const BOOKING_TYPE = "Booking";
 
 const createBooking = async (payload) => {

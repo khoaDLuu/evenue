@@ -6,15 +6,15 @@
     "gqlSchemaPath": "/mnt/kspace/Dev/EVENUE/evenuefs/amplify/backend/api/evenuefs/schema.graphql",
     "defaultAuthType": {
       "mode": "AMAZON_COGNITO_USER_POOLS",
-      "cognitoUserPoolId": "authevenuefs43bab20a"
+      "cognitoUserPoolId": "authevenuefs81b9bb47"
     },
     "conflictResolution": {},
     "additionalAuthTypes": [
       {
         "mode": "API_KEY",
-        "expirationTime": 14,
-        "apiKeyExpirationDate": "2022-02-05T10:36:32.657Z",
-        "keyDescription": "devapikey"
+        "expirationTime": 45,
+        "apiKeyExpirationDate": "2022-04-04T19:46:21.811Z",
+        "keyDescription": "evenueapikey"
       }
     ]
   }

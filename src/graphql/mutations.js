@@ -13,6 +13,15 @@ export const createUser = /* GraphQL */ `
   ) {
     createUser(input: $input, condition: $condition) {
       name
+      profile {
+        firstName
+        lastName
+        email
+        phone
+        picture {
+          name
+        }
+      }
       reviews {
         items {
           rating
@@ -40,6 +49,15 @@ export const updateUser = /* GraphQL */ `
   ) {
     updateUser(input: $input, condition: $condition) {
       name
+      profile {
+        firstName
+        lastName
+        email
+        phone
+        picture {
+          name
+        }
+      }
       reviews {
         items {
           rating
@@ -67,6 +85,15 @@ export const deleteUser = /* GraphQL */ `
   ) {
     deleteUser(input: $input, condition: $condition) {
       name
+      profile {
+        firstName
+        lastName
+        email
+        phone
+        picture {
+          name
+        }
+      }
       reviews {
         items {
           rating
@@ -355,6 +382,12 @@ export const createReview = /* GraphQL */ `
       }
       user {
         name
+        profile {
+          firstName
+          lastName
+          email
+          phone
+        }
         reviews {
           nextToken
         }
@@ -423,6 +456,12 @@ export const updateReview = /* GraphQL */ `
       }
       user {
         name
+        profile {
+          firstName
+          lastName
+          email
+          phone
+        }
         reviews {
           nextToken
         }
@@ -491,6 +530,12 @@ export const deleteReview = /* GraphQL */ `
       }
       user {
         name
+        profile {
+          firstName
+          lastName
+          email
+          phone
+        }
         reviews {
           nextToken
         }

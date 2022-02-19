@@ -15,7 +15,7 @@
         "dynamodb:ListStreams"
     ],
     "Resource": [
-      "arn:aws:dynamodb:us-east-1:310761885902:table/Review-zcfpgzto5veatbqkwb4cskchiu-dev/stream/2021-12-08T01:53:32.143"
+      "arn:aws:dynamodb:us-east-1:310761885902:table/Review-2u7klnf7oba3lc5r5jvdeirwa4-dev/stream/2022-02-18T20:49:33.613"
     ]
   },
   {

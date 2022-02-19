@@ -3,19 +3,15 @@
 
 const awsmobile = {
     "aws_project_region": "us-east-1",
-    "aws_cognito_identity_pool_id": "us-east-1:e8f368dd-f0c4-4d29-bfc7-4783add9af21",
+    "aws_cognito_identity_pool_id": "us-east-1:caeb9a47-f950-4f3d-a93c-5c684fbab01a",
     "aws_cognito_region": "us-east-1",
-    "aws_user_pools_id": "us-east-1_9SMRfxG8C",
-    "aws_user_pools_web_client_id": "7tln1js79i0fb3am0b87r556r0",
+    "aws_user_pools_id": "us-east-1_0UgU6K4E3",
+    "aws_user_pools_web_client_id": "5d201n2a38lcl6rmum6nj38bj3",
     "oauth": {},
-    "aws_cognito_username_attributes": [
-        "EMAIL"
-    ],
+    "aws_cognito_username_attributes": [],
     "aws_cognito_social_providers": [],
     "aws_cognito_signup_attributes": [
-        "EMAIL",
-        "FAMILY_NAME",
-        "GIVEN_NAME"
+        "EMAIL"
     ],
     "aws_cognito_mfa_configuration": "OFF",
     "aws_cognito_mfa_types": [
@@ -28,14 +24,14 @@ const awsmobile = {
     "aws_cognito_verification_mechanisms": [
         "EMAIL"
     ],
-    "aws_appsync_graphqlEndpoint": "https://zkitogbwqjf6zo462ehlzbfwka.appsync-api.us-east-1.amazonaws.com/graphql",
+    "aws_appsync_graphqlEndpoint": "https://ttuoetvwwrchjma3wdan6vxocu.appsync-api.us-east-1.amazonaws.com/graphql",
     "aws_appsync_region": "us-east-1",
     "aws_appsync_authenticationType": "AMAZON_COGNITO_USER_POOLS",
-    "aws_appsync_apiKey": "da2-hzp4rytmkbhvliyuwkrbqbzgou",
-    "aws_content_delivery_bucket": "evenuefs-20211215191307-hostingbucket-dev",
+    "aws_appsync_apiKey": "da2-3iho3euo4ncpncldb2umka2dee",
+    "aws_content_delivery_bucket": "evenuefshb-dev",
     "aws_content_delivery_bucket_region": "us-east-1",
-    "aws_content_delivery_url": "http://evenuefs-20211215191307-hostingbucket-dev.s3-website-us-east-1.amazonaws.com",
-    "aws_user_files_s3_bucket": "evenuestaticfiles230706-dev",
+    "aws_content_delivery_url": "https://d3bk0ejig4ycn5.cloudfront.net",
+    "aws_user_files_s3_bucket": "evenuestaticfiles22530-dev",
     "aws_user_files_s3_bucket_region": "us-east-1",
     "aws_dynamodb_all_tables_region": "us-east-1",
     "aws_dynamodb_table_schemas": [

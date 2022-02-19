@@ -1,10 +1,10 @@
 {
   "version": "1",
   "cognitoConfig": {
-    "identityPoolName": "evenuefs43bab20a_identitypool_43bab20a",
+    "identityPoolName": "evenuefs81b9bb47_identitypool_81b9bb47",
     "allowUnauthenticatedIdentities": true,
-    "resourceNameTruncated": "evenue43bab20a",
-    "userPoolName": "evenuefs43bab20a_userpool_43bab20a",
+    "resourceNameTruncated": "evenue81b9bb47",
+    "userPoolName": "evenuefs81b9bb47_userpool_81b9bb47",
     "autoVerifiedAttributes": [
       "email"
     ],
@@ -20,9 +20,7 @@
     "passwordPolicyMinLength": 8,
     "passwordPolicyCharacters": [],
     "requiredAttributes": [
-      "email",
-      "family_name",
-      "given_name"
+      "email"
     ],
     "aliasAttributes": [],
     "userpoolClientGenerateSecret": false,
@@ -33,15 +31,12 @@
     "userpoolClientReadAttributes": [
       "email"
     ],
-    "userpoolClientLambdaRole": "evenue43bab20a_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "evenue81b9bb47_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "43bab20a",
-    "resourceName": "evenuefs43bab20a",
+    "sharedId": "81b9bb47",
+    "resourceName": "evenuefs81b9bb47",
     "authSelections": "identityPoolAndUserPool",
     "useDefault": "default",
-    "usernameAttributes": [
-      "email"
-    ],
     "triggers": {
       "CustomMessage": [
         "verification-link"
@@ -49,7 +44,7 @@
     },
     "userPoolGroupList": [],
     "serviceName": "Cognito",
-    "verificationBucketName": "evenuefs43bab20averificationbucket",
+    "verificationBucketName": "evenuefs81b9bb47verificationbucket",
     "usernameCaseSensitive": false,
     "useEnabledMfas": true,
     "authRoleArn": {
@@ -68,7 +63,7 @@
     "dependsOn": [
       {
         "category": "function",
-        "resourceName": "evenuefs43bab20aCustomMessage",
+        "resourceName": "evenuefs81b9bb47CustomMessage",
         "triggerProvider": "Cognito",
         "attributes": [
           "Arn",
@@ -78,7 +73,7 @@
     ],
     "permissions": [],
     "authTriggerConnections": [
-      "{\"triggerType\":\"CustomMessage\",\"lambdaFunctionName\":\"evenuefs43bab20aCustomMessage\"}"
+      "{\"triggerType\":\"CustomMessage\",\"lambdaFunctionName\":\"evenuefs81b9bb47CustomMessage\"}"
     ]
   }
 }

@@ -3,6 +3,38 @@
   "Parameters": {
     "env": {
       "Type": "String"
+    },
+    "storagersratingsName": {
+      "Type": "String",
+      "Description": "Input parameter describing Name attribute for storage/rsratings resource"
+    },
+    "storagersratingsArn": {
+      "Type": "String",
+      "Description": "Input parameter describing Arn attribute for storage/rsratings resource"
+    },
+    "storagersratingsStreamArn": {
+      "Type": "String",
+      "Description": "Input parameter describing StreamArn attribute for storage/rsratings resource"
+    },
+    "storagersratingsPartitionKeyName": {
+      "Type": "String",
+      "Description": "Input parameter describing PartitionKeyName attribute for storage/rsratings resource"
+    },
+    "storagersratingsPartitionKeyType": {
+      "Type": "String",
+      "Description": "Input parameter describing PartitionKeyType attribute for storage/rsratings resource"
+    },
+    "storagersratingsSortKeyName": {
+      "Type": "String",
+      "Description": "Input parameter describing SortKeyName attribute for storage/rsratings resource"
+    },
+    "storagersratingsSortKeyType": {
+      "Type": "String",
+      "Description": "Input parameter describing SortKeyType attribute for storage/rsratings resource"
+    },
+    "storagersratingsRegion": {
+      "Type": "String",
+      "Description": "Input parameter describing Region attribute for storage/rsratings resource"
     }
   },
   "Resources": {

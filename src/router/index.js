@@ -8,6 +8,8 @@ import VenueList from "../views/VenueList.vue"
 import VenueEdit from "../views/VenueEdit.vue"
 import VenueDetails from "../views/VenueDetails.vue"
 import Booking from "../views/Booking.vue"
+import BookingList from "../views/BookingList.vue"
+import Account from "../views/Account.vue"
 import NotFound from "../views/NotFound.vue"
 
 Vue.use(VueRouter)
@@ -49,6 +51,24 @@ const routes = [
     path: '/bookings/new',
     name: 'booking',
     component: Booking,
+    props: true,
+  },
+  {
+    path: '/bookings/yours',
+    name: 'booking',
+    component: BookingList,
+    props: true,
+  },
+  {
+    path: '/users/:userId(\\b[0-9a-f]{8}\\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\\b[0-9a-f]{12}\\b)',
+    name: 'user-profile',
+    component: Account,
+    props: true,
+  },
+  {
+    path: '/profile',
+    name: 'your-profile',
+    component: Account,
     props: true,
   },
   {

@@ -1,10 +1,92 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const recommendVenues = /* GraphQL */ `
+  query RecommendVenues($limit: Int) {
+    recommendVenues(limit: $limit) {
+      id
+      name
+      headline
+      description
+      photos {
+        name
+        fullsize {
+          region
+          bucket
+          key
+        }
+        thumbnails {
+          region
+          bucket
+          key
+        }
+      }
+      city
+      pricing {
+        currency
+        perHour {
+          startHour
+          endHour
+          price
+        }
+        perDay
+      }
+      type {
+        name
+      }
+      published
+      capacity {
+        unit
+        floorSize
+        recommendedGuestCount
+      }
+      reviews {
+        venue {
+          id
+          name
+          headline
+          description
+          address
+          city
+          eventTypes
+          published
+          owner
+          createdAt
+          updatedAt
+        }
+        user {
+          name
+          id
+          createdAt
+          updatedAt
+          owner
+        }
+        rating
+        comment
+        id
+        createdAt
+        updatedAt
+        userReviewsId
+        venueReviewsId
+        owner
+      }
+      owner
+    }
+  }
+`;
 export const getUser = /* GraphQL */ `
   query GetUser($id: ID!) {
     getUser(id: $id) {
       name
+      profile {
+        firstName
+        lastName
+        email
+        phone
+        picture {
+          name
+        }
+      }
       reviews {
         items {
           rating
@@ -34,6 +116,12 @@ export const listUsers = /* GraphQL */ `
     listUsers(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         name
+        profile {
+          firstName
+          lastName
+          email
+          phone
+        }
         reviews {
           nextToken
         }
@@ -214,6 +302,12 @@ export const getReview = /* GraphQL */ `
       }
       user {
         name
+        profile {
+          firstName
+          lastName
+          email
+          phone
+        }
         reviews {
           nextToken
         }

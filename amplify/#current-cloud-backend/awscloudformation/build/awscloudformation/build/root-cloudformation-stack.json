@@ -155,52 +155,52 @@
     "AuthTriggerCustomLambdaStack": {
       "Type": "AWS::CloudFormation::Stack",
       "Properties": {
-        "TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-230706-deployment/amplify-cfn-templates/auth/auth-trigger-cloudformation-template.json",
+        "TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-22530-deployment/amplify-cfn-templates/auth/auth-trigger-cloudformation-template.json",
         "Parameters": {
           "env": "dev",
           "userpoolId": {
             "Fn::GetAtt": [
-              "authevenuefs43bab20a",
+              "authevenuefs81b9bb47",
               "Outputs.UserPoolId"
             ]
           },
           "userpoolArn": {
             "Fn::GetAtt": [
-              "authevenuefs43bab20a",
+              "authevenuefs81b9bb47",
               "Outputs.UserPoolArn"
             ]
           },
-          "functionevenuefs43bab20aCustomMessageArn": {
+          "functionevenuefs81b9bb47CustomMessageArn": {
             "Fn::GetAtt": [
-              "functionevenuefs43bab20aCustomMessage",
+              "functionevenuefs81b9bb47CustomMessage",
               "Outputs.Arn"
             ]
           },
-          "functionevenuefs43bab20aCustomMessageName": {
+          "functionevenuefs81b9bb47CustomMessageName": {
             "Fn::GetAtt": [
-              "functionevenuefs43bab20aCustomMessage",
+              "functionevenuefs81b9bb47CustomMessage",
               "Outputs.Name"
             ]
           }
         }
       },
       "DependsOn": [
-        "authevenuefs43bab20a",
-        "functionevenuefs43bab20aCustomMessage"
+        "authevenuefs81b9bb47",
+        "functionevenuefs81b9bb47CustomMessage"
       ]
     },
-    "functionevenuefs43bab20aCustomMessage": {
+    "functionevenuefs81b9bb47CustomMessage": {
       "Type": "AWS::CloudFormation::Stack",
       "Properties": {
-        "TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-230706-deployment/amplify-cfn-templates/function/evenuefs43bab20aCustomMessage-cloudformation-template.json",
+        "TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-22530-deployment/amplify-cfn-templates/function/evenuefs81b9bb47CustomMessage-cloudformation-template.json",
         "Parameters": {
           "modules": "verification-link",
-          "resourceName": "evenuefs43bab20aCustomMessage",
-          "REDIRECTURL": "/",
-          "EMAILSUBJECT": "Evenue Account Confirmation",
-          "EMAILMESSAGE": "Hi, it is a pleasure to have you joining us! Click the link below to verify your email address. If you did not register for Evenue, please ignore this email.",
-          "deploymentBucketName": "amplify-evenuefs-dev-230706-deployment",
-          "s3Key": "amplify-builds/evenuefs43bab20aCustomMessage-7357567575536b4b386a-build.zip",
+          "resourceName": "evenuefs81b9bb47CustomMessage",
+          "REDIRECTURL": "",
+          "EMAILSUBJECT": "Thank you for signing up for Evenue",
+          "EMAILMESSAGE": "Welcome! Thank you so much for becoming a part of our list!",
+          "deploymentBucketName": "amplify-evenuefs-dev-22530-deployment",
+          "s3Key": "amplify-builds/evenuefs81b9bb47CustomMessage-7544374c776371433363-build.zip",
           "env": "dev"
         }
       }
@@ -208,10 +208,10 @@
     "functionprocessPayment": {
       "Type": "AWS::CloudFormation::Stack",
       "Properties": {
-        "TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-230706-deployment/amplify-cfn-templates/function/processPayment-cloudformation-template.json",
+        "TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-22530-deployment/amplify-cfn-templates/function/processPayment-cloudformation-template.json",
         "Parameters": {
-          "deploymentBucketName": "amplify-evenuefs-dev-230706-deployment",
-          "s3Key": "amplify-builds/processPayment-6e39763931534d726837-build.zip",
+          "deploymentBucketName": "amplify-evenuefs-dev-22530-deployment",
+          "s3Key": "amplify-builds/processPayment-326b643973644f525a44-build.zip",
           "env": "dev"
         }
       }
@@ -219,10 +219,21 @@
     "functioncreateBooking": {
       "Type": "AWS::CloudFormation::Stack",
       "Properties": {
-        "TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-230706-deployment/amplify-cfn-templates/function/createBooking-cloudformation-template.json",
+        "TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-22530-deployment/amplify-cfn-templates/function/createBooking-cloudformation-template.json",
         "Parameters": {
-          "deploymentBucketName": "amplify-evenuefs-dev-230706-deployment",
-          "s3Key": "amplify-builds/createBooking-386c7a416e52636c6e5a-build.zip",
+          "deploymentBucketName": "amplify-evenuefs-dev-22530-deployment",
+          "s3Key": "amplify-builds/createBooking-32597a3337584146484b-build.zip",
+          "env": "dev"
+        }
+      }
+    },
+    "functionrecommendVenues": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-22530-deployment/amplify-cfn-templates/function/recommendVenues-cloudformation-template.json",
+        "Parameters": {
+          "deploymentBucketName": "amplify-evenuefs-dev-22530-deployment",
+          "s3Key": "amplify-builds/recommendVenues-625834744f515952616c-build.zip",
           "env": "dev"
         }
       }
@@ -230,14 +241,38 @@
     "functionsentimentScoring": {
       "Type": "AWS::CloudFormation::Stack",
       "Properties": {
-        "TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-230706-deployment/amplify-cfn-templates/function/sentimentScoring-cloudformation-template.json",
+        "TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-22530-deployment/amplify-cfn-templates/function/sentimentScoring-cloudformation-template.json",
         "Parameters": {
-          "deploymentBucketName": "amplify-evenuefs-dev-230706-deployment",
+          "deploymentBucketName": "amplify-evenuefs-dev-22530-deployment",
           "s3Key": "amplify-builds/sentimentScoring-37716d557471364e7a2b-build.zip",
           "apievenuefsGraphQLAPIIdOutput": {
             "Fn::GetAtt": [
               "apievenuefs",
               "Outputs.GraphQLAPIIdOutput"
+            ]
+          },
+          "apievenuefsGraphQLAPIEndpointOutput": {
+            "Fn::GetAtt": [
+              "apievenuefs",
+              "Outputs.GraphQLAPIEndpointOutput"
+            ]
+          },
+          "storagersratingsName": {
+            "Fn::GetAtt": [
+              "storagersratings",
+              "Outputs.Name"
+            ]
+          },
+          "storagersratingsArn": {
+            "Fn::GetAtt": [
+              "storagersratings",
+              "Outputs.Arn"
+            ]
+          },
+          "storagersratingsStreamArn": {
+            "Fn::GetAtt": [
+              "storagersratings",
+              "Outputs.StreamArn"
             ]
           },
           "env": "dev"
@@ -247,35 +282,24 @@
     "functionmodelBuilding": {
       "Type": "AWS::CloudFormation::Stack",
       "Properties": {
-        "TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-230706-deployment/amplify-cfn-templates/function/modelBuilding-cloudformation-template.json",
+        "TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-22530-deployment/amplify-cfn-templates/function/modelBuilding-cloudformation-template.json",
         "Parameters": {
-          "CloudWatchRule": "cron(32 2 * * ? *)",
-          "deploymentBucketName": "amplify-evenuefs-dev-230706-deployment",
+          "CloudWatchRule": "cron(11 4 * * ? *)",
+          "deploymentBucketName": "amplify-evenuefs-dev-22530-deployment",
           "s3Key": "amplify-builds/modelBuilding-6c2b2b717259557a5071-build.zip",
           "env": "dev"
         }
       }
     },
-    "functionrecommendVenues": {
+    "authevenuefs81b9bb47": {
       "Type": "AWS::CloudFormation::Stack",
       "Properties": {
-        "TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-230706-deployment/amplify-cfn-templates/function/recommendVenues-cloudformation-template.json",
+        "TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-22530-deployment/amplify-cfn-templates/auth/evenuefs81b9bb47-cloudformation-template.json",
         "Parameters": {
-          "deploymentBucketName": "amplify-evenuefs-dev-230706-deployment",
-          "s3Key": "amplify-builds/recommendVenues-53754b5a555562324d35-build.zip",
-          "env": "dev"
-        }
-      }
-    },
-    "authevenuefs43bab20a": {
-      "Type": "AWS::CloudFormation::Stack",
-      "Properties": {
-        "TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-230706-deployment/amplify-cfn-templates/auth/evenuefs43bab20a-cloudformation-template.json",
-        "Parameters": {
-          "identityPoolName": "evenuefs43bab20a_identitypool_43bab20a",
+          "identityPoolName": "evenuefs81b9bb47_identitypool_81b9bb47",
           "allowUnauthenticatedIdentities": true,
-          "resourceNameTruncated": "evenue43bab20a",
-          "userPoolName": "evenuefs43bab20a_userpool_43bab20a",
+          "resourceNameTruncated": "evenue81b9bb47",
+          "userPoolName": "evenuefs81b9bb47_userpool_81b9bb47",
           "autoVerifiedAttributes": "email",
           "mfaConfiguration": "OFF",
           "mfaTypes": "SMS Text Message",
@@ -286,23 +310,22 @@
           "defaultPasswordPolicy": false,
           "passwordPolicyMinLength": 8,
           "passwordPolicyCharacters": "",
-          "requiredAttributes": "email,family_name,given_name",
+          "requiredAttributes": "email",
           "aliasAttributes": "",
           "userpoolClientGenerateSecret": false,
           "userpoolClientRefreshTokenValidity": 30,
           "userpoolClientWriteAttributes": "email",
           "userpoolClientReadAttributes": "email",
-          "userpoolClientLambdaRole": "evenue43bab20a_userpoolclient_lambda_role",
+          "userpoolClientLambdaRole": "evenue81b9bb47_userpoolclient_lambda_role",
           "userpoolClientSetAttributes": false,
-          "sharedId": "43bab20a",
-          "resourceName": "evenuefs43bab20a",
+          "sharedId": "81b9bb47",
+          "resourceName": "evenuefs81b9bb47",
           "authSelections": "identityPoolAndUserPool",
           "useDefault": "default",
-          "usernameAttributes": "email",
           "triggers": "{\"CustomMessage\":[\"verification-link\"]}",
           "userPoolGroupList": "",
           "serviceName": "Cognito",
-          "verificationBucketName": "evenuefs43bab20averificationbucket",
+          "verificationBucketName": "evenuefs81b9bb47verificationbucket",
           "usernameCaseSensitive": false,
           "useEnabledMfas": true,
           "authRoleArn": {
@@ -320,7 +343,7 @@
           "breakCircularDependency": true,
           "dependsOn": "[object Object]",
           "permissions": "",
-          "authTriggerConnections": "{\"triggerType\":\"CustomMessage\",\"lambdaFunctionName\":\"evenuefs43bab20aCustomMessage\"}",
+          "authTriggerConnections": "{\"triggerType\":\"CustomMessage\",\"lambdaFunctionName\":\"evenuefs81b9bb47CustomMessage\"}",
           "env": "dev"
         }
       }
@@ -328,19 +351,19 @@
     "apievenuefs": {
       "Type": "AWS::CloudFormation::Stack",
       "Properties": {
-        "TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-230706-deployment/amplify-cfn-templates/api/cloudformation-template.json",
+        "TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-22530-deployment/amplify-cfn-templates/api/cloudformation-template.json",
         "Parameters": {
           "AppSyncApiName": "evenuefs",
           "DynamoDBBillingMode": "PAY_PER_REQUEST",
           "DynamoDBEnableServerSideEncryption": false,
           "AuthCognitoUserPoolId": {
             "Fn::GetAtt": [
-              "authevenuefs43bab20a",
+              "authevenuefs81b9bb47",
               "Outputs.UserPoolId"
             ]
           },
-          "S3DeploymentBucket": "amplify-evenuefs-dev-230706-deployment",
-          "S3DeploymentRootKey": "amplify-appsync-files/231105affa1f008445edd14c66b5231d957ee01d",
+          "S3DeploymentBucket": "amplify-evenuefs-dev-22530-deployment",
+          "S3DeploymentRootKey": "amplify-appsync-files/3609d735d76731d77bedcb8ed449c71730dbc58b",
           "env": "dev"
         }
       }
@@ -348,9 +371,9 @@
     "hostingS3AndCloudFront": {
       "Type": "AWS::CloudFormation::Stack",
       "Properties": {
-        "TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-230706-deployment/amplify-cfn-templates/hosting/template.json",
+        "TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-22530-deployment/amplify-cfn-templates/hosting/template.json",
         "Parameters": {
-          "bucketName": "evenuefs-20211215191307-hostingbucket",
+          "bucketName": "evenuefshb",
           "env": "dev"
         }
       }
@@ -358,7 +381,7 @@
     "storagestaticcontent": {
       "Type": "AWS::CloudFormation::Stack",
       "Properties": {
-        "TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-230706-deployment/amplify-cfn-templates/storage/cloudformation-template.json",
+        "TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-22530-deployment/amplify-cfn-templates/storage/cloudformation-template.json",
         "Parameters": {
           "bucketName": "evenuestaticfiles",
           "selectedGuestPermissions": "s3:GetObject,s3:ListBucket",
@@ -369,13 +392,13 @@
           "authRoleName": {
             "Ref": "AuthRoleName"
           },
-          "s3PrivatePolicy": "Private_policy_0f13d468",
-          "s3ProtectedPolicy": "Protected_policy_0f13d468",
-          "s3PublicPolicy": "Public_policy_0f13d468",
-          "s3ReadPolicy": "read_policy_0f13d468",
-          "s3UploadsPolicy": "Uploads_policy_0f13d468",
-          "authPolicyName": "s3_amplify_0f13d468",
-          "unauthPolicyName": "s3_amplify_0f13d468",
+          "s3PrivatePolicy": "Private_policy_29e22e4c",
+          "s3ProtectedPolicy": "Protected_policy_29e22e4c",
+          "s3PublicPolicy": "Public_policy_29e22e4c",
+          "s3ReadPolicy": "read_policy_29e22e4c",
+          "s3UploadsPolicy": "Uploads_policy_29e22e4c",
+          "authPolicyName": "s3_amplify_29e22e4c",
+          "unauthPolicyName": "s3_amplify_29e22e4c",
           "AuthenticatedAllowList": "ALLOW",
           "GuestAllowList": "ALLOW",
           "s3PermissionsAuthenticatedPrivate": "s3:PutObject,s3:GetObject,s3:DeleteObject",
@@ -391,11 +414,22 @@
     "storagersratings": {
       "Type": "AWS::CloudFormation::Stack",
       "Properties": {
-        "TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-230706-deployment/amplify-cfn-templates/storage/rsratings-cloudformation-template.json",
+        "TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-22530-deployment/amplify-cfn-templates/storage/rsratings-cloudformation-template.json",
         "Parameters": {
           "tableName": "rsratings",
           "partitionKeyName": "id",
           "partitionKeyType": "S",
+          "sortKeyName": "created_at",
+          "sortKeyType": "S",
+          "env": "dev"
+        }
+      }
+    },
+    "customvenueRecommendationLambdaContainer": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-22530-deployment/amplify-cfn-templates/custom/venueRecommendationLambdaContainer-cloudformation-template.json",
+        "Parameters": {
           "env": "dev"
         }
       }
@@ -403,7 +437,7 @@
     "customsentimentScoringLambdaContainer": {
       "Type": "AWS::CloudFormation::Stack",
       "Properties": {
-        "TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-230706-deployment/amplify-cfn-templates/custom/sentimentScoringLambdaContainer-cloudformation-template.json",
+        "TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-22530-deployment/amplify-cfn-templates/custom/sentimentScoringLambdaContainer-cloudformation-template.json",
         "Parameters": {
           "env": "dev"
         }
@@ -412,17 +446,56 @@
     "custommodelBuildingLambdaContainer": {
       "Type": "AWS::CloudFormation::Stack",
       "Properties": {
-        "TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-230706-deployment/amplify-cfn-templates/custom/modelBuildingLambdaContainer-cloudformation-template.json",
+        "TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-22530-deployment/amplify-cfn-templates/custom/modelBuildingLambdaContainer-cloudformation-template.json",
         "Parameters": {
-          "env": "dev"
-        }
-      }
-    },
-    "customvenueRecommendationLambdaContainer": {
-      "Type": "AWS::CloudFormation::Stack",
-      "Properties": {
-        "TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-230706-deployment/amplify-cfn-templates/custom/venueRecommendationLambdaContainer-cloudformation-template.json",
-        "Parameters": {
+          "storagersratingsName": {
+            "Fn::GetAtt": [
+              "storagersratings",
+              "Outputs.Name"
+            ]
+          },
+          "storagersratingsArn": {
+            "Fn::GetAtt": [
+              "storagersratings",
+              "Outputs.Arn"
+            ]
+          },
+          "storagersratingsStreamArn": {
+            "Fn::GetAtt": [
+              "storagersratings",
+              "Outputs.StreamArn"
+            ]
+          },
+          "storagersratingsPartitionKeyName": {
+            "Fn::GetAtt": [
+              "storagersratings",
+              "Outputs.PartitionKeyName"
+            ]
+          },
+          "storagersratingsPartitionKeyType": {
+            "Fn::GetAtt": [
+              "storagersratings",
+              "Outputs.PartitionKeyType"
+            ]
+          },
+          "storagersratingsSortKeyName": {
+            "Fn::GetAtt": [
+              "storagersratings",
+              "Outputs.SortKeyName"
+            ]
+          },
+          "storagersratingsSortKeyType": {
+            "Fn::GetAtt": [
+              "storagersratings",
+              "Outputs.SortKeyType"
+            ]
+          },
+          "storagersratingsRegion": {
+            "Fn::GetAtt": [
+              "storagersratings",
+              "Outputs.Region"
+            ]
+          },
           "env": "dev"
         }
       }
@@ -431,7 +504,7 @@
       "DependsOn": [
         "AuthRole",
         "UnauthRole",
-        "authevenuefs43bab20a"
+        "authevenuefs81b9bb47"
       ],
       "Type": "AWS::Lambda::Function",
       "Properties": {
@@ -526,7 +599,7 @@
         },
         "idpId": {
           "Fn::GetAtt": [
-            "authevenuefs43bab20a",
+            "authevenuefs81b9bb47",
             "Outputs.IdentityPoolId"
           ]
         },

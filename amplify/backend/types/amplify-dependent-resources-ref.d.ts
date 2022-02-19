@@ -1,6 +1,6 @@
 export type AmplifyDependentResourcesAttributes = {
     "function": {
-        "evenuefs43bab20aCustomMessage": {
+        "evenuefs81b9bb47CustomMessage": {
             "Name": "string",
             "Arn": "string",
             "LambdaExecutionRole": "string",
@@ -18,6 +18,12 @@ export type AmplifyDependentResourcesAttributes = {
             "Region": "string",
             "LambdaExecutionRole": "string"
         },
+        "recommendVenues": {
+            "Name": "string",
+            "Arn": "string",
+            "Region": "string",
+            "LambdaExecutionRole": "string"
+        },
         "sentimentScoring": {
             "Name": "string",
             "Arn": "string",
@@ -30,16 +36,10 @@ export type AmplifyDependentResourcesAttributes = {
             "Region": "string",
             "LambdaExecutionRole": "string",
             "CloudWatchEventRule": "string"
-        },
-        "recommendVenues": {
-            "Name": "string",
-            "Arn": "string",
-            "Region": "string",
-            "LambdaExecutionRole": "string"
         }
     },
     "auth": {
-        "evenuefs43bab20a": {
+        "evenuefs81b9bb47": {
             "IdentityPoolId": "string",
             "IdentityPoolName": "string",
             "UserPoolId": "string",
@@ -51,6 +51,7 @@ export type AmplifyDependentResourcesAttributes = {
     },
     "api": {
         "evenuefs": {
+            "GraphQLAPIKeyOutput": "string",
             "GraphQLAPIIdOutput": "string",
             "GraphQLAPIEndpointOutput": "string"
         }
@@ -60,7 +61,11 @@ export type AmplifyDependentResourcesAttributes = {
             "Region": "string",
             "HostingBucketName": "string",
             "WebsiteURL": "string",
-            "S3BucketSecureURL": "string"
+            "S3BucketSecureURL": "string",
+            "CloudFrontDistributionID": "string",
+            "CloudFrontDomainName": "string",
+            "CloudFrontSecureURL": "string",
+            "CloudFrontOriginAccessIdentity": "string"
         }
     },
     "storage": {
@@ -74,18 +79,20 @@ export type AmplifyDependentResourcesAttributes = {
             "StreamArn": "string",
             "PartitionKeyName": "string",
             "PartitionKeyType": "string",
+            "SortKeyName": "string",
+            "SortKeyType": "string",
             "Region": "string"
         }
     },
     "custom": {
+        "venueRecommendationLambdaContainer": {
+            "VRPArn": "string"
+        },
         "sentimentScoringLambdaContainer": {
             "SSPArn": "string"
         },
         "modelBuildingLambdaContainer": {
             "MBPArn": "string"
-        },
-        "venueRecommendationLambdaContainer": {
-            "VRPArn": "string"
         }
     }
 }

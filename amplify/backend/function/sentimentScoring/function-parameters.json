@@ -1,8 +1,9 @@
 {
   "permissions": {
     "storage": {
-      "Review:@model(appsync)": [
-        "read"
+      "rsratings": [
+        "create",
+        "update"
       ]
     }
   },

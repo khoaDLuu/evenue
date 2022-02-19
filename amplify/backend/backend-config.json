@@ -1,6 +1,6 @@
 {
   "function": {
-    "evenuefs43bab20aCustomMessage": {
+    "evenuefs81b9bb47CustomMessage": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
@@ -15,6 +15,11 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
+    "recommendVenues": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "sentimentScoring": {
       "build": true,
       "providerPlugin": "awscloudformation",
@@ -24,7 +29,17 @@
           "category": "api",
           "resourceName": "evenuefs",
           "attributes": [
-            "GraphQLAPIIdOutput"
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ]
+        },
+        {
+          "category": "storage",
+          "resourceName": "rsratings",
+          "attributes": [
+            "Name",
+            "Arn",
+            "StreamArn"
           ]
         }
       ]
@@ -34,21 +49,16 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda",
       "dependsOn": []
-    },
-    "recommendVenues": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda"
     }
   },
   "auth": {
-    "evenuefs43bab20a": {
+    "evenuefs81b9bb47": {
       "service": "Cognito",
       "providerPlugin": "awscloudformation",
       "dependsOn": [
         {
           "category": "function",
-          "resourceName": "evenuefs43bab20aCustomMessage",
+          "resourceName": "evenuefs81b9bb47CustomMessage",
           "triggerProvider": "Cognito",
           "attributes": [
             "Arn",
@@ -59,13 +69,9 @@
       "customAuth": false,
       "frontendAuthConfig": {
         "socialProviders": [],
-        "usernameAttributes": [
-          "EMAIL"
-        ],
+        "usernameAttributes": [],
         "signupAttributes": [
-          "EMAIL",
-          "FAMILY_NAME",
-          "GIVEN_NAME"
+          "EMAIL"
         ],
         "passwordProtectionSettings": {
           "passwordPolicyMinLength": 8,
@@ -90,16 +96,16 @@
           "defaultAuthentication": {
             "authenticationType": "AMAZON_COGNITO_USER_POOLS",
             "userPoolConfig": {
-              "userPoolId": "authevenuefs43bab20a"
+              "userPoolId": "authevenuefs81b9bb47"
             }
           },
           "additionalAuthenticationProviders": [
             {
               "authenticationType": "API_KEY",
               "apiKeyConfig": {
-                "apiKeyExpirationDays": 14,
-                "apiKeyExpirationDate": "2022-02-05T10:36:32.657Z",
-                "description": "devapikey"
+                "apiKeyExpirationDays": 45,
+                "apiKeyExpirationDate": "2022-04-04T19:46:21.811Z",
+                "description": "evenueapikey"
               }
             }
           ]
@@ -125,6 +131,11 @@
     }
   },
   "custom": {
+    "venueRecommendationLambdaContainer": {
+      "service": "customCloudformation",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": []
+    },
     "sentimentScoringLambdaContainer": {
       "service": "customCloudformation",
       "providerPlugin": "awscloudformation",
@@ -133,12 +144,22 @@
     "modelBuildingLambdaContainer": {
       "service": "customCloudformation",
       "providerPlugin": "awscloudformation",
-      "dependsOn": []
-    },
-    "venueRecommendationLambdaContainer": {
-      "service": "customCloudformation",
-      "providerPlugin": "awscloudformation",
-      "dependsOn": []
+      "dependsOn": [
+        {
+          "category": "storage",
+          "resourceName": "rsratings",
+          "attributes": [
+            "Name",
+            "Arn",
+            "StreamArn",
+            "PartitionKeyName",
+            "PartitionKeyType",
+            "SortKeyName",
+            "SortKeyType",
+            "Region"
+          ]
+        }
+      ]
     }
   }
 }

@@ -75,12 +75,12 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "evenuefs43bab20aCustomMessage",
+            "evenuefs81b9bb47CustomMessage",
             {
               "Fn::Join": [
                 "",
                 [
-                  "evenuefs43bab20aCustomMessage",
+                  "evenuefs81b9bb47CustomMessage",
                   "-",
                   {
                     "Ref": "env"
@@ -139,12 +139,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "evenuefs43bab20aCustomMessage",
+            "evenuefs81b9bb47CustomMessage",
             {
               "Fn::Join": [
                 "",
                 [
-                  "evenuefs43bab20aCustomMessage",
+                  "evenuefs81b9bb47CustomMessage",
                   "-",
                   {
                     "Ref": "env"

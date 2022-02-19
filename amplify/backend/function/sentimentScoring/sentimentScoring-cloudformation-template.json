@@ -19,6 +19,22 @@
     "apievenuefsGraphQLAPIIdOutput": {
       "Type": "String",
       "Default": "apievenuefsGraphQLAPIIdOutput"
+    },
+    "apievenuefsGraphQLAPIEndpointOutput": {
+      "Type": "String",
+      "Default": "apievenuefsGraphQLAPIEndpointOutput"
+    },
+    "storagersratingsName": {
+      "Type": "String",
+      "Default": "storagersratingsName"
+    },
+    "storagersratingsArn": {
+      "Type": "String",
+      "Default": "storagersratingsArn"
+    },
+    "storagersratingsStreamArn": {
+      "Type": "String",
+      "Default": "storagersratingsStreamArn"
     }
   },
   "Conditions": {
@@ -74,34 +90,14 @@
             "REGION": {
               "Ref": "AWS::Region"
             },
-            "API_EVENUEFS_REVIEWTABLE_NAME": {
-              "Fn::ImportValue": {
-                "Fn::Sub": "${apievenuefsGraphQLAPIIdOutput}:GetAtt:ReviewTable:Name"
-              }
+            "STORAGE_RSRATINGS_NAME": {
+              "Ref": "storagersratingsName"
             },
-            "API_EVENUEFS_REVIEWTABLE_ARN": {
-              "Fn::Join": [
-                "",
-                [
-                  "arn:aws:dynamodb:",
-                  {
-                    "Ref": "AWS::Region"
-                  },
-                  ":",
-                  {
-                    "Ref": "AWS::AccountId"
-                  },
-                  ":table/",
-                  {
-                    "Fn::ImportValue": {
-                      "Fn::Sub": "${apievenuefsGraphQLAPIIdOutput}:GetAtt:ReviewTable:Name"
-                    }
-                  }
-                ]
-              ]
+            "STORAGE_RSRATINGS_ARN": {
+              "Ref": "storagersratingsArn"
             },
-            "API_EVENUEFS_GRAPHQLAPIIDOUTPUT": {
-              "Ref": "apievenuefsGraphQLAPIIdOutput"
+            "STORAGE_RSRATINGS_STREAMARN": {
+              "Ref": "storagersratingsStreamArn"
             }
           }
         },
@@ -122,12 +118,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "evenuefsLambdaRole55c3dc0f",
+            "evenuefsLambdaRole7d3a1e97",
             {
               "Fn::Join": [
                 "",
                 [
-                  "evenuefsLambdaRole55c3dc0f",
+                  "evenuefsLambdaRole7d3a1e97",
                   "-",
                   {
                     "Ref": "env"
@@ -216,14 +212,27 @@
             {
               "Effect": "Allow",
               "Action": [
-                "dynamodb:Get*",
-                "dynamodb:BatchGetItem",
-                "dynamodb:List*",
-                "dynamodb:Describe*",
-                "dynamodb:Scan",
-                "dynamodb:Query"
+                "dynamodb:Put*",
+                "dynamodb:Create*",
+                "dynamodb:BatchWriteItem",
+                "dynamodb:Update*",
+                "dynamodb:RestoreTable*"
               ],
               "Resource": [
+                {
+                  "Ref": "storagersratingsArn"
+                },
+                {
+                  "Fn::Join": [
+                    "/",
+                    [
+                      {
+                        "Ref": "storagersratingsArn"
+                      },
+                      "index/*"
+                    ]
+                  ]
+                },
                 {
                   "Fn::Join": [
                     "",
@@ -273,13 +282,13 @@
         }
       }
     },
-    "LambdaTriggerPolicy": {
+    "LambdaTriggerPolicyReview": {
       "DependsOn": [
         "LambdaExecutionRole"
       ],
       "Type": "AWS::IAM::Policy",
       "Properties": {
-        "PolicyName": "amplify-lambda-execution-policy-",
+        "PolicyName": "amplify-lambda-execution-policy-Review",
         "Roles": [
           {
             "Ref": "LambdaExecutionRole"
@@ -296,22 +305,30 @@
                 "dynamodb:GetShardIterator",
                 "dynamodb:ListStreams"
               ],
-              "Resource": "arn:aws:dynamodb:us-east-1:310761885902:table/Review-zcfpgzto5veatbqkwb4cskchiu-dev"
+              "Resource": {
+                "Fn::ImportValue": {
+                  "Fn::Sub": "${apievenuefsGraphQLAPIIdOutput}:GetAtt:ReviewTable:StreamArn"
+                }
+              }
             }
           ]
         }
       }
     },
-    "LambdaEventSourceMapping": {
+    "LambdaEventSourceMappingReview": {
       "Type": "AWS::Lambda::EventSourceMapping",
       "DependsOn": [
-        "LambdaTriggerPolicy",
+        "LambdaTriggerPolicyReview",
         "LambdaExecutionRole"
       ],
       "Properties": {
         "BatchSize": 100,
         "Enabled": true,
-        "EventSourceArn": "arn:aws:dynamodb:us-east-1:310761885902:table/Review-zcfpgzto5veatbqkwb4cskchiu-dev/stream/2021-12-08T01:53:32.143",
+        "EventSourceArn": {
+          "Fn::ImportValue": {
+            "Fn::Sub": "${apievenuefsGraphQLAPIIdOutput}:GetAtt:ReviewTable:StreamArn"
+          }
+        },
         "FunctionName": {
           "Fn::GetAtt": [
             "LambdaFunction",
@@ -345,7 +362,7 @@
                 "dynamodb:ListStreams"
               ],
               "Resource": [
-                "arn:aws:dynamodb:us-east-1:310761885902:table/Review-zcfpgzto5veatbqkwb4cskchiu-dev/stream/2021-12-08T01:53:32.143"
+                "arn:aws:dynamodb:us-east-1:310761885902:table/Review-2u7klnf7oba3lc5r5jvdeirwa4-dev/stream/2022-02-18T20:49:33.613"
               ],
               "Effect": "Allow"
             },

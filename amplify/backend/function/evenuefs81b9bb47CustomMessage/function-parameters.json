@@ -3,9 +3,9 @@
   "modules": [
     "verification-link"
   ],
-  "parentResource": "evenuefs43bab20a",
-  "functionName": "evenuefs43bab20aCustomMessage",
-  "resourceName": "evenuefs43bab20aCustomMessage",
+  "parentResource": "evenuefs81b9bb47",
+  "functionName": "evenuefs81b9bb47CustomMessage",
+  "resourceName": "evenuefs81b9bb47CustomMessage",
   "parentStack": "auth",
   "triggerEnvs": [
     {
@@ -16,11 +16,11 @@
   "triggerDir": "/home/keith/.nvm/versions/node/v12.16.1/lib/node_modules/@aws-amplify/cli/node_modules/@aws-amplify/amplify-category-auth/provider-utils/awscloudformation/triggers/CustomMessage",
   "triggerTemplate": "CustomMessage.json.ejs",
   "triggerEventPath": "CustomMessage.event.json",
-  "roleName": "evenuefs43bab20aCustomMessage",
+  "roleName": "evenuefs81b9bb47CustomMessage",
   "skipEdit": true,
-  "REDIRECTURL": "/",
-  "EMAILSUBJECT": "Evenue Account Confirmation",
-  "EMAILMESSAGE": "Hi, it is a pleasure to have you joining us! Click the link below to verify your email address. If you did not register for Evenue, please ignore this email.",
+  "REDIRECTURL": "",
+  "EMAILSUBJECT": "Thank you for signing up for Evenue",
+  "EMAILMESSAGE": "Welcome! Thank you so much for becoming a part of our list!",
   "RESOURCENAME": "resourceName",
   "enableCors": false
 }

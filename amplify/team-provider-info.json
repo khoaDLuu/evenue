@@ -1,49 +1,49 @@
 {
   "dev": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-evenuefs-dev-230706-authRole",
-      "UnauthRoleArn": "arn:aws:iam::310761885902:role/amplify-evenuefs-dev-230706-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::310761885902:role/amplify-evenuefs-dev-230706-authRole",
+      "AuthRoleName": "amplify-evenuefs-dev-22530-authRole",
+      "UnauthRoleArn": "arn:aws:iam::310761885902:role/amplify-evenuefs-dev-22530-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::310761885902:role/amplify-evenuefs-dev-22530-authRole",
       "Region": "us-east-1",
-      "DeploymentBucketName": "amplify-evenuefs-dev-230706-deployment",
-      "UnauthRoleName": "amplify-evenuefs-dev-230706-unauthRole",
-      "StackName": "amplify-evenuefs-dev-230706",
-      "StackId": "arn:aws:cloudformation:us-east-1:310761885902:stack/amplify-evenuefs-dev-230706/a213fd40-56ae-11ec-b7cb-0e9c4cff6121",
-      "AmplifyAppId": "d3krbgw5un11q3",
-      "AuthTriggerTemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-230706-deployment/amplify-cfn-templates/auth/auth-trigger-cloudformation-template.json"
+      "DeploymentBucketName": "amplify-evenuefs-dev-22530-deployment",
+      "UnauthRoleName": "amplify-evenuefs-dev-22530-unauthRole",
+      "StackName": "amplify-evenuefs-dev-22530",
+      "StackId": "arn:aws:cloudformation:us-east-1:310761885902:stack/amplify-evenuefs-dev-22530/8c7a5160-90f0-11ec-ab51-0ed99a61ae9b",
+      "AmplifyAppId": "d3ddoflbbvhwck",
+      "AuthTriggerTemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-22530-deployment/amplify-cfn-templates/auth/auth-trigger-cloudformation-template.json"
     },
     "categories": {
       "auth": {
-        "evenuefs43bab20a": {},
+        "evenuefs81b9bb47": {},
         "true": {}
       },
       "function": {
-        "evenuefs43bab20aCustomMessage": {
-          "REDIRECTURL": "/",
-          "EMAILSUBJECT": "Evenue Account Confirmation",
-          "EMAILMESSAGE": "Hi, it is a pleasure to have you joining us! Click the link below to verify your email address. If you did not register for Evenue, please ignore this email.",
-          "deploymentBucketName": "amplify-evenuefs-dev-230706-deployment",
-          "s3Key": "amplify-builds/evenuefs43bab20aCustomMessage-7357567575536b4b386a-build.zip"
-        },
-        "createBooking": {
-          "deploymentBucketName": "amplify-evenuefs-dev-230706-deployment",
-          "s3Key": "amplify-builds/createBooking-386c7a416e52636c6e5a-build.zip"
-        },
-        "processPayment": {
-          "deploymentBucketName": "amplify-evenuefs-dev-230706-deployment",
-          "s3Key": "amplify-builds/processPayment-6e39763931534d726837-build.zip"
-        },
-        "sentimentScoring": {
-          "deploymentBucketName": "amplify-evenuefs-dev-230706-deployment",
-          "s3Key": "amplify-builds/sentimentScoring-37716d557471364e7a2b-build.zip"
-        },
-        "modelBuilding": {
-          "deploymentBucketName": "amplify-evenuefs-dev-230706-deployment",
-          "s3Key": "amplify-builds/modelBuilding-6c2b2b717259557a5071-build.zip"
+        "evenuefs81b9bb47CustomMessage": {
+          "REDIRECTURL": "",
+          "EMAILSUBJECT": "Thank you for signing up for Evenue",
+          "EMAILMESSAGE": "Welcome! Thank you so much for becoming a part of our list!",
+          "deploymentBucketName": "amplify-evenuefs-dev-22530-deployment",
+          "s3Key": "amplify-builds/evenuefs81b9bb47CustomMessage-7544374c776371433363-build.zip"
         },
         "recommendVenues": {
-          "deploymentBucketName": "amplify-evenuefs-dev-230706-deployment",
-          "s3Key": "amplify-builds/recommendVenues-53754b5a555562324d35-build.zip"
+          "deploymentBucketName": "amplify-evenuefs-dev-22530-deployment",
+          "s3Key": "amplify-builds/recommendVenues-625834744f515952616c-build.zip"
+        },
+        "createBooking": {
+          "deploymentBucketName": "amplify-evenuefs-dev-22530-deployment",
+          "s3Key": "amplify-builds/createBooking-32597a3337584146484b-build.zip"
+        },
+        "processPayment": {
+          "deploymentBucketName": "amplify-evenuefs-dev-22530-deployment",
+          "s3Key": "amplify-builds/processPayment-326b643973644f525a44-build.zip"
+        },
+        "modelBuilding": {
+          "deploymentBucketName": "amplify-evenuefs-dev-22530-deployment",
+          "s3Key": "amplify-builds/modelBuilding-6c2b2b717259557a5071-build.zip"
+        },
+        "sentimentScoring": {
+          "deploymentBucketName": "amplify-evenuefs-dev-22530-deployment",
+          "s3Key": "amplify-builds/sentimentScoring-37716d557471364e7a2b-build.zip"
         }
       }
     }
