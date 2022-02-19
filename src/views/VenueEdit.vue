@@ -244,7 +244,7 @@
               </SfComponentSelectOption>
             </SfComponentSelect>
             <p class="text-xl text-gray-800 font-semibold mt-4 w-full">Suitable event types</p>
-            <div class="w-full flex flex-row flex-wrap mb-4">
+            <div class="w-full grid gap-4 grid-cols-3 xl:grid-cols-4 mb-4">
               <SfCheckbox
                 name="eventCheckbox"
                 v-for="eventTypeOption in eventTypeOptions"
@@ -396,6 +396,7 @@ import { getVenue } from '../graphql/queries'
 import { createVenue, updateVenue } from '../graphql/mutations'
 import { v4 as uuidv4 } from "uuid"
 import config from "../aws-exports"
+import { countries } from "@storefront-ui/vue/src/components/templates/internalData.js";
 
 export default {
   name: "VenueEdit",
@@ -471,67 +472,30 @@ export default {
       zipCodeBlur: true,
       country: "",
       countryBlur: true,
-      countries: [
-        "Austria",
-        "Azerbaijan",
-        "Belarus",
-        "Belgium",
-        "Bosnia and Herzegovina",
-        "Bulgaria",
-        "Croatia",
-        "Cyprus",
-        "Czech Republic",
-        "Denmark",
-        "Estonia",
-        "Finland",
-        "France",
-        "Georgia",
-        "Germany",
-        "Greece",
-        "Hungary",
-        "Iceland",
-        "Ireland",
-        "Italy",
-        "Kosovo",
-        "Latvia",
-        "Liechtenstein",
-        "Lithuania",
-        "Luxembourg",
-        "Macedonia",
-        "Malta",
-        "Moldova",
-        "Monaco",
-        "Montenegro",
-        "The Netherlands",
-        "Norway",
-        "Poland",
-        "Portugal",
-        "Romania",
-        "Russia",
-        "San Marino",
-        "Serbia",
-        "Slovakia",
-        "Slovenia",
-        "Spain",
-        "Sweden",
-        "Switzerland",
-        "Turkey",
-        "Ukraine",
-        "United Kingdom",
-        "Vatican City",
-      ],
+      countries,
       eventTypeOptions: [
-        "Meeting",
-        "Workshop",
-        "Conference",
-        "Party",
+        'Meeting',
+        'Panel Discussion',
+        'Presentation',
+        'Party',
+        'Brainstorming',
+        'Workshop',
+        'Corporate Training',
+        'Coaching Session',
+        'Hackathon',
+        'Screening',
+        'Interview',
+        'Product Shoot',
+        'Networking Event',
+        'Concert',
+        'Conference',
+        'Reception',
+        'Seminar',
+        'Business Dinner',
+        'Business Lunch',
+        'Exhibition'
       ],
-      venueTypeOptions: [
-        "Bar",
-        "Hotel",
-        "Office",
-        "Coffee shop",
-      ],
+      venueTypeOptions: ['Gallery', 'Party room', 'Restaurant', 'Boat', 'Coworking space', 'Cinema', 'Bar', 'Cafe', 'Club', 'Rooftop', 'Terrace', 'Studio', 'Villa', 'Loft', 'Atelier', 'Banquet hall', 'Function Room', 'Boardroom', 'Business center', 'Film studio', 'Kitchen studio', 'Showroom', 'Consulting Room', 'Apartment', 'Unusual venue', 'Lawn', 'Classic Location', 'Meeting room', 'Recording Studio', 'Photostudio', 'Church', 'Party Bus', 'Textile Workshop', 'Carpentry', 'Spa and Wellness', 'Mobile Location', 'Farm', 'Beer Garden', 'Exhibition Hall', 'Waterside Location', 'Off-Location', 'Wedding Venue', 'Sports Location', 'Open Air Location', 'Organization', 'Corporate event spaces', 'Workshop spaces', 'Hobby Workshop', 'Conference Hotel', 'Day office', 'Werkstatt', 'Conference rooms', 'Training rooms', 'Seminar rooms'],
       prices: {
         perHour: null,
         perDay: null,

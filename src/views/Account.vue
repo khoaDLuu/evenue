@@ -15,11 +15,13 @@
           <SfMyProfile
             :account="account"
             data-testid="my-profile-tabs"
-            @update:personal="account = { ...account, ...$event }"
-            @update:password="account = { ...account, ...$event }"
-          />
+            :personalInputsLabels="['Given name', 'Family Name', 'Email', 'Phone Number']"
+            personalDataDescription="Edit any of your details below (except email) so your profile is always up to date"
+            @update:personal="updateUser"
+            @update:password="changePassword">
+          </SfMyProfile>
         </SfContentPage>
-        <SfContentPage title="Shipping details" data-testid="shipping-details">
+        <!-- <SfContentPage title="Shipping details" data-testid="shipping-details">
           <SfShippingDetails
             :account="account"
             :countries="countries"
@@ -29,16 +31,14 @@
         </SfContentPage>
         <SfContentPage title="Newsletter">
           <SfMyNewsletter />
-        </SfContentPage>
+        </SfContentPage> -->
       </SfContentCategory>
-      <SfContentCategory title="Order details">
-        <SfContentPage title="Order history">
+      <SfContentCategory title="Booking details">
+        <SfContentPage title="Booking history">
           <SfOrderHistory :orders="account.orders" />
         </SfContentPage>
       </SfContentCategory>
-      <SfContentPage title="Log out">
-        <amplify-sign-out></amplify-sign-out>
-      </SfContentPage>
+      <SfContentPage title="Log out" />
     </SfContentPages>
   </div>
 </template>
@@ -47,11 +47,14 @@
 import { SfBreadcrumbs, SfContentPages } from "@storefront-ui/vue";
 import {
   SfMyProfile,
-  SfShippingDetails,
-  SfMyNewsletter,
+  // SfShippingDetails,
+  // SfMyNewsletter,
   SfOrderHistory,
+  // SfInput,
+  // SfButton,
 } from "@storefront-ui/vue";
 import { countries } from "@storefront-ui/vue/src/components/templates/internalData.js";
+import { Auth } from "aws-amplify"
 
 export default {
   name: "MyAccount",
@@ -59,9 +62,11 @@ export default {
     SfBreadcrumbs,
     SfContentPages,
     SfMyProfile,
-    SfShippingDetails,
-    SfMyNewsletter,
+    // SfShippingDetails,
+    // SfMyNewsletter,
     SfOrderHistory,
+    // SfInput,
+    // SfButton,
   },
   data() {
     return {
@@ -70,7 +75,7 @@ export default {
         {
           text: "Home",
           route: {
-            link: "#",
+            link: "/",
           },
         },
         {
@@ -81,34 +86,35 @@ export default {
         },
       ],
       account: {
-        firstName: "John",
-        lastName: "Dog",
-        email: "johndog@email.com",
-        password: "a*23Et",
-        shipping: [
-          {
-            firstName: "John",
-            lastName: "Dog",
-            streetName: "Sezame Street",
-            apartment: "24/193A",
-            city: "Wroclaw",
-            state: "Lower Silesia",
-            zipCode: "53-540",
-            country: "Poland",
-            phoneNumber: "(00)560 123 456",
-          },
-          {
-            firstName: "John",
-            lastName: "Dog",
-            streetName: "Sezame Street",
-            apartment: "20/193A",
-            city: "Wroclaw",
-            state: "Lower Silesia",
-            zipCode: "53-603",
-            country: "Poland",
-            phoneNumber: "(00)560 123 456",
-          },
-        ],
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        password: "",
+        // shipping: [
+        //   {
+        //     firstName: "John",
+        //     lastName: "Dog",
+        //     streetName: "Sezame Street",
+        //     apartment: "24/193A",
+        //     city: "Wroclaw",
+        //     state: "Lower Silesia",
+        //     zipCode: "53-540",
+        //     country: "Poland",
+        //     phoneNumber: "(00)560 123 456",
+        //   },
+        //   {
+        //     firstName: "John",
+        //     lastName: "Dog",
+        //     streetName: "Sezame Street",
+        //     apartment: "20/193A",
+        //     city: "Wroclaw",
+        //     state: "Lower Silesia",
+        //     zipCode: "53-603",
+        //     country: "Poland",
+        //     phoneNumber: "(00)560 123 456",
+        //   },
+        // ],
         orders: [
           ["#45", "23th June, 2021", "Visa card", "$412.00", "Finalised"],
           ["#46", "26th June, 2021", "Paypal", "$132.00", "Finalised"],
@@ -119,14 +125,60 @@ export default {
       countries,
     };
   },
+  async created() {
+    try {
+      const user = await Auth.currentAuthenticatedUser();
+      console.log(user);
+      // this.account.firstName = user.attributes.given_name // not working!
+      this.account = {
+        ...this.account,
+        firstName: user.attributes.given_name,
+        lastName: user.attributes.family_name,
+        email: user.attributes.email,
+        phone: user.attributes.phone_number,
+      }
+    } catch (error) {
+      console.log('error get auth user:', error);
+    }
+  },
   methods: {
-    changeActivePage(title) {
+    async changeActivePage(title) {
       if (title === "Log out") {
-        alert("You are logged out!");
+        try {
+          await Auth.signOut();
+        } catch (error) {
+          console.log('error signing out: ', error);
+        }
         return;
       }
       this.activePage = title;
     },
+    async updateUser($event) {
+      try {
+        this.account = { ...this.account, ...$event }
+        console.log(this.account)
+        const user = await Auth.currentAuthenticatedUser();
+        await Auth.updateUserAttributes(user, {
+          'given_name': this.account.firstName,
+          'family_name': this.account.lastName,
+          // 'email': this.account.email, // forbidden?
+          'phone_number': this.account.phone,
+        });
+      }
+      catch (err) {
+        console.log(err)
+      }
+    },
+    async changePassword($event) {
+      this.account = { ...this.account, ...$event }
+      console.log(this.account)
+      Auth.currentAuthenticatedUser()
+        .then(user => {
+          return Auth.changePassword(user, 'oldPassword', 'newPassword');
+        })
+        .then(data => console.log(data))
+        .catch(err => console.log(err));
+    }
   },
 };
 </script>
