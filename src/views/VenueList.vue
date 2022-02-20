@@ -1,5 +1,5 @@
 <template>
-  <div class="container md:mx-auto w-3/5 my-6">
+  <div class="container px-4 md:mx-auto w-full md:w-3/5 my-6">
     <!-- <list-header @click:edit="openEditPage()" /> -->
     <list-header />
     <card-list :venues="venues" @item-deleted="refreshList" />

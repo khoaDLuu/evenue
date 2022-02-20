@@ -16,7 +16,8 @@ const createBooking = async (payload) => {
     totalCharge,
     paymentCurrency,
     paymentToken,
-    sub
+    sub,
+    email
   } = payload;
   var params = {
     TableName: BOOKING_TABLE,
@@ -34,7 +35,7 @@ const createBooking = async (payload) => {
 
       __typename: BOOKING_TYPE,
       id: bookingId,
-      owner: sub,
+      owner: email,
       updatedAt: new Date().toISOString(),
       createdAt: new Date().toISOString()
     }

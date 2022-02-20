@@ -27,19 +27,19 @@
         },
         "recommendVenues": {
           "deploymentBucketName": "amplify-evenuefs-dev-22530-deployment",
-          "s3Key": "amplify-builds/recommendVenues-625834744f515952616c-build.zip"
+          "s3Key": "amplify-builds/recommendVenues-3744592f2b33326b556c-build.zip"
         },
         "createBooking": {
           "deploymentBucketName": "amplify-evenuefs-dev-22530-deployment",
-          "s3Key": "amplify-builds/createBooking-32597a3337584146484b-build.zip"
+          "s3Key": "amplify-builds/createBooking-48464635432b77346e4d-build.zip"
         },
         "processPayment": {
           "deploymentBucketName": "amplify-evenuefs-dev-22530-deployment",
-          "s3Key": "amplify-builds/processPayment-326b643973644f525a44-build.zip"
+          "s3Key": "amplify-builds/processPayment-69343665332f3856664f-build.zip"
         },
         "modelBuilding": {
           "deploymentBucketName": "amplify-evenuefs-dev-22530-deployment",
-          "s3Key": "amplify-builds/modelBuilding-6c2b2b717259557a5071-build.zip"
+          "s3Key": "amplify-builds/modelBuilding-735351694c504554665a-build.zip"
         },
         "sentimentScoring": {
           "deploymentBucketName": "amplify-evenuefs-dev-22530-deployment",

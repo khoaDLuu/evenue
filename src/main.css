@@ -12,3 +12,6 @@ input:focus + * {
   outline-color: transparent !important;
   outline-style: none !important;
 }
+input[type="search"] {
+  border-bottom-width: 1px !important;
+}

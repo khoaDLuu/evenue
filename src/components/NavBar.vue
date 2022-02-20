@@ -12,7 +12,7 @@
         <SfHeaderNavigationItem
           v-for="(category, key) in rootCategories"
           :key="`sf-header-navigation-item-${key}`"
-          :link="`/${category}`"
+          :link="category == 'Venues' ? `/venues/search` : `/bookings/yours`"
           :label="category"
         />
       </template>
@@ -161,7 +161,7 @@ export default {
       isMobile: false,
       appLogo: "/assets/logo.png",
       appName: "Evenue",
-      rootCategories: ["Bookings", "Messages", "Schedule", "Venues"],
+      rootCategories: ["Bookings", /* "Messages", "Schedule", */ "Venues"],
       searchPlaceholder: "Search for venues",
       user: undefined,
       isLogIn: true,

@@ -95,7 +95,7 @@ enum SupportedCurrency {
 
 type Review @aws_api_key @aws_cognito_user_pools {
   venue: Venue
-  user: User
+  user: String
   rating: Int!
   comment: String
   id: ID!
@@ -143,7 +143,9 @@ type BookingExtra @aws_api_key @aws_cognito_user_pools {
 enum BookingStatus {
   PENDING
   CONFIRMED
-  CANCELLED
+  CANCELED
+  FAILED
+  HAPPENED
 }
 
 input CreateBookingInput {
@@ -479,6 +481,7 @@ type ModelReviewConnection @aws_api_key @aws_cognito_user_pools {
 }
 
 input ModelReviewFilterInput {
+  user: ModelStringInput
   rating: ModelIntInput
   comment: ModelStringInput
   and: [ModelReviewFilterInput]
@@ -489,6 +492,7 @@ input ModelReviewFilterInput {
 }
 
 input ModelReviewConditionInput {
+  user: ModelStringInput
   rating: ModelIntInput
   comment: ModelStringInput
   and: [ModelReviewConditionInput]
@@ -499,6 +503,7 @@ input ModelReviewConditionInput {
 }
 
 input CreateReviewInput {
+  user: String
   rating: Int!
   comment: String
   id: ID
@@ -507,6 +512,7 @@ input CreateReviewInput {
 }
 
 input UpdateReviewInput {
+  user: String
   rating: Int
   comment: String
   userReviewsId: ID

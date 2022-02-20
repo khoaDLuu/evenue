@@ -11,6 +11,7 @@ import Booking from "../views/Booking.vue"
 import BookingList from "../views/BookingList.vue"
 import Account from "../views/Account.vue"
 import NotFound from "../views/NotFound.vue"
+import BookingDetails from "../views/BookingDetails.vue"
 
 Vue.use(VueRouter)
 
@@ -48,15 +49,21 @@ const routes = [
     props: true,
   },
   {
-    path: '/bookings/new',
-    name: 'booking',
-    component: Booking,
+    path: '/bookings/yours/:bookingId(\\b[0-9a-f]{8}\\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\\b[0-9a-f]{12}\\b)',
+    name: 'booking-details',
+    component: BookingDetails,
     props: true,
   },
   {
     path: '/bookings/yours',
     name: 'booking',
     component: BookingList,
+    props: true,
+  },
+  {
+    path: '/bookings/new',
+    name: 'booking',
+    component: Booking,
     props: true,
   },
   {

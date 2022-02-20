@@ -202,7 +202,7 @@
             <p class="text-xl text-gray-800 font-semibold mt-4 w-full">Pricing</p>
             <SfInput
               v-model="prices.perHour"
-              label="Venue price per hour"
+              label="Venue price per hour ($)"
               name="prices.perHour"
               type="number"
               class="form__element form__element--half"
@@ -213,7 +213,7 @@
             />
             <SfInput
               v-model="prices.perDay"
-              label="Venue price per day"
+              label="Venue price per day ($)"
               name="prices.perDay"
               type="number"
               class="form__element form__element--half form__element--half-even"
@@ -472,7 +472,11 @@ export default {
       zipCodeBlur: true,
       country: "",
       countryBlur: true,
-      countries,
+      countries: [
+        "United States", "Canada",
+        "Vietnam", "China", "Thailand", "India", "Singapore", "Korea", "Japan",
+        ...countries,
+      ],
       eventTypeOptions: [
         'Meeting',
         'Panel Discussion',

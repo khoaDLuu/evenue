@@ -36,8 +36,8 @@
         </div>
         <div class="navbar__counter">
           <span class="navbar__label desktop-only">Venues found: </span>
-          <span class="desktop-only">280</span>
-          <span class="navbar__label smartphone-only">280 Items</span>
+          <span class="desktop-only">{{ products.length }}</span>
+          <span class="navbar__label smartphone-only">{{ products.length }} Items</span>
         </div>
         <div class="navbar__view">
           <span class="navbar__view-label desktop-only">View</span>
@@ -107,8 +107,9 @@
             :special-price="product.price.special"
             :max-rating="product.rating.max"
             :score-rating="product.rating.score"
-            :reviews-count="8"
+            :reviews-count="product.reviewsCount"
             :is-in-wishlist="product.isInWishlist"
+            :link="`/venues/${product.id}`"
             :showAddToCartButton="false"
             class="products__product-card"
             @click:wishlist="toggleWishlist(i)">
@@ -428,6 +429,11 @@ import {
   SfSelect,
   // SfRange
 } from "@storefront-ui/vue";
+import { API, Storage } from 'aws-amplify'
+import { listVenues } from '../graphql/queries'
+
+let cslog = console.log
+
 export default {
   name: "Category",
   components: {
@@ -536,88 +542,7 @@ export default {
         },
       ],
       showOnPage: ["20", "40", "60"],
-      products: [
-        {
-          title: "Collection Business Center",
-          id: 1,
-          description: "Modern conference room in the Nextower",
-          image: "https://picsum.photos/216/326",
-          price: { regular: "$40.00" },
-          rating: { max: 5, score: 5 },
-          reviewsCount: Math.floor(Math.random() * 13),
-          isInWishlist: true,
-        },
-        {
-          title: "Fabrique Coworking Space",
-          id: 2,
-          description: "Unusual studio loft in the creative district of Oberhafen",
-          image: "https://picsum.photos/216/326",
-          price: { regular: "$30.00" },
-          rating: { max: 5, score: 4 },
-          reviewsCount: Math.floor(Math.random() * 13),
-          isInWishlist: false,
-        },
-        {
-          title: "Allkinds",
-          id: 3,
-          description: "Bright conference room for productive workshops in Ottensen",
-          image: "https://picsum.photos/216/326",
-          price: { regular: "$50.00" },
-          rating: { max: 5, score: 4 },
-          reviewsCount: Math.floor(Math.random() * 13),
-          isInWishlist: false,
-        },
-        {
-          title: "FINE GERMAN SPACE",
-          id: 4,
-          description: "Chic and stylish meeting room with glass wall",
-          image: "https://picsum.photos/216/326",
-          price: { regular: "$50.00" },
-          rating: { max: 5, score: 4 },
-          reviewsCount: Math.floor(Math.random() * 13),
-          isInWishlist: false,
-        },
-        {
-          title: "juggleHUB",
-          id: 5,
-          description: "Creative seminar room in Prenzlauer Berg coworking space",
-          image: "https://picsum.photos/216/326",
-          price: { regular: "$30.00" },
-          rating: { max: 5, score: 4 },
-          reviewsCount: Math.floor(Math.random() * 13),
-          isInWishlist: false,
-        },
-        {
-          title: "Collection Business Center",
-          id: 6,
-          description: "Luxurious office with a scenic view",
-          image: "https://picsum.photos/216/326",
-          price: { regular: "$50.00" },
-          rating: { max: 5, score: 4 },
-          reviewsCount: Math.floor(Math.random() * 13),
-          isInWishlist: false,
-        },
-        {
-          title: "Penthouse-Loft, Mitte",
-          id: 7,
-          description: "Sun-drenched penthouse loft in Berlin Mitte with amazing skyline view",
-          image: "https://picsum.photos/216/326",
-          price: { regular: "$60.00" },
-          rating: { max: 5, score: 4 },
-          reviewsCount: Math.floor(Math.random() * 13),
-          isInWishlist: false,
-        },
-        {
-          title: "BAZE Business Center",
-          id: 8,
-          description: "Cozy business lounge for small coachings",
-          image: "https://picsum.photos/216/326",
-          price: { regular: "$60.00" },
-          rating: { max: 5, score: 4 },
-          reviewsCount: Math.floor(Math.random() * 13),
-          isInWishlist: false,
-        },
-      ],
+      products: [],
       filters: {
         collection: [
           {
@@ -711,6 +636,9 @@ export default {
       ],
     };
   },
+  async created() {
+    this.pullVenues()
+  },
   methods: {
     clearAllFilters() {
       const filters = Object.keys(this.filters);
@@ -724,6 +652,49 @@ export default {
     toggleWishlist(index) {
       this.products[index].isInWishlist = !this.products[index].isInWishlist;
     },
+    async pullVenues(filterF) {
+      try {
+        const venues = await API.graphql({
+          query: listVenues,
+        })
+        cslog(venues)
+        filterF = filterF || (v => true || v)
+        const publishedVenues = venues.data.listVenues.items.filter(v => v.published).filter(v => filterF(v))
+        this.products = publishedVenues.map(v => (
+          {
+            title: this.trimmedStr(v.name),
+            id: v.id,
+            description: v.description,
+            image: "",
+            price: { regular: "$" + v.pricing.perHour[0].price },
+            rating: { max: 5, score: this.avgRating(v) },
+            reviewsCount: v.reviews.items.length,
+            isInWishlist: false,
+          }
+        ))
+        let vm = this
+        Promise.all(
+          publishedVenues.map(v => Storage.get(v.photos?.[0].fullsize.key))
+        ).then(urls => {
+          cslog(urls)
+          vm.products.map((v, i) => { v.image = urls[i] || "" })
+          cslog(vm.products)
+        }).catch(err =>
+          cslog(`An error occurred when retrieving photo urls: ${JSON.stringify(err)}`)
+        )
+      }
+      catch (err) {
+        cslog(err)
+      }
+    },
+    avgRating(venue) {
+      const ratings = venue.reviews.items.map(r => r.rating)
+      return ratings.length ? ratings.reduce((a, b) => (a + b)) / ratings.length : 0.1 // hacky fix
+    },
+    trimmedStr(str) {
+      const length = 24
+      return str.length > length ? str.substring(0, length - 1) + "…" : str
+    }
   },
 };
 </script>

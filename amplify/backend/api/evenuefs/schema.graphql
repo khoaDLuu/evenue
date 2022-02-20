@@ -127,7 +127,7 @@ type Review @model
     ]
   ) {
   venue: Venue @belongsTo
-  user: User @belongsTo
+  user: String
   rating: Int!
   comment: String
 }
@@ -173,7 +173,9 @@ type BookingExtra {
 enum BookingStatus {
   PENDING
   CONFIRMED
-  CANCELLED
+  CANCELED
+  FAILED
+  HAPPENED
 }
 
 input CreateBookingInput {

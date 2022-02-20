@@ -1,9 +1,9 @@
 <template>
   <div>
     <div v-if="authState !== 'signedin'">
-      <p class="text-gray-100 text-center">
+      <!-- <p class="text-gray-100 text-center">
         You are signed out.
-      </p>
+      </p> -->
     </div>
     <amplify-authenticator>
       <div v-if="authState === 'signedin' && user">
@@ -11,7 +11,7 @@
           <NavBar />
           <router-view></router-view>
           <router-link to="/auth">
-            <p class="text-gray-300 text-center">
+            <p class="text-gray-200 text-center">
               Current user: {{ user.username }} (click to go to /auth)
             </p>
           </router-link>

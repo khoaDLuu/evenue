@@ -129,7 +129,7 @@
                     ]
                 },
                 "Description": "evenueapikey",
-                "Expires": 1649125781
+                "Expires": 1649253263
             }
         },
         "GraphQLAPINONEDS95A13CF0": {
@@ -533,18 +533,6 @@
                             "Outputs.transformerrootstackVenueVenueTableCE174226Ref"
                         ]
                     },
-                    "referencetotransformerrootstackUserNestedStackUserNestedStackResource01084C14OutputstransformerrootstackUserUserDataSourceA8C4C398Name": {
-                        "Fn::GetAtt": [
-                            "User",
-                            "Outputs.transformerrootstackUserUserDataSourceA8C4C398Name"
-                        ]
-                    },
-                    "referencetotransformerrootstackUserNestedStackUserNestedStackResource01084C14OutputstransformerrootstackUserUserTableA7A02430Ref": {
-                        "Fn::GetAtt": [
-                            "User",
-                            "Outputs.transformerrootstackUserUserTableA7A02430Ref"
-                        ]
-                    },
                     "referencetotransformerrootstackReviewNestedStackReviewNestedStackResource73D7177DOutputstransformerrootstackReviewReviewDataSource924E2306Name": {
                         "Fn::GetAtt": [
                             "Review",
@@ -562,7 +550,6 @@
             "DependsOn": [
                 "GraphQLAPITransformerSchema3CB2AE18",
                 "Review",
-                "User",
                 "Venue"
             ]
         },

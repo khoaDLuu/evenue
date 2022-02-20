@@ -1787,19 +1787,6 @@
           ]
         }
       }
-    },
-    "transformerrootstackUserUserDataSourceA8C4C398Name": {
-      "Value": {
-        "Fn::GetAtt": [
-          "UserDataSource",
-          "Name"
-        ]
-      }
-    },
-    "transformerrootstackUserUserTableA7A02430Ref": {
-      "Value": {
-        "Ref": "UserTable"
-      }
     }
   }
 }

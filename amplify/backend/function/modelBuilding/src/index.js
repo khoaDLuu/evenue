@@ -16,12 +16,20 @@ const startmodelBuilding = async (event) => {
     Payload: JSON.stringify(event)
   };
   console.log(params);
-  lambda.invoke(params).promise();
+  lambda.invoke(params).promise()
+    .then(res => {
+      console.log("Successfully started Evenue RS model building")
+      console.log(res)
+    })
+    .catch(err => {
+      console.log("Failed to start Evenue RS model building")
+      console.log(err)
+    });
 }
 
 exports.handler = async event => {
   //eslint-disable-line
   console.log(JSON.stringify(event, null, 2));
   startmodelBuilding(event);
-  return Promise.resolve('Successfully started Evenue RS model building');
+  return Promise.resolve('Exited successfully');
 };

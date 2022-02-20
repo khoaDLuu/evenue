@@ -23,7 +23,7 @@
         and will be successful only when the venue has no bookings.
         Are you sure you want to continue?
       </p>
-      <div class="flex flex-row justify-center mb-4">
+      <div class="flex flex-row justify-center pt-4 mb-4">
         <SfButton
           class="px-4 py-2 mx-2 color-danger"
           @click.prevent="deleteVenue">

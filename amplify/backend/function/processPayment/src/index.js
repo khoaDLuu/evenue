@@ -6,7 +6,7 @@ const stripe = require("stripe")("sk_test_51K0pH2BfgvDJN0OCijOFQV5WV1XifummWD2ba
 const getUserEmail = async (event) => {
   const params = {
     UserPoolId: USER_POOL_ID,
-    Username: event.identity.claims.sub
+    Username: event.identity.claims.username
   };
   const user = await cognitoIdentityServiceProvider.adminGetUser(params).promise();
   const { Value: email } = user.UserAttributes.find((attr) => {
@@ -30,7 +30,8 @@ exports.handler = async (event) => {
       paymentToken
     } = event.arguments.input;
     const { sub } = event.identity.claims;
-    const email = await getUserEmail(event);
+    let email = await getUserEmail(event);
+    email = email || event.identity.claims.username;
 
     await stripe.charges.create({
       amount: totalCharge * 100, // https://stripe.com/docs/currencies?presentment-currency=GR#zero-decimal

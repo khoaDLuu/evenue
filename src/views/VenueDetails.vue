@@ -291,30 +291,30 @@ export default {
         },
         photos: [],
         photoUrls: [
-          {
-            mobile: { url: "https://picsum.photos/216/326" },
-            desktop: { url: "https://picsum.photos/216/326" },
-            big: { url: "https://picsum.photos/216/326" },
-            alt: "Product A",
-          },
-          {
-            mobile: { url: "https://picsum.photos/216/326" },
-            desktop: { url: "https://picsum.photos/216/326" },
-            big: { url: "https://picsum.photos/216/326" },
-            alt: "Product B",
-          },
-          {
-            mobile: { url: "https://picsum.photos/216/326" },
-            desktop: { url: "https://picsum.photos/216/326" },
-            big: { url: "https://picsum.photos/216/326" },
-            alt: "Product A",
-          },
-          {
-            mobile: { url: "https://picsum.photos/216/326" },
-            desktop: { url: "https://picsum.photos/216/326" },
-            big: { url: "https://picsum.photos/216/326" },
-            alt: "Product B",
-          },
+          // {
+          //   mobile: { url: "https://picsum.photos/216/326" },
+          //   desktop: { url: "https://picsum.photos/216/326" },
+          //   big: { url: "https://picsum.photos/216/326" },
+          //   alt: "Product A",
+          // },
+          // {
+          //   mobile: { url: "https://picsum.photos/216/326" },
+          //   desktop: { url: "https://picsum.photos/216/326" },
+          //   big: { url: "https://picsum.photos/216/326" },
+          //   alt: "Product B",
+          // },
+          // {
+          //   mobile: { url: "https://picsum.photos/216/326" },
+          //   desktop: { url: "https://picsum.photos/216/326" },
+          //   big: { url: "https://picsum.photos/216/326" },
+          //   alt: "Product A",
+          // },
+          // {
+          //   mobile: { url: "https://picsum.photos/216/326" },
+          //   desktop: { url: "https://picsum.photos/216/326" },
+          //   big: { url: "https://picsum.photos/216/326" },
+          //   alt: "Product B",
+          // },
         ], // set to [] and use skeletons instead
         venueType: "",
         eventSet: new Set(),
@@ -365,7 +365,8 @@ export default {
         zoom: 12,
         center: [51.505, -0.159],
         // markerLatLng: [51.504, -0.159],
-      }
+      },
+      owner: undefined,
     }
   },
   computed: {
@@ -393,25 +394,25 @@ export default {
       return [
         {
           name: "First name",
-          value: this.venue.user?.firstName,
+          value: this.onwer?.firstName,
         },
         {
           name: "Last name",
-          value: this.venue.user?.lastName,
+          value: this.onwer?.lastName,
         },
         {
           name: "Email",
-          value: this.venue.user?.email || "dangkhoa240899@gmail.com",
+          value: this.onwer?.email || "dangkhoa240899@gmail.com",
         },
         {
           name: "Phone",
-          value: this.venue.user?.phone,
+          value: this.onwer?.phone,
         },
       ]
     },
     avgRating() {
       const ratings = this.venue.reviews.map(r => r.rating.rate)
-      return ratings.length ? ratings.reduce((a, b) => (a + b)) / ratings.length : 0
+      return ratings.length ? ratings.reduce((a, b) => (a + b)) / ratings.length : 0.1
     },
     address() {
       return [
@@ -470,6 +471,13 @@ export default {
         )
         this.venue.published = venue.published
 
+        this.breadcrumbs[2] = {
+          text: `#${venue.id}`,
+          route: {
+            link: `/venues/${venue.id}`,
+          },
+        },
+
         // rewrite this in async/await syntax to get the photos fully rendered on page load
         Promise.all(this.venue.photos.map(p => Storage.get(p.fullsize.key)))
           .then(urls => {
@@ -483,6 +491,19 @@ export default {
             )
           })
           .catch(err => cslog(`An error occurred when retrieving photo urls: ${err}`))
+
+        // Auth.currentAuthenticatedUser()
+        //   .then(user => {
+        //     this.owner = {
+        //       firstName: user.attributes.given_name,
+        //       lastName: user.attributes.family_name,
+        //       email: user.attributes.email,
+        //       phone: user.attributes.phone_number,
+        //     }
+        //   })
+        //   .catch(err => {
+        //     cslog(err)
+        //   })
       }
     // })
     // .catch(error => {
@@ -494,13 +515,19 @@ export default {
       .then(res => {
         return res.json()
       })
-      .then(data => {
+      .then(async data => {
         this.mapData.center = data[0] ? [data[0]?.lat, data[0]?.lon] : this.mapData.center
         cslog(data)
       })
       .catch(err => {
         cslog(`An error occurred when fetching venue coordinates: ${err}`)
       })
+    // this.venue.mapData.center = await fetch(
+    //   'http://api.positionstack.com/v1/?' + new URLSearchParams({
+    //     access_key: '383b67a5b0eff25929769efcffd668e4',
+    //     query: this.venue.address,
+    //   })
+    // )
   },
   mounted() {
   },
