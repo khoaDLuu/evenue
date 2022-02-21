@@ -13,24 +13,30 @@ const retrieveRecommendations = async (user) => {
 }
 
 const retrieveVenues = async (venueIds) => {
+    const keys = venueIds.map(vid => ({ id: String(vid) }))
+    console.log(keys)
     let queryParams = {
         "RequestItems": {
-            "Review-2u7klnf7oba3lc5r5jvdeirwa4-dev": {
-                Keys: venueIds.map(vid => ({ 'id': vid })),
-                ProjectionExpression: 'id, name, headline, description, photos, city, pricing, type, published, capacity, reviews, owner'
+            "Venue-2u7klnf7oba3lc5r5jvdeirwa4-dev": {
+                Keys: keys,
+                ProjectionExpression: 'id, #name, headline, description, photos, city, pricing, #type, published, #capacity, reviews, #owner',
+                ExpressionAttributeNames: {'#name': 'name', '#type': 'type', '#capacity': 'capacity', '#owner': 'owner'}
             }
         }
     };
-    console.log(queryParams)
+    console.log(JSON.stringify(queryParams, null, 2))
     const result = await documentClient.batchGet(queryParams).promise();
     return result.Items
 }
 
 exports.handler = async (event) => {
     console.log(`Initial event payload: ${JSON.stringify(event)}`);
-    const { sub } = event.identity.claims;
-    const recVenueIds = await retrieveRecommendations(sub);
-    console.log(`recVenueIds: ${JSON.stringify(recVenueIds)}`);
-    const recVenues = await retrieveVenues(recVenueIds);
+    const username = event.identity?.username;
+    let recVenues = []
+    if (username) {
+        const recVenueIds = await retrieveRecommendations(username);
+        console.log(`recVenueIds: ${JSON.stringify(recVenueIds)}`);
+        recVenues = await retrieveVenues(recVenueIds) || [];
+    }
     return recVenues;
 };

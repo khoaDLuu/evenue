@@ -233,7 +233,7 @@
         "TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-22530-deployment/amplify-cfn-templates/function/recommendVenues-cloudformation-template.json",
         "Parameters": {
           "deploymentBucketName": "amplify-evenuefs-dev-22530-deployment",
-          "s3Key": "amplify-builds/recommendVenues-3744592f2b33326b556c-build.zip",
+          "s3Key": "amplify-builds/recommendVenues-334d694961436e717577-build.zip",
           "env": "dev"
         }
       }
@@ -286,7 +286,24 @@
         "Parameters": {
           "CloudWatchRule": "cron(11 4 * * ? *)",
           "deploymentBucketName": "amplify-evenuefs-dev-22530-deployment",
-          "s3Key": "amplify-builds/modelBuilding-735351694c504554665a-build.zip",
+          "s3Key": "amplify-builds/modelBuilding-556d4e66727247475979-build.zip",
+          "env": "dev"
+        }
+      }
+    },
+    "functionAdminQueries8ff98c03": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-22530-deployment/amplify-cfn-templates/function/AdminQueries8ff98c03-cloudformation-template.json",
+        "Parameters": {
+          "deploymentBucketName": "amplify-evenuefs-dev-22530-deployment",
+          "s3Key": "amplify-builds/AdminQueries8ff98c03-44704d65374478486f4c-build.zip",
+          "authevenuefs81b9bb47UserPoolId": {
+            "Fn::GetAtt": [
+              "authevenuefs81b9bb47",
+              "Outputs.UserPoolId"
+            ]
+          },
           "env": "dev"
         }
       }
@@ -344,6 +361,10 @@
           "dependsOn": "[object Object]",
           "permissions": "",
           "authTriggerConnections": "{\"triggerType\":\"CustomMessage\",\"lambdaFunctionName\":\"evenuefs81b9bb47CustomMessage\"}",
+          "adminQueryGroup": "admin",
+          "parentStack": {
+            "Ref": "AWS::StackId"
+          },
           "env": "dev"
         }
       }
@@ -363,7 +384,34 @@
             ]
           },
           "S3DeploymentBucket": "amplify-evenuefs-dev-22530-deployment",
-          "S3DeploymentRootKey": "amplify-appsync-files/fe791a7d8f0b3cebbb98452156a349f4e91fbad6",
+          "S3DeploymentRootKey": "amplify-appsync-files/a090e701550a44160d5cd7e12524987209083f44",
+          "env": "dev"
+        }
+      }
+    },
+    "apiAdminQueries": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": "https://s3.amazonaws.com/amplify-evenuefs-dev-22530-deployment/amplify-cfn-templates/api/AdminQueries-cloudformation-template.json",
+        "Parameters": {
+          "authevenuefs81b9bb47UserPoolId": {
+            "Fn::GetAtt": [
+              "authevenuefs81b9bb47",
+              "Outputs.UserPoolId"
+            ]
+          },
+          "functionAdminQueries8ff98c03Arn": {
+            "Fn::GetAtt": [
+              "functionAdminQueries8ff98c03",
+              "Outputs.Arn"
+            ]
+          },
+          "functionAdminQueries8ff98c03Name": {
+            "Fn::GetAtt": [
+              "functionAdminQueries8ff98c03",
+              "Outputs.Name"
+            ]
+          },
           "env": "dev"
         }
       }

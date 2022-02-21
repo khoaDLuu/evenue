@@ -1,9 +1,9 @@
 
 type User @aws_api_key @aws_cognito_user_pools {
+  id: ID!
   name: String
   profile: Profile!
   reviews(filter: ModelReviewFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelReviewConnection
-  id: ID!
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
   owner: String
@@ -94,11 +94,13 @@ enum SupportedCurrency {
 }
 
 type Review @aws_api_key @aws_cognito_user_pools {
+  id: ID!
+  bookingId: String
   venue: Venue
   user: String
+  userName: String
   rating: Int!
   comment: String
-  id: ID!
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
   userReviewsId: ID
@@ -119,6 +121,7 @@ type S3Object @aws_api_key @aws_cognito_user_pools {
 }
 
 type Booking @aws_api_key @aws_cognito_user_pools {
+  id: ID!
   venueId: ID!
   user: String!
   checkIn: AWSDateTime!
@@ -129,7 +132,6 @@ type Booking @aws_api_key @aws_cognito_user_pools {
   paymentCurrency: SupportedCurrency!
   paymentToken: String!
   status: BookingStatus!
-  id: ID!
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
   owner: String
@@ -145,7 +147,6 @@ enum BookingStatus {
   CONFIRMED
   CANCELED
   FAILED
-  HAPPENED
 }
 
 input CreateBookingInput {
@@ -202,7 +203,7 @@ type VenueRecommendation {
 }
 
 type Query {
-  recommendVenues(limit: Int): [VenueRecommendation]
+  recommendVenues(limit: Int): [VenueRecommendation] @aws_api_key @aws_iam @aws_cognito_user_pools
   getUser(id: ID!): User @aws_api_key @aws_cognito_user_pools
   listUsers(filter: ModelUserFilterInput, limit: Int, nextToken: String): ModelUserConnection @aws_api_key @aws_cognito_user_pools
   getVenue(id: ID!): Venue @aws_api_key @aws_cognito_user_pools
@@ -330,6 +331,7 @@ type ModelUserConnection @aws_api_key @aws_cognito_user_pools {
 }
 
 input ModelUserFilterInput {
+  id: ModelIDInput
   name: ModelStringInput
   and: [ModelUserFilterInput]
   or: [ModelUserFilterInput]
@@ -344,12 +346,13 @@ input ModelUserConditionInput {
 }
 
 input CreateUserInput {
+  id: ID
   name: String
   profile: ProfileInput!
-  id: ID
 }
 
 input UpdateUserInput {
+  id: ID!
   name: String
   profile: ProfileInput
 }
@@ -481,7 +484,10 @@ type ModelReviewConnection @aws_api_key @aws_cognito_user_pools {
 }
 
 input ModelReviewFilterInput {
+  id: ModelIDInput
+  bookingId: ModelStringInput
   user: ModelStringInput
+  userName: ModelStringInput
   rating: ModelIntInput
   comment: ModelStringInput
   and: [ModelReviewFilterInput]
@@ -492,7 +498,9 @@ input ModelReviewFilterInput {
 }
 
 input ModelReviewConditionInput {
+  bookingId: ModelStringInput
   user: ModelStringInput
+  userName: ModelStringInput
   rating: ModelIntInput
   comment: ModelStringInput
   and: [ModelReviewConditionInput]
@@ -503,16 +511,21 @@ input ModelReviewConditionInput {
 }
 
 input CreateReviewInput {
+  id: ID
+  bookingId: String
   user: String
+  userName: String
   rating: Int!
   comment: String
-  id: ID
   userReviewsId: ID
   venueReviewsId: ID
 }
 
 input UpdateReviewInput {
+  id: ID!
+  bookingId: String
   user: String
+  userName: String
   rating: Int
   comment: String
   userReviewsId: ID
@@ -539,6 +552,7 @@ input ModelBookingStatusInput {
 }
 
 input ModelBookingFilterInput {
+  id: ModelIDInput
   venueId: ModelIDInput
   user: ModelStringInput
   checkIn: ModelStringInput
@@ -569,6 +583,7 @@ input ModelBookingConditionInput {
 }
 
 input UpdateBookingInput {
+  id: ID!
   venueId: ID
   user: String
   checkIn: AWSDateTime

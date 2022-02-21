@@ -27,7 +27,7 @@
         },
         "recommendVenues": {
           "deploymentBucketName": "amplify-evenuefs-dev-22530-deployment",
-          "s3Key": "amplify-builds/recommendVenues-3744592f2b33326b556c-build.zip"
+          "s3Key": "amplify-builds/recommendVenues-334d694961436e717577-build.zip"
         },
         "createBooking": {
           "deploymentBucketName": "amplify-evenuefs-dev-22530-deployment",
@@ -39,11 +39,15 @@
         },
         "modelBuilding": {
           "deploymentBucketName": "amplify-evenuefs-dev-22530-deployment",
-          "s3Key": "amplify-builds/modelBuilding-735351694c504554665a-build.zip"
+          "s3Key": "amplify-builds/modelBuilding-556d4e66727247475979-build.zip"
         },
         "sentimentScoring": {
           "deploymentBucketName": "amplify-evenuefs-dev-22530-deployment",
           "s3Key": "amplify-builds/sentimentScoring-37716d557471364e7a2b-build.zip"
+        },
+        "AdminQueries8ff98c03": {
+          "deploymentBucketName": "amplify-evenuefs-dev-22530-deployment",
+          "s3Key": "amplify-builds/AdminQueries8ff98c03-44704d65374478486f4c-build.zip"
         }
       }
     }

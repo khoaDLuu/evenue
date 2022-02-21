@@ -444,19 +444,19 @@ export default {
       lastName: "",
       openModal: false,
       authenticatedUser: true,
-      bookedEvents: [
-        {
-          start: new Date(2018, 11 - 1, 19, 12, 0),
-          end: new Date(2018, 11 - 1, 19, 14, 0),
-          class: 'booked',
-          background: true,
-        },
-        {
-          start: new Date(2022, 2 - 1, 8, 12, 0),
-          end: new Date(2022, 2 - 1, 8, 14, 0),
-          class: 'booked',
-          background: true,
-        },
+      bookedEvents: [ // TODO: fix hardcode
+        // {
+        //   start: new Date(2022, 2 - 1, 22, 13, 0),
+        //   end: new Date(2022, 2 - 1, 22, 14, 30),
+        //   class: 'booked',
+        //   background: true,
+        // },
+        // {
+        //   start: new Date(2022, 2 - 1, 25, 9, 0),
+        //   end: new Date(2022, 2 - 1, 25, 10, 0),
+        //   class: 'booked',
+        //   background: true,
+        // },
       ],
       venue: {
         pricing: {
@@ -638,18 +638,17 @@ export default {
       this.venue.eventSet = new Set(venue.eventTypes)
       this.venue.extras = venue.extras
       this.venue.capacity = venue.capacity
-      this.venue.reviews = [ { author: "Jane D.Smith", date: "April 2019", message: "I was looking for a bright light for the kitchen but wanted some item more modern than a strip light. this one is perfect, very bright and looks great. I can comment on interlation as I had an electrition instal it. Would recommend.", rating: { max: 5, rate: 4, }, }, { author: "Jane D.Smith", date: "April 2019", message: "I was looking for a bright light for the kitchen but wanted some item more modern than a strip light. this one is perfect, very bright and looks great. I can comment on interlation as I had an electrition instal it. Would recommend.", rating: { max: 5, rate: 3, }, }, ]
-      venue.reviews.items.map(
-        r => ({
-          author: r.user.name,
-          date: r.created,
-          message: r.comment,
-          rating: {
-            max: 5,
-            rate: r.rating,
-          },
-        })
-      )
+      this.venue.reviews = venue.reviews.items.map(
+          r => ({
+            author: r.userName || r.user,
+            date: new Date(r.createdAt).toLocaleString(),
+            message: r.comment,
+            rating: {
+              max: 5,
+              rate: r.rating,
+            },
+          })
+        )
       this.venue.published = venue.published
     }
     this.booking.extraOptions = this.venue.extras
@@ -908,14 +907,14 @@ export default {
     }
   }
 }
-.vuecal__event.booked {
+.vuecal__event {
   background: repeating-linear-gradient(45deg, transparent, transparent 10px, #f2f2f2 10px, #f2f2f2 20px);/* IE 10+ */
-  color: #999;
+  color: #999 !important;
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.vuecal__event.booked .vuecal__event-time {
+.vuecal__event .vuecal__event-time {
   display: none;
   align-items: center;
 }

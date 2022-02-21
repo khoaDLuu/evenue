@@ -10,6 +10,7 @@ type User @model
       { allow: public, operations: [read] }
     ]
   ) {
+  id: ID!
   name: String
   profile: Profile!
   reviews: [Review] @hasMany
@@ -126,8 +127,11 @@ type Review @model
       { allow: public, operations: [read] }
     ]
   ) {
+  id: ID!
+  bookingId: String
   venue: Venue @belongsTo
   user: String
+  userName: String
   rating: Int!
   comment: String
 }
@@ -153,6 +157,7 @@ type Booking @model
       { allow: public, operations: [read] }
     ]
   ) {
+  id: ID!
   venueId: ID!
   user: String!
   checkIn: AWSDateTime!
@@ -175,7 +180,6 @@ enum BookingStatus {
   CONFIRMED
   CANCELED
   FAILED
-  HAPPENED
 }
 
 input CreateBookingInput {
@@ -223,5 +227,6 @@ type VenueRecommendation {
 
 type Query {
   recommendVenues(limit: Int): [VenueRecommendation]
+    @aws_api_key @aws_iam @aws_cognito_user_pools
     @function(name: "recommendVenues-${env}")
 }

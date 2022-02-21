@@ -35,7 +35,12 @@
       </SfContentCategory>
       <SfContentCategory title="Booking details">
         <SfContentPage title="Booking history">
-          <SfOrderHistory :orders="account.orders" />
+          <!-- <SfOrderHistory :orders="account.orders" /> -->
+          <router-link to="/bookings/yours">
+            <SfButton>
+              Navigate to the booking list page
+            </SfButton>
+          </router-link>
         </SfContentPage>
       </SfContentCategory>
       <SfContentPage title="Log out" />
@@ -49,9 +54,9 @@ import {
   SfMyProfile,
   // SfShippingDetails,
   // SfMyNewsletter,
-  SfOrderHistory,
+  // SfOrderHistory,
   // SfInput,
-  // SfButton,
+  SfButton,
 } from "@storefront-ui/vue";
 import { countries } from "@storefront-ui/vue/src/components/templates/internalData.js";
 import { Auth } from "aws-amplify"
@@ -64,9 +69,9 @@ export default {
     SfMyProfile,
     // SfShippingDetails,
     // SfMyNewsletter,
-    SfOrderHistory,
+    // SfOrderHistory,
     // SfInput,
-    // SfButton,
+    SfButton,
   },
   data() {
     return {
@@ -146,6 +151,7 @@ export default {
       if (title === "Log out") {
         try {
           await Auth.signOut();
+          this.$router.push({ path: "/" })
         } catch (error) {
           console.log('error signing out: ', error);
         }

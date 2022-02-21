@@ -55,7 +55,7 @@
             <SfButton
               class="sf-button--text"
               data-testid="read-all-reviews"
-              @click="changeTab(3)"
+              @click="changeTab(4)"
             >
               Read all reviews
             </SfButton>
@@ -457,11 +457,11 @@ export default {
         this.venue.eventSet = new Set(venue.eventTypes)
         this.venue.extras = venue.extras
         this.venue.capacity = venue.capacity
-        this.venue.reviews = [ { author: "Jane D.Smith", date: "April 2019", message: "I was looking for a bright light for the kitchen but wanted some item more modern than a strip light. this one is perfect, very bright and looks great. I can comment on interlation as I had an electrition instal it. Would recommend.", rating: { max: 5, rate: 4, }, }, { author: "Jane D.Smith", date: "April 2019", message: "I was looking for a bright light for the kitchen but wanted some item more modern than a strip light. this one is perfect, very bright and looks great. I can comment on interlation as I had an electrition instal it. Would recommend.", rating: { max: 5, rate: 3, }, }, ]
-        /* TODO: remove mock data */ venue.reviews.items.map(
+        // this.venue.reviews = [ { author: "Jane D.Smith", date: "April 2019", message: "I was looking for a bright light for the kitchen but wanted some item more modern than a strip light. this one is perfect, very bright and looks great. I can comment on interlation as I had an electrition instal it. Would recommend.", rating: { max: 5, rate: 4, }, }, { author: "Jane D.Smith", date: "April 2019", message: "I was looking for a bright light for the kitchen but wanted some item more modern than a strip light. this one is perfect, very bright and looks great. I can comment on interlation as I had an electrition instal it. Would recommend.", rating: { max: 5, rate: 3, }, }, ]
+        this.venue.reviews = venue.reviews.items.map(
           r => ({
-            author: r.user.name,
-            date: r.created,
+            author: r.userName || r.user,
+            date: new Date(r.createdAt).toLocaleString(),
             message: r.comment,
             rating: {
               max: 5,

@@ -72,8 +72,10 @@
       }
     ],
     "permissions": [],
-    "authTriggerConnections": [
-      "{\"triggerType\":\"CustomMessage\",\"lambdaFunctionName\":\"evenuefs81b9bb47CustomMessage\"}"
-    ]
+    "authTriggerConnections": "[\n  {\n    \"triggerType\": \"CustomMessage\",\n    \"lambdaFunctionName\": \"evenuefs81b9bb47CustomMessage\"\n  }\n]",
+    "adminQueryGroup": "admin",
+    "parentStack": {
+      "Ref": "AWS::StackId"
+    }
   }
 }

@@ -17,19 +17,19 @@
       <span v-if="!booking.status" class="text-green-800 mt-4 w-full font-semibold">
         {{ "___________________" }}
       </span>
-      <span v-else-if="booking.status == 'PENDING'" class="text-green-800 mt-4 w-full font-semibold">
+      <span v-else-if="booking.status == 'CONFIRMED' && !cancelingAllowed" class="text-black mt-4 w-full">
+        HAPPENED
+      </span>
+      <span v-else-if="booking.status == 'CONFIRMED'" class="text-green-700 mt-4 w-full font-semibold">
         {{ booking.status }}
       </span>
-      <span v-else-if="booking.status == 'CONFIRMED'" class="text-green-800 mt-4 w-full font-semibold">
+      <span v-else-if="booking.status == 'PENDING'" class="text-yellow-600 mt-4 w-full font-semibold">
         {{ booking.status }}
       </span>
-      <span v-else-if="booking.status == 'CANCELED'" class="text-gray mt-4 w-full">
+      <span v-else-if="booking.status == 'CANCELED'" class="text-purple-700 mt-4 w-full">
         {{ booking.status }}
       </span>
-      <span v-else-if="booking.status == 'FAILED'" class="text-red-800 mt-4 w-full">
-        {{ booking.status }}
-      </span>
-      <span v-else-if="booking.status == 'HAPPENED'" class="text-green-900 mt-4 w-full">
+      <span v-else-if="booking.status == 'FAILED'" class="text-red-700 mt-4 w-full">
         {{ booking.status }}
       </span>
       <span v-else>{{ booking.status }}</span>
@@ -87,18 +87,20 @@
         You can only leave a review once after the event happens.
       </p>
       <div class="form__action">
-        <SfButton
-          class="sf-button mr-4 mb-4 color-secondary"
-          type="submit"
-          @click.prevent="openCancelPopup"
-          :disabled="!cancellingAllowed">
-          Cancel Booking
-        </SfButton>
-        <div class="mr-4 mb-4" v-show="!reviewGiven">
+        <div class="mr-4 mb-4">
+          <SfButton
+            class="sf-button mr-4 mb-4 color-secondary"
+            type="submit"
+            @click.prevent="openCancelPopup"
+            :disabled="!cancelingAllowed || (booking.status != 'CONFIRMED' && booking.status != 'PENDING')">
+            Cancel Booking
+          </SfButton>
+        </div>
+        <div class="mr-4 mb-4">
           <SfButton
             type="submit"
             @click.prevent="openReviewPopup"
-            :disabled="!eventHappened">
+            :disabled="!eventHappened || reviewGiven">
             Add Review
           </SfButton>
         </div>
@@ -134,12 +136,11 @@
       <br>
       <span class="sf-input__error-message">
         <transition name="sf-fade">
-          <span :class="{ 'display-none': review.rating === undefined }">Please choose your rating</span>
+          <span :class="{ 'display-none': review.rating === undefined || review.rating > 0 }">Please choose your rating</span>
         </transition>
       </span>
     </p>
     <p>
-      Comment
       <SfInput
         v-model="review.comment"
         label="Comment"
@@ -252,12 +253,11 @@ export default {
     this.retrieveBooking()
   },
   computed: {
-    cancellingAllowed() {
+    cancelingAllowed() {
       return new Date(this.booking?.checkIn || null).getTime() > new Date().getTime()
     },
     eventHappened() {
-      return true
-      // return new Date(this.booking?.checkOut || null).getTime() < new Date().getTime()
+      return true || new Date(this.booking?.checkOut || null).getTime() < new Date().getTime()
     },
     reviewGiven() {
       return this.booking.venue.reviews?.items?.some(r => r.owner == this.currentUser.attributes?.email)
@@ -268,6 +268,7 @@ export default {
       let vm = this
       try {
         const currentUser = await Auth.currentAuthenticatedUser()
+        console.log(currentUser)
         this.currentUser = currentUser
       }
       catch (err) {
@@ -307,12 +308,17 @@ export default {
       API.graphql({
         query: updateBooking,
         variables: {input: {
-          status: "CANCEL",
+          id: this.bookingId,
+          status: "CANCELED",
         }},
       })
       .then(result => {
         console.info(`Booking updated --> cancelled`)
         console.info(result)
+        this.booking = {
+          ...this.booking,
+          ...result.data.updateBooking
+        }
         this.modalCancelShowed = false
       })
       .catch(error => {
@@ -328,18 +334,31 @@ export default {
       }
       if (this.review.rating && !!this.review.comment) {
         // check and allow update/delete review in the same modal?
+        const inputData = {
+          venueReviewsId: this.booking.venueId,
+          // user: this.currentUser.sub,
+          rating: parseInt(this.review.rating),
+          comment: this.review.comment,
+          user: this.currentUser.username,
+          userName: `${this.currentUser.attributes.given_name} ${this.currentUser.attributes.family_name}`,
+          bookingId: this.bookingId,
+        }
+        console.log(inputData)
         API.graphql({
           query: createReview,
-          variables: {input: {
-            venueReviewsId: this.booking.venueId,
-            // user: this.currentUser.sub,
-            rating: parseInt(this.review.rating),
-            comment: this.review.comment,
-          }},
+          variables: {input: inputData},
         })
         .then(result => {
           console.info(`Review created`)
           console.info(result)
+          this.booking.venue.reviews.items.push({
+            owner: inputData.user,
+            rating: parseInt(inputData.rating),
+            comment: inputData.comment,
+            user: inputData.user,
+            userName: inputData.userName,
+            bookingId: inputData.bookingId,
+          })
           this.modalReviewShowed = false
         })
         .catch(error => {

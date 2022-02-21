@@ -56,13 +56,13 @@ const routes = [
   },
   {
     path: '/bookings/yours',
-    name: 'booking',
+    name: 'your-bookings',
     component: BookingList,
     props: true,
   },
   {
     path: '/bookings/new',
-    name: 'booking',
+    name: 'new-booking',
     component: Booking,
     props: true,
   },

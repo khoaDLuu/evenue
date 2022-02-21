@@ -24,12 +24,14 @@
       @close="openModal = false"
     >
       <transition name="sf-fade" mode="out-in">
-        <div
+        <amplify-authenticator></amplify-authenticator>
+        <!-- <div
           v-if="isLogIn"
           key="log-in"
           class="modal-content"
           data-testid="login-modal"
         >
+          <p class="text-xl text-gray-800 font-semibold my-8 pt-2 w-full">LOGIN</p>
           <form class="form" @submit.prevent="() => false">
             <SfInput
               v-model="email"
@@ -56,6 +58,7 @@
               type="submit"
               class="sf-button--full-width form__submit"
               data-testid="log-in-button"
+              @click="logIn"
             >
               Log In
             </SfButton>
@@ -69,7 +72,7 @@
           <div class="aside">
             <SfHeading
               title="Don't have an account yet?"
-              :level="2"
+              :level="4"
               class="aside__heading"
             />
             <SfButton
@@ -80,8 +83,8 @@
               Register now
             </SfButton>
           </div>
-        </div>
-        <div
+        </div> -->
+        <!-- <div
           v-else
           key="sign-up"
           class="modal-content"
@@ -129,7 +132,7 @@
           >
             or Log In To Your Account
           </SfButton>
-        </div>
+        </div> -->
       </transition>
     </SfModal>
   </div>
@@ -139,22 +142,32 @@
 import {
   SfHeader,
   SfModal,
-  SfInput,
-  SfButton,
-  SfCheckbox,
-  SfHeading,
+  // SfInput,
+  // SfButton,
+  // SfCheckbox,
+  // SfHeading,
 } from "@storefront-ui/vue";
 import { Auth } from 'aws-amplify'
+import { onAuthUIStateChange } from '@aws-amplify/ui-components';
 
 export default {
   name: 'NavBar',
   components: {
     SfHeader,
     SfModal,
-    SfInput,
-    SfButton,
-    SfCheckbox,
-    SfHeading,
+    // SfInput,
+    // SfButton,
+    // SfCheckbox,
+    // SfHeading,
+  },
+  created() {
+    this.unsubscribeAuth = onAuthUIStateChange((authState, authData) => {
+      this.authState = authState;
+      this.user = authData;
+    });
+  },
+  beforeDestroy() {
+    this.unsubscribeAuth();
   },
   data() {
     return {
@@ -163,7 +176,6 @@ export default {
       appName: "Evenue",
       rootCategories: ["Bookings", /* "Messages", "Schedule", */ "Venues"],
       searchPlaceholder: "Search for venues",
-      user: undefined,
       isLogIn: true,
       email: "",
       password: "",
@@ -172,6 +184,9 @@ export default {
       firstName: "",
       lastName: "",
       openModal: false,
+      user: undefined,
+      authState: undefined,
+      unsubscribeAuth: undefined,
     };
   },
   computed: {
@@ -190,6 +205,14 @@ export default {
     },
   },
   methods: {
+    logIn() {
+      //
+      this.openModal = false
+    },
+    signUp() {
+      //
+      this.openModal = false
+    },
     showVenueList() {
       this.$router.push({ path: `/venues/yours` })
     },
@@ -199,19 +222,35 @@ export default {
     async showProfile() {
       try {
         const currentUser = await Auth.currentAuthenticatedUser()
+        console.log(currentUser)
         this.user = currentUser
-        this.$router.push({ path: `/profile` })
+        if (this.user) {
+          this.$router.push({ path: `/profile` })
+        }
+        else {
+          this.openModal = true;
+        }
       }
       catch (err) {
         console.log(err)
-        this.toggleModal()
+        this.openModal = true;
       }
     }
   }
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+amplify-authenticator {
+  --container-height: 50vh;
+  --box-shadow: none;
+}
+>>> button[class^="Button__button"] {
+    background-color: #37375D;
+}
+>>> a {
+    color: #37375D;
+}
 .sf-search-bar__input {
   border-width: 0 0 1px 0;
 }
