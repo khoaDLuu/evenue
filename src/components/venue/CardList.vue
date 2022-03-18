@@ -40,8 +40,8 @@
 </template>
 
 <script>
-import { SfModal, SfButton, SfIcon } from "@storefront-ui/vue";
-import Card from './Card.vue';
+import { SfModal, SfButton, SfIcon } from "@storefront-ui/vue"
+import Card from './Card.vue'
 import { API } from 'aws-amplify'
 import { deleteVenue } from '../../graphql/mutations'
 
@@ -56,8 +56,8 @@ export default {
   props: {
     venues: {
       default: () => ([]),
-      type: Array
-    }
+      type: Array,
+    },
   },
   data() {
     return {

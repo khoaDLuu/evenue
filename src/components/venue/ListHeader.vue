@@ -4,15 +4,15 @@
       <SfHeading
         :class="hd.classes"
         :level="hd.level"
-        :title="hd.title"
+        :title="title"
       />
     </div>
-    <div>
+    <div v-if="actions.create">
       <SfButton
         :class="btn.classes"
         :disabled="false"
         @click="openCreatePage">
-        {{ btn.content }}
+        {{ actions.create }}
       </SfButton>
     </div>
   </div>
@@ -25,21 +25,31 @@ import {
 } from "@storefront-ui/vue";
 
 export default {
-  name: "Category",
+  name: "ListHeader",
+  props: {
+    title: {
+      type: String,
+      required: true,
+    },
+    actions: {
+      type: Object,
+      default: () => ({}),
+    },
+  },
   components: {
     SfButton,
-    SfHeading
+    SfHeading,
   },
   data() {
     return {
       hd: {
         classes: "sf-heading--left",
         level: 2,
-        title: "Your venue list"
+        title: "Your venue list",
       },
       btn: {
         classes: "sf-button--underlined",
-        content: "Create Venue"
+        content: "Create Venue",
       },
     }
   },
@@ -51,8 +61,8 @@ export default {
           // venueId: Math.floor(Math.random() * 1000).toString(),
         }
       })
-    }
-  }
+    },
+  },
 };
 </script>
 

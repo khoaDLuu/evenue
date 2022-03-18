@@ -36,6 +36,7 @@ export const createUser = /* GraphQL */ `
       reviews {
         items {
           id
+          bookingId
           venue {
             id
             name
@@ -78,6 +79,7 @@ export const createUser = /* GraphQL */ `
             updatedAt
           }
           user
+          userName
           rating
           comment
           createdAt
@@ -124,6 +126,7 @@ export const updateUser = /* GraphQL */ `
       reviews {
         items {
           id
+          bookingId
           venue {
             id
             name
@@ -166,6 +169,7 @@ export const updateUser = /* GraphQL */ `
             updatedAt
           }
           user
+          userName
           rating
           comment
           createdAt
@@ -212,6 +216,7 @@ export const deleteUser = /* GraphQL */ `
       reviews {
         items {
           id
+          bookingId
           venue {
             id
             name
@@ -254,6 +259,7 @@ export const deleteUser = /* GraphQL */ `
             updatedAt
           }
           user
+          userName
           rating
           comment
           createdAt
@@ -327,6 +333,7 @@ export const createVenue = /* GraphQL */ `
       reviews {
         items {
           id
+          bookingId
           venue {
             id
             name
@@ -369,6 +376,7 @@ export const createVenue = /* GraphQL */ `
             updatedAt
           }
           user
+          userName
           rating
           comment
           createdAt
@@ -442,6 +450,7 @@ export const updateVenue = /* GraphQL */ `
       reviews {
         items {
           id
+          bookingId
           venue {
             id
             name
@@ -484,6 +493,7 @@ export const updateVenue = /* GraphQL */ `
             updatedAt
           }
           user
+          userName
           rating
           comment
           createdAt
@@ -557,6 +567,7 @@ export const deleteVenue = /* GraphQL */ `
       reviews {
         items {
           id
+          bookingId
           venue {
             id
             name
@@ -599,6 +610,7 @@ export const deleteVenue = /* GraphQL */ `
             updatedAt
           }
           user
+          userName
           rating
           comment
           createdAt
@@ -622,6 +634,7 @@ export const createReview = /* GraphQL */ `
   ) {
     createReview(input: $input, condition: $condition) {
       id
+      bookingId
       venue {
         id
         name
@@ -674,6 +687,7 @@ export const createReview = /* GraphQL */ `
         reviews {
           items {
             id
+            bookingId
             venue {
               id
               name
@@ -688,6 +702,7 @@ export const createReview = /* GraphQL */ `
               updatedAt
             }
             user
+            userName
             rating
             comment
             createdAt
@@ -703,6 +718,7 @@ export const createReview = /* GraphQL */ `
         updatedAt
       }
       user
+      userName
       rating
       comment
       createdAt
@@ -720,6 +736,7 @@ export const updateReview = /* GraphQL */ `
   ) {
     updateReview(input: $input, condition: $condition) {
       id
+      bookingId
       venue {
         id
         name
@@ -772,6 +789,7 @@ export const updateReview = /* GraphQL */ `
         reviews {
           items {
             id
+            bookingId
             venue {
               id
               name
@@ -786,6 +804,7 @@ export const updateReview = /* GraphQL */ `
               updatedAt
             }
             user
+            userName
             rating
             comment
             createdAt
@@ -801,6 +820,7 @@ export const updateReview = /* GraphQL */ `
         updatedAt
       }
       user
+      userName
       rating
       comment
       createdAt
@@ -818,6 +838,7 @@ export const deleteReview = /* GraphQL */ `
   ) {
     deleteReview(input: $input, condition: $condition) {
       id
+      bookingId
       venue {
         id
         name
@@ -870,6 +891,7 @@ export const deleteReview = /* GraphQL */ `
         reviews {
           items {
             id
+            bookingId
             venue {
               id
               name
@@ -884,6 +906,7 @@ export const deleteReview = /* GraphQL */ `
               updatedAt
             }
             user
+            userName
             rating
             comment
             createdAt
@@ -899,6 +922,7 @@ export const deleteReview = /* GraphQL */ `
         updatedAt
       }
       user
+      userName
       rating
       comment
       createdAt
@@ -996,6 +1020,297 @@ export const deleteBooking = /* GraphQL */ `
       createdAt
       updatedAt
       owner
+    }
+  }
+`;
+export const createFavorite = /* GraphQL */ `
+  mutation CreateFavorite(
+    $input: CreateFavoriteInput!
+    $condition: ModelFavoriteConditionInput
+  ) {
+    createFavorite(input: $input, condition: $condition) {
+      id
+      venue {
+        id
+        name
+        headline
+        description
+        photos {
+          name
+          fullsize {
+            region
+            bucket
+            key
+          }
+          thumbnails {
+            region
+            bucket
+            key
+          }
+        }
+        address
+        city
+        pricing {
+          currency
+          perHour {
+            startHour
+            endHour
+            price
+          }
+          perDay
+        }
+        type {
+          name
+        }
+        eventTypes
+        published
+        extras {
+          name
+          type
+          price
+        }
+        capacity {
+          unit
+          floorSize
+          recommendedGuestCount
+        }
+        operatingHours {
+          daysOfWeek
+          startHour
+          endHour
+        }
+        reviews {
+          items {
+            id
+            bookingId
+            venue {
+              id
+              name
+              headline
+              description
+              address
+              city
+              eventTypes
+              published
+              owner
+              createdAt
+              updatedAt
+            }
+            user
+            userName
+            rating
+            comment
+            createdAt
+            updatedAt
+            userReviewsId
+            venueReviewsId
+            owner
+          }
+          nextToken
+        }
+        owner
+        createdAt
+        updatedAt
+      }
+      userId
+      owner
+      createdAt
+      updatedAt
+      favoriteVenueId
+    }
+  }
+`;
+export const updateFavorite = /* GraphQL */ `
+  mutation UpdateFavorite(
+    $input: UpdateFavoriteInput!
+    $condition: ModelFavoriteConditionInput
+  ) {
+    updateFavorite(input: $input, condition: $condition) {
+      id
+      venue {
+        id
+        name
+        headline
+        description
+        photos {
+          name
+          fullsize {
+            region
+            bucket
+            key
+          }
+          thumbnails {
+            region
+            bucket
+            key
+          }
+        }
+        address
+        city
+        pricing {
+          currency
+          perHour {
+            startHour
+            endHour
+            price
+          }
+          perDay
+        }
+        type {
+          name
+        }
+        eventTypes
+        published
+        extras {
+          name
+          type
+          price
+        }
+        capacity {
+          unit
+          floorSize
+          recommendedGuestCount
+        }
+        operatingHours {
+          daysOfWeek
+          startHour
+          endHour
+        }
+        reviews {
+          items {
+            id
+            bookingId
+            venue {
+              id
+              name
+              headline
+              description
+              address
+              city
+              eventTypes
+              published
+              owner
+              createdAt
+              updatedAt
+            }
+            user
+            userName
+            rating
+            comment
+            createdAt
+            updatedAt
+            userReviewsId
+            venueReviewsId
+            owner
+          }
+          nextToken
+        }
+        owner
+        createdAt
+        updatedAt
+      }
+      userId
+      owner
+      createdAt
+      updatedAt
+      favoriteVenueId
+    }
+  }
+`;
+export const deleteFavorite = /* GraphQL */ `
+  mutation DeleteFavorite(
+    $input: DeleteFavoriteInput!
+    $condition: ModelFavoriteConditionInput
+  ) {
+    deleteFavorite(input: $input, condition: $condition) {
+      id
+      venue {
+        id
+        name
+        headline
+        description
+        photos {
+          name
+          fullsize {
+            region
+            bucket
+            key
+          }
+          thumbnails {
+            region
+            bucket
+            key
+          }
+        }
+        address
+        city
+        pricing {
+          currency
+          perHour {
+            startHour
+            endHour
+            price
+          }
+          perDay
+        }
+        type {
+          name
+        }
+        eventTypes
+        published
+        extras {
+          name
+          type
+          price
+        }
+        capacity {
+          unit
+          floorSize
+          recommendedGuestCount
+        }
+        operatingHours {
+          daysOfWeek
+          startHour
+          endHour
+        }
+        reviews {
+          items {
+            id
+            bookingId
+            venue {
+              id
+              name
+              headline
+              description
+              address
+              city
+              eventTypes
+              published
+              owner
+              createdAt
+              updatedAt
+            }
+            user
+            userName
+            rating
+            comment
+            createdAt
+            updatedAt
+            userReviewsId
+            venueReviewsId
+            owner
+          }
+          nextToken
+        }
+        owner
+        createdAt
+        updatedAt
+      }
+      userId
+      owner
+      createdAt
+      updatedAt
+      favoriteVenueId
     }
   }
 `;

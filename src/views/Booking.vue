@@ -1,131 +1,20 @@
 <template>
+  <div>
+  <div v-show="loading" class="h-40 w-full"></div>
+  <SfLoader :loading="loading">
+
   <div id="checkout">
     <div class="checkout">
       <div class="checkout__main">
         <SfSteps :active="currentStep" @change="updateStep($event)">
           <SfStep name="Contact details">
-            <SfModal
-              id="login"
-              :visible="openModal"
-              :title="modalTitle"
-              @close="openModal = false"
-            >
-              <transition name="sf-fade" mode="out-in">
-                <div
-                  v-if="isLogIn"
-                  key="log-in"
-                  class="modal-content"
-                  data-testid="login-modal"
-                >
-                  <form class="formmd" @submit.prevent="() => false">
-                    <SfInput
-                      v-model="email"
-                      name="email"
-                      label="Your email"
-                      class="form__element"
-                      type="email"
-                    />
-                    <SfInput
-                      v-model="password"
-                      name="password"
-                      label="Password"
-                      type="password"
-                      class="form__element"
-                      :has-show-password="true"
-                    />
-                    <SfCheckbox
-                      v-model="rememberMe"
-                      name="remember-me"
-                      label="Remember me"
-                      class="form__element form__checkbox"
-                    />
-                    <SfButton
-                      type="submit"
-                      class="sf-button--full-width form__submit"
-                      data-testid="log-in-button"
-                    >
-                      Log In
-                    </SfButton>
-                  </form>
-                  <SfButton
-                    class="sf-button--text action-button"
-                    data-testid="forgotten-password-button"
-                  >
-                    Forgotten password?
-                  </SfButton>
-                  <div class="aside">
-                    <SfHeading
-                      title="Don't have an account yet?"
-                      :level="2"
-                      class="aside__heading"
-                    />
-                    <SfButton
-                      class="sf-button--text"
-                      data-testid="register-now-button"
-                      @click="isLogIn = false"
-                    >
-                      Register now
-                    </SfButton>
-                  </div>
-                </div>
-                <div
-                  v-else
-                  key="sign-up"
-                  class="modal-content"
-                  data-testid="signin-modal"
-                >
-                  <form class="formmd" @submit.prevent="() => false">
-                    <SfInput
-                      v-model="firstName"
-                      name="first-name"
-                      label="Name"
-                      class="form__element"
-                    />
-                    <SfInput
-                      v-model="lastName"
-                      name="last-name"
-                      label="Last Name"
-                      class="form__element"
-                    />
-                    <SfInput
-                      v-model="email"
-                      name="email"
-                      label="Your email"
-                      class="form__element"
-                      type="email"
-                    />
-                    <SfInput
-                      v-model="password"
-                      name="password"
-                      label="Password"
-                      type="password"
-                      class="form__element"
-                    />
-                    <SfButton
-                      type="submit"
-                      class="sf-button--full-width form__submit"
-                      data-testid="create-acount-button"
-                    >
-                      Create an account
-                    </SfButton>
-                  </form>
-                  <SfButton
-                    class="sf-button--text action-button"
-                    data-testid="log-in-account"
-                    @click="isLogIn = true"
-                  >
-                    or Log In To Your Account
-                  </SfButton>
-                </div>
-              </transition>
-            </SfModal>
             <form class="form">
             <p class="text-xl text-gray-800 font-semibold my-8 w-full">Personal Details</p>
-            <div v-if="!authenticatedUser">
+            <div v-if="!currentUser">
               <SfButton
                 class="log-in__button color-secondary"
                 data-testid="login-button"
-                @click="toggleModal">
+                @click.prevent="openAuthModal">
                 Log In
               </SfButton>
               <p class="text-sm text-gray-500 mt-4 w-full">Log in so your personal details can be shown in the fields below.</p>
@@ -293,6 +182,7 @@
                   </template>
                 </SfAddress>
               </SfAddressPicker>
+              <!-- <button ref="eventFormBtn" type="submit" @click.prevent="" class="hidden" /> -->
             </form>
           </SfStep>
           <SfStep name="Payment">
@@ -366,7 +256,11 @@
         @click="currentStep--"
         >Go back</SfButton
       >
+      <p class="text-sm text-red-700 text-left">{{ valErrorMsg }}</p>
     </div>
+  </div>
+
+  </SfLoader>
   </div>
 </template>
 
@@ -382,18 +276,17 @@ import {
   SfInput,
   SfIcon,
   SfSkeleton,
-  SfModal,
-  SfCheckbox,
-  SfHeading,
+  SfLoader,
 } from "@storefront-ui/vue"
 import VueCal from 'vue-cal'
 import 'vue-cal/dist/drag-and-drop.js'
 import 'vue-cal/dist/vuecal.css'
 import { StripeElementCard } from '@vue-stripe/vue-stripe'
 import { v4 as uuidv4 } from "uuid"
-import { Auth, API } from "aws-amplify"
-import { getVenue } from "../graphql/queries"
+import { Auth, API, Hub } from "aws-amplify"
+import { getVenue, listBookings } from "../graphql/queries"
 import { processBooking } from '../graphql/mutations'
+import { GRAPHQL_AUTH_MODE } from "@aws-amplify/api"
 
 let cslog = console.log
 
@@ -410,14 +303,13 @@ export default {
     SfAddressPicker,
     SfIcon,
     SfSkeleton,
+    SfLoader,
     VueCal,
     StripeElementCard,
-    SfModal,
-    SfCheckbox,
-    SfHeading,
   },
   data() {
     return {
+      loading: false,
       card: {
         valid: undefined,
         rendered: false,
@@ -435,16 +327,8 @@ export default {
         email: "",
         phone: "",
       },
-      isLogIn: true,
-      email: "",
-      password: "",
-      createAccount: false,
-      rememberMe: false,
-      firstName: "",
-      lastName: "",
-      openModal: false,
-      authenticatedUser: true,
-      bookedEvents: [ // TODO: fix hardcode
+      currentUser: true,
+      bookedEvents: [
         // {
         //   start: new Date(2022, 2 - 1, 22, 13, 0),
         //   end: new Date(2022, 2 - 1, 22, 14, 30),
@@ -551,7 +435,8 @@ export default {
           icon: "info_shield",
         },
       ],
-    };
+      valErrorMsg: "",
+    }
   },
   computed: {
     totalCharge() {
@@ -591,27 +476,40 @@ export default {
     minDate () {
       return new Date().addDays(1)
     },
-    modalTitle() {
-      return this.isLogIn ? "Log In" : "Join Evenue";
-    },
-  },
-  watch: {
-    isLogIn() {
-      this.email = "";
-      this.password = "";
-      this.createAccount = false;
-      this.rememberMe = false;
-      this.firstName = "";
-      this.lastName = "";
-    },
   },
   async created() {
+    try {
+      const currentUser = await Auth.currentAuthenticatedUser()
+      cslog(currentUser)
+      this.currentUser = currentUser
+      this.personalDetails = {
+        firstName: currentUser.attributes.given_name,
+        lastName: currentUser.attributes.family_name,
+        email: currentUser.attributes.email,
+        phone: currentUser.attributes.phone_number,
+      }
+    }
+    catch (err) {
+      this.currentUser = false
+      const cred = await Auth.currentCredentials()
+      cslog(err, "- Using unauth cred...", 'Cred exp:', cred.expiration, "\n-------")
+    }
+
     this.venueId = this.$route.query.venueId
-    cslog(this.venueId)
-    const result = await API.graphql({
-      query: getVenue,
-      variables: {id: this.venueId},
-    })
+    let result = {}
+    if (this.currentUser?.attributes) {
+      result = await API.graphql({
+        query: getVenue,
+        variables: {id: this.venueId},
+      })
+    }
+    else {
+      result = await API.graphql({
+        query: getVenue,
+        variables: {id: this.venueId},
+        authMode: GRAPHQL_AUTH_MODE.API_KEY,
+      })
+    }
     const { data: { getVenue: venue } } = result
 
     if (!venue) {
@@ -652,38 +550,77 @@ export default {
       this.venue.published = venue.published
     }
     this.booking.extraOptions = this.venue.extras
-    const user = await Auth.currentAuthenticatedUser()
-    cslog(user)
-    this.authenticatedUser = user
-    this.personalDetails = {
-      firstName: user.attributes.given_name,
-      lastName: user.attributes.family_name,
-      email: user.attributes.email,
+
+    try {
+      const resB = await API.graphql({
+        query: listBookings,
+        variables: {filter: {venueId: {eq: this.venueId}}},
+        authMode: GRAPHQL_AUTH_MODE.API_KEY,
+      })
+      console.info(`Booked events listed`)
+      console.info(resB)
+      this.bookedEvents = resB.data.listBookings.items.map(
+        b => ({
+          start: new Date(b.checkIn),
+          end: new Date(b.checkOut),
+          class: 'booked',
+          background: true,
+        })
+      )
+      cslog("bookedEvents", this.bookedEvents)
     }
-    // Auth.currentAuthenticatedUser()
-    //   .then(user => {
-    //     cslog(user)
-    //     this.personalDetails = {
-    //       firstName: "1230987654",
-    //       lastName: "0987654",
-    //       email: "09090909@hgfdsdf.cls",
-    //     }
-    //     cslog(this.personalDetails)
-    //   })
-    //   .catch(err => {
-    //     cslog(err)
-    //   })
+    catch (err) {
+      cslog(err)
+    }
+
+    Hub.listen('auth', (data) => {
+      const { payload } = data
+      this.onAuthEvent(payload)
+      console.log('A new auth event has happened:', payload.message)
+    })
   },
   methods: {
     moveNext() {
-      if (this.currentStep <= 1) {
-        this.currentStep++
+      if (this.currentStep === 0) {
+        if (this.validatePersonalInfo()) {
+          this.valErrorMsg = ""
+          this.currentStep++
+        }
+        else {
+          this.valErrorMsg = "You are not logged in, or some inputs are empty or invalid"
+        }
+      }
+      else if (this.currentStep === 1) {
+        if (this.validateEventDetails()) {
+          this.valErrorMsg = ""
+          this.currentStep++
+        }
+        else {
+          this.valErrorMsg = "Some inputs are empty or invalid"
+        }
       }
       else {
-        this.book()
+        if (this.validatePaymentInfo()) {
+          this.valErrorMsg = ""
+          this.book()
+        }
+        else {
+          this.valErrorMsg = "Your payment info is empty or invalid"
+        }
       }
     },
+    validatePersonalInfo() {
+      return this.currentUser?.attributes && Object.values(this.personalDetails).every(x => Boolean(x?.trim()))
+    },
+    validateEventDetails() {
+      // this.$refs.eventFormBtn.click()
+      return !!this.booking.checkIn && !!this.booking.checkOut && this.booking.guestCount > 0
+    },
+    validatePaymentInfo() {
+      return this.card.valid
+    },
     book() {
+      this.loading = true
       const inputData = {
         checkIn: this.booking.checkIn.toISOString(),
         checkOut: this.booking.checkOut.toISOString(),
@@ -700,6 +637,7 @@ export default {
         variables: {input: inputData},
       })
       .then(result => {
+        this.loading = false
         console.info(`Booking created`)
         console.info(result)
         this.$router.push({ path: `/bookings/yours` })
@@ -709,13 +647,29 @@ export default {
         console.error(error)
       })
     },
-    toggleModal() {
-      this.openModal = !this.openModal;
+    openAuthModal() {
+      Hub.dispatch(
+        'CustomAuth',
+        {
+          event: 'authRequested',
+          data: {},
+          message: '',
+        }
+      )
+    },
+    onAuthEvent(authPayload) {
+      this.currentUser = authPayload.data
+      this.personalDetails = {
+        firstName: this.currentUser.attributes.given_name,
+        lastName: this.currentUser.attributes.family_name,
+        email: this.currentUser.attributes.email,
+        phone: this.currentUser.attributes.phone_number,
+      }
     },
     updateStep(next) {
       // prevent to move next by SfStep header
       if (next < this.currentStep) {
-        this.currentStep = next;
+        this.currentStep = next
       }
     },
     checkNoConflict(event) {

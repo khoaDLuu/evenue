@@ -81,9 +81,23 @@
               @click="openBookingPage">
               Book now
             </SfButton>
-            <SfButton class="sf-button--text desktop-only product__save md:clear-right md:pt-8">
+            <SfButton
+              v-if="favorited === undefined"
+              class="sf-button--text desktop-only product__save md:clear-right md:pt-8">
+              Loading...
+            </SfButton>
+            <p v-else-if="favorited === null" class="text-right md:clear-right md:pt-8">
+              <span class="py-1 px-2 bg-gray-200 text-sm text-gray-600 align-middle">Log in to favorite</span>
+            </p>
+            <SfButton
+              v-else-if="favorited === false"
+              class="sf-button--text desktop-only product__save md:clear-right md:pt-8"
+              @click="addToFavorites">
               Add to favorites
             </SfButton>
+            <p v-else-if="favorited === true" class="text-right md:clear-right md:pt-8">
+              <span class="py-1 px-2 bg-gray-200 text-sm text-green-600 align-middle">Favorite venue</span>
+            </p>
             <SfButton
               class="sf-button--text desktop-only product__save"
               @click.prevent="copyUrl">
@@ -193,7 +207,7 @@
     </div>
     <transition name="slide">
       <SfNotification
-        class="notification smartphone-only"
+        class="notification"
         :visible="isOpenNotification"
         :message="notifMessage"
         @click:close="isOpenNotification = false"
@@ -226,11 +240,13 @@ import {
 } from "@storefront-ui/vue";
 import { LMap, LTileLayer, LMarker, LTooltip } from 'vue2-leaflet'
 import { Icon } from 'leaflet'
-import { API, Storage } from 'aws-amplify'
-import { getVenue } from '../graphql/queries'
+import { API, Auth, Storage } from 'aws-amplify'
+import { getVenue, listFavorites } from '../graphql/queries'
 import PerHour from '../components/icons/PerHour.vue'
 import PerDay from '../components/icons/PerDay.vue'
 import LocationMarker from '../components/icons/LocationMarker.vue'
+import { GRAPHQL_AUTH_MODE } from "@aws-amplify/api"
+import { createFavorite } from '../graphql/mutations'
 
 delete Icon.Default.prototype._getIconUrl;
 Icon.Default.mergeOptions({
@@ -338,21 +354,15 @@ export default {
       breadcrumbs: [
         {
           text: "Home",
-          route: {
-            link: "/",
-          },
+          link: "/",
         },
         {
           text: "Venues",
-          route: {
-            link: "/venues/search",
-          },
+          link: "/venues/search",
         },
         {
           text: "#",
-          route: {
-            link: "#",
-          },
+          link: "#",
         },
       ],
       isOpenNotification: false,
@@ -366,7 +376,9 @@ export default {
         center: [51.505, -0.159],
         // markerLatLng: [51.504, -0.159],
       },
+      favorited: undefined,
       owner: undefined,
+      currentUser: undefined,
     }
   },
   computed: {
@@ -424,10 +436,28 @@ export default {
     },
   },
   async created() {
-    const result = await API.graphql({
-      query: getVenue,
-      variables: {id: this.venueId},
-    })
+    try {
+      this.currentUser = await Auth.currentAuthenticatedUser()
+    }
+    catch (err) {
+      const cred = await Auth.currentCredentials()
+      cslog(err, "- Using unauth cred...", 'Cred exp:', cred.expiration, "\n-------")
+    }
+
+    let result = undefined
+    if (this.currentUser) {
+      result = await API.graphql({
+        query: getVenue,
+        variables: {id: this.venueId},
+      })
+    }
+    else {
+      result = await API.graphql({
+        query: getVenue,
+        variables: {id: this.venueId},
+        authMode: GRAPHQL_AUTH_MODE.API_KEY,
+      })
+    }
     // .then(result => {
       console.info(`Venue retrieved`)
       console.info(result)
@@ -457,7 +487,6 @@ export default {
         this.venue.eventSet = new Set(venue.eventTypes)
         this.venue.extras = venue.extras
         this.venue.capacity = venue.capacity
-        // this.venue.reviews = [ { author: "Jane D.Smith", date: "April 2019", message: "I was looking for a bright light for the kitchen but wanted some item more modern than a strip light. this one is perfect, very bright and looks great. I can comment on interlation as I had an electrition instal it. Would recommend.", rating: { max: 5, rate: 4, }, }, { author: "Jane D.Smith", date: "April 2019", message: "I was looking for a bright light for the kitchen but wanted some item more modern than a strip light. this one is perfect, very bright and looks great. I can comment on interlation as I had an electrition instal it. Would recommend.", rating: { max: 5, rate: 3, }, }, ]
         this.venue.reviews = venue.reviews.items.map(
           r => ({
             author: r.userName || r.user,
@@ -473,37 +502,30 @@ export default {
 
         this.breadcrumbs[2] = {
           text: `#${venue.id}`,
-          route: {
-            link: `/venues/${venue.id}`,
-          },
-        },
+          link: `/venues/${venue.id}`,
+        }
 
-        // rewrite this in async/await syntax to get the photos fully rendered on page load
-        Promise.all(this.venue.photos.map(p => Storage.get(p.fullsize.key)))
-          .then(urls => {
-            this.venue.photoUrls = urls.map(
-              url => ({
-                mobile: { url: url },
-                desktop: { url: url },
-                big: { url: url },
-                alt: url,
-              })
-            )
-          })
-          .catch(err => cslog(`An error occurred when retrieving photo urls: ${err}`))
+        try {
+          const urls = await Promise.all(this.venue.photos.map(p => Storage.get(p.fullsize.key)))
+          this.venue.photoUrls = urls.map(
+            url => ({
+              mobile: { url: url },
+              desktop: { url: url },
+              big: { url: url },
+              alt: url,
+            })
+          )
+        }
+        catch (err) {
+          cslog(`An error occurred when retrieving photo urls:`, err)
+        }
 
-        // Auth.currentAuthenticatedUser()
-        //   .then(user => {
-        //     this.owner = {
-        //       firstName: user.attributes.given_name,
-        //       lastName: user.attributes.family_name,
-        //       email: user.attributes.email,
-        //       phone: user.attributes.phone_number,
-        //     }
-        //   })
-        //   .catch(err => {
-        //     cslog(err)
-        //   })
+        // this.owner = {
+        //   firstName: user.attributes.given_name,
+        //   lastName: user.attributes.family_name,
+        //   email: user.attributes.email,
+        //   phone: user.attributes.phone_number,
+        // }
       }
     // })
     // .catch(error => {
@@ -528,33 +550,63 @@ export default {
     //     query: this.venue.address,
     //   })
     // )
+
+    if (this.currentUser) {
+      API.graphql({
+        query: listFavorites,
+      })
+      .then(favoriteResult => {
+        this.favorites = favoriteResult.data.listFavorites.items
+        const favVenueIds = new Set(this.favorites.map(f => f.venue.id))
+        this.favorited = favVenueIds.has(this.venueId)
+      })
+    }
+    else {
+      this.favorited = null
+    }
   },
   mounted() {
   },
   methods: {
     openBookingPage() {
-      this.isOpenNotification = true
-      this.notifMessage = "Opening..."
+      // this.isOpenNotification = true
+      // this.notifMessage = "Opening..."
       this.$router.push({ path: '/bookings/new', query: { venueId: this.venueId }})
-      setTimeout(() => {
-        this.isOpenNotification = false
-        this.notifMessage = ""
-      }, 3000)
+      // setTimeout(() => {
+      //   this.isOpenNotification = false
+      //   this.notifMessage = ""
+      // }, 3000)
     },
-    copyUrl() {
-      (window.clipboardData || navigator.clipboard).writeText(window.location.href)
+    addToFavorites () {
+      if (this.currentUser) {
+        const inputData = {
+          favoriteVenueId: this.venueId,
+          userId: this.currentUser.attributes.sub,
+          owner: this.currentUser.username,
+        }
+        cslog("Fav input", inputData)
+
+        API.graphql({
+          query: createFavorite,
+          variables: {input: inputData},
+        })
         .then(result => {
-          cslog(result)
-          this.isOpenNotification = true
-          this.notifMessage = "Link copied"
-          setTimeout(() => {
-            this.isOpenNotification = false
-            this.notifMessage = ""
-          }, 2000)
+          console.info("Venue favorited", result)
         })
         .catch(error => {
           cslog(error)
         })
+      }
+    },
+    async copyUrl() {
+      const result = await navigator.clipboard.writeText(window.location.href)
+      cslog(result)
+      this.isOpenNotification = true
+      this.notifMessage = "Link copied"
+      setTimeout(() => {
+        this.isOpenNotification = false
+        this.notifMessage = ""
+      }, 2000)
     },
     changeTab(tabNumber) {
       document
@@ -725,6 +777,7 @@ export default {
   bottom: 0;
   left: 0;
   right: 0;
+  font-weight: bold;
   --notification-border-radius: 0;
   --notification-max-width: 100%;
   --notification-background: var(--c-link);

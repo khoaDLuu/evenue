@@ -23,7 +23,7 @@
             :button-text="banner.buttonText"
             :image="banner.image"
             :class="banner.class"
-            @click="showVenueSearch('workshop')"
+            @click="showVenueSearch(banner.eventType)"
           >
             <template #title>
               <SfHeading
@@ -215,6 +215,7 @@ export default {
           buttonText: "Check them out",
           image: "https://picsum.photos/id/42/1024",
           class: "desktop-only",
+          eventType: "Workshop",
         },
         {
           slot: "banner-B",
@@ -225,6 +226,7 @@ export default {
           buttonText: "Check them out",
           image: "https://picsum.photos/id/201/1024",
           class: "desktop-only",
+          eventType: "Meeting",
         },
         {
           slot: "banner-C",
@@ -234,6 +236,7 @@ export default {
             "Meet in easy-to-book, unique seminar rooms with different layouts.",
           buttonText: "Check them out",
           image: "https://picsum.photos/id/49/216/326",
+          eventType: "Conference",
         },
         {
           slot: "banner-D",
@@ -243,6 +246,7 @@ export default {
             "Discover our collection of impressive event venues at your fingertip.",
           buttonText: "Check them out",
           image: "https://picsum.photos/id/305/216/326",
+          eventType: "Party",
         },
       ],
       products: [
@@ -373,7 +377,7 @@ export default {
     showVenueSearch(eventType) {
       this.$router.push({ path: `/venues/search`, query: { event: eventType }})
     },
-    async pullVenues(query = listVenues, queryName = "listVenues", filterF) {
+    async pullVenues(query, queryName, filterF) {
       try {
         const venues = await API.graphql({
           query,
@@ -381,9 +385,25 @@ export default {
         })
         cslog(queryName, venues, "\n-------")
         filterF = filterF || (v => true || v)
-        const publishedVenues = venues.data[queryName]?.items?.filter(v => v.published)?.filter(v => filterF(v)) || []
+        const publishedVenues = venues.data[queryName]?.items?.filter(
+          v => v.published
+        )?.filter(
+          v => filterF(v)
+        )?.map(
+          v => ({...v, badgeLabel: "Recommended", badgeColor: "color-primary"})
+        ) || []
 
-        // cslog(publishedVenues)
+        if (publishedVenues.length < 8) {
+          const resV = await API.graphql({
+            query: listVenues,
+            authMode: GRAPHQL_AUTH_MODE.API_KEY,
+          })
+          const popVenues = resV.data.listVenues.items.filter(v => v.published).sort((v1, v2) =>
+            this.avgRating(v2) - this.avgRating(v1)
+          )
+          publishedVenues.push(...popVenues.slice(0, 8 - publishedVenues.length))
+        }
+
         const displayVenues = publishedVenues.map(v => (
           {
             title: this.trimmedStr(v.name),
@@ -394,8 +414,8 @@ export default {
             rating: { max: 5, score: this.avgRating(v) },
             reviews: v.reviews.items.length,
             isInWishlist: false,
-            badgeLabel: "",
-            badgeColor: "color-primary",
+            badgeLabel: v.badgeLabel || "Popular",
+            badgeColor: v.badgeColor || "color-secondary",
           }
         ))
 
@@ -407,26 +427,21 @@ export default {
           cslog(`An error occurred when retrieving photo urls: ${JSON.stringify(err)}`)
         )
 
-        if (!displayVenues.length && queryName == "recommendVenues") {
-          await this.pullVenues(listVenues, "listVenues")
-        }
-        else {
-          // both assignment and push(...) work partially; must be an impl detail of StorefrontUI component
-          // this.products = displayVenues
-          // finally, this field assignment trick works!
-          this.products.map((v, i) => {
-            v.title = displayVenues[i].title
-            v.id = displayVenues[i].id
-            v.description = displayVenues[i].description
-            v.image = displayVenues[i].image
-            v.price = displayVenues[i].price
-            v.rating = displayVenues[i].rating
-            v.reviews = displayVenues[i].reviews
-            v.isInWishlist = displayVenues[i].isInWishlist
-            v.badgeLabel = displayVenues[i].badgeLabel
-            v.badgeColor = displayVenues[i].badgeColor
-          })
-        }
+        // both assignment and push(...) work partially; must be an impl detail of StorefrontUI component
+        // this.products = displayVenues
+        // finally, this field assignment trick works!
+        this.products.map((v, i) => {
+          v.title = displayVenues[i].title
+          v.id = displayVenues[i].id
+          v.description = displayVenues[i].description
+          v.image = displayVenues[i].image
+          v.price = displayVenues[i].price
+          v.rating = displayVenues[i].rating
+          v.reviews = displayVenues[i].reviews
+          v.isInWishlist = displayVenues[i].isInWishlist
+          v.badgeLabel = displayVenues[i].badgeLabel
+          v.badgeColor = displayVenues[i].badgeColor
+        })
       }
       catch (err) {
         cslog(err)

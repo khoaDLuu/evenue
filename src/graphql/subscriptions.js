@@ -1,6 +1,288 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const onCreateFavorite = /* GraphQL */ `
+  subscription OnCreateFavorite($owner: String) {
+    onCreateFavorite(owner: $owner) {
+      id
+      venue {
+        id
+        name
+        headline
+        description
+        photos {
+          name
+          fullsize {
+            region
+            bucket
+            key
+          }
+          thumbnails {
+            region
+            bucket
+            key
+          }
+        }
+        address
+        city
+        pricing {
+          currency
+          perHour {
+            startHour
+            endHour
+            price
+          }
+          perDay
+        }
+        type {
+          name
+        }
+        eventTypes
+        published
+        extras {
+          name
+          type
+          price
+        }
+        capacity {
+          unit
+          floorSize
+          recommendedGuestCount
+        }
+        operatingHours {
+          daysOfWeek
+          startHour
+          endHour
+        }
+        reviews {
+          items {
+            id
+            bookingId
+            venue {
+              id
+              name
+              headline
+              description
+              address
+              city
+              eventTypes
+              published
+              owner
+              createdAt
+              updatedAt
+            }
+            user
+            userName
+            rating
+            comment
+            createdAt
+            updatedAt
+            userReviewsId
+            venueReviewsId
+            owner
+          }
+          nextToken
+        }
+        owner
+        createdAt
+        updatedAt
+      }
+      userId
+      owner
+      createdAt
+      updatedAt
+      favoriteVenueId
+    }
+  }
+`;
+export const onUpdateFavorite = /* GraphQL */ `
+  subscription OnUpdateFavorite($owner: String) {
+    onUpdateFavorite(owner: $owner) {
+      id
+      venue {
+        id
+        name
+        headline
+        description
+        photos {
+          name
+          fullsize {
+            region
+            bucket
+            key
+          }
+          thumbnails {
+            region
+            bucket
+            key
+          }
+        }
+        address
+        city
+        pricing {
+          currency
+          perHour {
+            startHour
+            endHour
+            price
+          }
+          perDay
+        }
+        type {
+          name
+        }
+        eventTypes
+        published
+        extras {
+          name
+          type
+          price
+        }
+        capacity {
+          unit
+          floorSize
+          recommendedGuestCount
+        }
+        operatingHours {
+          daysOfWeek
+          startHour
+          endHour
+        }
+        reviews {
+          items {
+            id
+            bookingId
+            venue {
+              id
+              name
+              headline
+              description
+              address
+              city
+              eventTypes
+              published
+              owner
+              createdAt
+              updatedAt
+            }
+            user
+            userName
+            rating
+            comment
+            createdAt
+            updatedAt
+            userReviewsId
+            venueReviewsId
+            owner
+          }
+          nextToken
+        }
+        owner
+        createdAt
+        updatedAt
+      }
+      userId
+      owner
+      createdAt
+      updatedAt
+      favoriteVenueId
+    }
+  }
+`;
+export const onDeleteFavorite = /* GraphQL */ `
+  subscription OnDeleteFavorite($owner: String) {
+    onDeleteFavorite(owner: $owner) {
+      id
+      venue {
+        id
+        name
+        headline
+        description
+        photos {
+          name
+          fullsize {
+            region
+            bucket
+            key
+          }
+          thumbnails {
+            region
+            bucket
+            key
+          }
+        }
+        address
+        city
+        pricing {
+          currency
+          perHour {
+            startHour
+            endHour
+            price
+          }
+          perDay
+        }
+        type {
+          name
+        }
+        eventTypes
+        published
+        extras {
+          name
+          type
+          price
+        }
+        capacity {
+          unit
+          floorSize
+          recommendedGuestCount
+        }
+        operatingHours {
+          daysOfWeek
+          startHour
+          endHour
+        }
+        reviews {
+          items {
+            id
+            bookingId
+            venue {
+              id
+              name
+              headline
+              description
+              address
+              city
+              eventTypes
+              published
+              owner
+              createdAt
+              updatedAt
+            }
+            user
+            userName
+            rating
+            comment
+            createdAt
+            updatedAt
+            userReviewsId
+            venueReviewsId
+            owner
+          }
+          nextToken
+        }
+        owner
+        createdAt
+        updatedAt
+      }
+      userId
+      owner
+      createdAt
+      updatedAt
+      favoriteVenueId
+    }
+  }
+`;
 export const onCreateUser = /* GraphQL */ `
   subscription OnCreateUser($owner: String) {
     onCreateUser(owner: $owner) {
@@ -28,6 +310,7 @@ export const onCreateUser = /* GraphQL */ `
       reviews {
         items {
           id
+          bookingId
           venue {
             id
             name
@@ -70,6 +353,7 @@ export const onCreateUser = /* GraphQL */ `
             updatedAt
           }
           user
+          userName
           rating
           comment
           createdAt
@@ -113,6 +397,7 @@ export const onUpdateUser = /* GraphQL */ `
       reviews {
         items {
           id
+          bookingId
           venue {
             id
             name
@@ -155,6 +440,7 @@ export const onUpdateUser = /* GraphQL */ `
             updatedAt
           }
           user
+          userName
           rating
           comment
           createdAt
@@ -198,6 +484,7 @@ export const onDeleteUser = /* GraphQL */ `
       reviews {
         items {
           id
+          bookingId
           venue {
             id
             name
@@ -240,6 +527,7 @@ export const onDeleteUser = /* GraphQL */ `
             updatedAt
           }
           user
+          userName
           rating
           comment
           createdAt
@@ -310,6 +598,7 @@ export const onCreateVenue = /* GraphQL */ `
       reviews {
         items {
           id
+          bookingId
           venue {
             id
             name
@@ -352,6 +641,7 @@ export const onCreateVenue = /* GraphQL */ `
             updatedAt
           }
           user
+          userName
           rating
           comment
           createdAt
@@ -422,6 +712,7 @@ export const onUpdateVenue = /* GraphQL */ `
       reviews {
         items {
           id
+          bookingId
           venue {
             id
             name
@@ -464,6 +755,7 @@ export const onUpdateVenue = /* GraphQL */ `
             updatedAt
           }
           user
+          userName
           rating
           comment
           createdAt
@@ -534,6 +826,7 @@ export const onDeleteVenue = /* GraphQL */ `
       reviews {
         items {
           id
+          bookingId
           venue {
             id
             name
@@ -576,6 +869,7 @@ export const onDeleteVenue = /* GraphQL */ `
             updatedAt
           }
           user
+          userName
           rating
           comment
           createdAt
@@ -596,6 +890,7 @@ export const onCreateReview = /* GraphQL */ `
   subscription OnCreateReview($owner: String) {
     onCreateReview(owner: $owner) {
       id
+      bookingId
       venue {
         id
         name
@@ -648,6 +943,7 @@ export const onCreateReview = /* GraphQL */ `
         reviews {
           items {
             id
+            bookingId
             venue {
               id
               name
@@ -662,6 +958,7 @@ export const onCreateReview = /* GraphQL */ `
               updatedAt
             }
             user
+            userName
             rating
             comment
             createdAt
@@ -677,6 +974,7 @@ export const onCreateReview = /* GraphQL */ `
         updatedAt
       }
       user
+      userName
       rating
       comment
       createdAt
@@ -691,6 +989,7 @@ export const onUpdateReview = /* GraphQL */ `
   subscription OnUpdateReview($owner: String) {
     onUpdateReview(owner: $owner) {
       id
+      bookingId
       venue {
         id
         name
@@ -743,6 +1042,7 @@ export const onUpdateReview = /* GraphQL */ `
         reviews {
           items {
             id
+            bookingId
             venue {
               id
               name
@@ -757,6 +1057,7 @@ export const onUpdateReview = /* GraphQL */ `
               updatedAt
             }
             user
+            userName
             rating
             comment
             createdAt
@@ -772,6 +1073,7 @@ export const onUpdateReview = /* GraphQL */ `
         updatedAt
       }
       user
+      userName
       rating
       comment
       createdAt
@@ -786,6 +1088,7 @@ export const onDeleteReview = /* GraphQL */ `
   subscription OnDeleteReview($owner: String) {
     onDeleteReview(owner: $owner) {
       id
+      bookingId
       venue {
         id
         name
@@ -838,6 +1141,7 @@ export const onDeleteReview = /* GraphQL */ `
         reviews {
           items {
             id
+            bookingId
             venue {
               id
               name
@@ -852,6 +1156,7 @@ export const onDeleteReview = /* GraphQL */ `
               updatedAt
             }
             user
+            userName
             rating
             comment
             createdAt
@@ -867,6 +1172,7 @@ export const onDeleteReview = /* GraphQL */ `
         updatedAt
       }
       user
+      userName
       rating
       comment
       createdAt

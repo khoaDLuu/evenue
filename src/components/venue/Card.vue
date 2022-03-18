@@ -21,6 +21,7 @@
       </div>
       <div class="flex-auto flex justify-end items-center">
         <actions
+          :actions="{edit: 'Edit', del: 'Delete', view: 'View'}"
           @edit-clicked="openEditPage"
           @del-clicked="delClicked"
           @view-clicked="openViewPage"
@@ -31,19 +32,20 @@
 </template>
 
 <script>
-import LocationMarker from '../icons/LocationMarker.vue';
-import Actions from './Actions.vue';
+import LocationMarker from '../icons/LocationMarker.vue'
+import Actions from './Actions.vue'
+
 export default {
   components: {
     Actions,
-    LocationMarker
+    LocationMarker,
   },
   name: "Card",
   props: {
     venue: {
       required: true,
-      type: Object
-    }
+      type: Object,
+    },
   },
   data() {
     return {
@@ -66,7 +68,7 @@ export default {
         name: 'venue-details',
         params: { venueId: this.venue.id },
       })
-    }
-  }
+    },
+  },
 };
 </script>

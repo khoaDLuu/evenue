@@ -12,6 +12,8 @@ import BookingList from "../views/BookingList.vue"
 import Account from "../views/Account.vue"
 import NotFound from "../views/NotFound.vue"
 import BookingDetails from "../views/BookingDetails.vue"
+import Favorites from "../views/Favorites.vue"
+import Events from "../views/Events.vue"
 
 Vue.use(VueRouter)
 
@@ -64,6 +66,18 @@ const routes = [
     path: '/bookings/new',
     name: 'new-booking',
     component: Booking,
+    props: true,
+  },
+  {
+    path: '/events',
+    name: 'events',
+    component: Events,
+    props: true,
+  },
+  {
+    path: '/favorites',
+    name: 'favorite-venues',
+    component: Favorites,
     props: true,
   },
   {

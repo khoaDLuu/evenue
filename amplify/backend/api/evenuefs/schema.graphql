@@ -24,7 +24,7 @@ type Profile {
   picture: Photo!
 }
 
-type Venue @model
+type Venue @model @searchable
   @auth (
     rules: [
       # allow all authenticated users ability to create venues
@@ -229,4 +229,17 @@ type Query {
   recommendVenues(limit: Int): [VenueRecommendation]
     @aws_api_key @aws_iam @aws_cognito_user_pools
     @function(name: "recommendVenues-${env}")
+}
+
+type Favorite @model
+  @auth (
+    rules: [
+      { allow: owner },
+      { allow: groups, groups: ["admin"] },
+    ]
+  ) {
+  id: ID
+  venue: Venue @hasOne
+  userId: String
+  owner: String
 }

@@ -17,7 +17,7 @@
       <span v-if="!booking.status" class="text-green-800 mt-4 w-full font-semibold">
         {{ "___________________" }}
       </span>
-      <span v-else-if="booking.status == 'CONFIRMED' && !cancelingAllowed" class="text-black mt-4 w-full">
+      <span v-else-if="booking.status == 'CONFIRMED' && !cancelingAllowed" class="text-black mt-4 w-full font-semibold">
         HAPPENED
       </span>
       <span v-else-if="booking.status == 'CONFIRMED'" class="text-green-700 mt-4 w-full font-semibold">
@@ -26,10 +26,10 @@
       <span v-else-if="booking.status == 'PENDING'" class="text-yellow-600 mt-4 w-full font-semibold">
         {{ booking.status }}
       </span>
-      <span v-else-if="booking.status == 'CANCELED'" class="text-purple-700 mt-4 w-full">
+      <span v-else-if="booking.status == 'CANCELED'" class="text-purple-700 mt-4 w-full font-semibold">
         {{ booking.status }}
       </span>
-      <span v-else-if="booking.status == 'FAILED'" class="text-red-700 mt-4 w-full">
+      <span v-else-if="booking.status == 'FAILED'" class="text-red-700 mt-4 w-full font-semibold">
         {{ booking.status }}
       </span>
       <span v-else>{{ booking.status }}</span>
@@ -257,7 +257,7 @@ export default {
       return new Date(this.booking?.checkIn || null).getTime() > new Date().getTime()
     },
     eventHappened() {
-      return true || new Date(this.booking?.checkOut || null).getTime() < new Date().getTime()
+      return new Date(this.booking?.checkOut || new Date().getTime() + 1000).getTime() < new Date().getTime()
     },
     reviewGiven() {
       return this.booking.venue.reviews?.items?.some(r => r.owner == this.currentUser.attributes?.email)

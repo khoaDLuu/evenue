@@ -97,28 +97,37 @@
         >
           <SfProductCard
             v-for="(product, i) in products"
-            :key="product.id"
+            :key="product.id || String(Math.random())"
             :style="{ '--index': i }"
             :title="product.title"
             :image="product.image"
             image-height="auto"
             image-width="100%"
-            :regular-price="product.price.regular"
-            :special-price="product.price.special"
-            :max-rating="product.rating.max"
-            :score-rating="product.rating.score"
+            :regular-price="product.price && product.price.regular"
+            :special-price="product.price && product.price.special"
+            :max-rating="product.rating && product.rating.max"
+            :score-rating="product.rating && product.rating.score"
             :reviews-count="product.reviewsCount"
             :is-in-wishlist="product.isInWishlist"
             :link="`/venues/${product.id}`"
             :showAddToCartButton="false"
             class="products__product-card"
-            @click:wishlist="toggleWishlist(i)">
+            @click:wishlist="toggleWishlist(i)"
+            @click:add-to-cart="openViewPage(i)">
             <template v-slot:add-to-cart-icon>
               <SfIcon
                 key="add_to_cart"
                 icon="more"
                 size="16px"
                 color="white"
+              />
+            </template>
+            <template v-slot:adding-to-cart-icon>
+              <SfIcon
+                key="add_to_cart"
+                icon="more"
+                size="16px"
+                color="back"
               />
             </template>
           </SfProductCard>
@@ -145,7 +154,7 @@
             :is-in-wishlist="product.isInWishlist"
             class="products__product-card-horizontal"
             @click:wishlist="toggleWishlist(i)"
-          >
+            @click:add-to-cart="openViewPage(i)">
             <template #configuration>
               <SfProperty
                 class="desktop-only"
@@ -161,14 +170,14 @@
                 style="margin: 0 0 1rem auto; display: block"
                 @click="$emit('click:add-to-wishlist')"
               >
-                Save for later
+                Add to Favorite list
               </SfButton>
               <SfButton
                 class="sf-button--text desktop-only"
                 style="margin: 0 0 0 auto; display: block"
                 @click="$emit('click:add-to-compare')"
               >
-                Add to compare
+                <!-- Nothing -->
               </SfButton>
             </template>
           </SfProductCardHorizontal>
@@ -197,13 +206,6 @@
             </SfSelectOption>
           </SfSelect>
         </div>
-
-        <!-- Testing only -->
-        <div class="text-blue-400 text-center">
-          <router-link to="/">Go back home</router-link>
-        </div>
-        <!-- Testing only -->
-
       </div>
     </div>
     <SfSidebar
@@ -213,7 +215,7 @@
       @close="isFilterSidebarOpen = false"
     >
       <div class="filters desktop-only">
-        <SfHeading
+        <!-- <SfHeading
           :level="4"
           title="Collection"
           class="filters__title sf-heading--left"
@@ -226,22 +228,7 @@
           :selected="filter.selected"
           class="filters__item"
           @change="filter.selected = !filter.selected"
-        />
-        <!-- <SfHeading
-          :level="4"
-          title="Color"
-          class="filters__title sf-heading--left"
-        />
-        <div class="filters__colors">
-          <SfColor
-            v-for="filter in filters.color"
-            :key="filter.value"
-            :color="filter.color"
-            :selected="filter.selected"
-            class="filters__color"
-            @click="filter.selected = !filter.selected"
-          />
-        </div> -->
+        /> -->
         <SfHeading
           :level="4"
           title="Venue Types"
@@ -249,7 +236,8 @@
         />
         <SfFilter
           v-for="filter in filters.size"
-          :key="filter.value"
+          :key="filter.label"
+          :value="filter.label"
           :label="filter.label"
           :count="filter.count"
           :selected="filter.selected"
@@ -257,6 +245,21 @@
           @change="filter.selected = !filter.selected"
         />
         <SfHeading
+          :level="4"
+          title="Event Types"
+          class="filters__title sf-heading--left"
+        />
+        <SfFilter
+          v-for="filter in filters.material"
+          :key="filter.label"
+          :value="filter.label"
+          :label="filter.label"
+          :count="filter.count"
+          :selected="filter.selected"
+          class="filters__item"
+          @change="filter.selected = !filter.selected"
+        />
+        <!-- <SfHeading
           :level="4"
           title="Price"
           class="filters__title sf-heading--left"
@@ -269,26 +272,12 @@
           :selected="filter.selected"
           class="filters__item"
           @change="filter.selected = !filter.selected"
-        />
+        /> -->
         <!-- <SfRange
           class="form__element--range p-0"
           :config="rangeConfig"
           @change="filter.selected = !filter.selected"
         /> -->
-        <SfHeading
-          :level="4"
-          title="Event Types"
-          class="filters__title sf-heading--left"
-        />
-        <SfFilter
-          v-for="filter in filters.material"
-          :key="filter.value"
-          :value="filter.value"
-          :label="filter.label"
-          :selected="filter.selected"
-          class="filters__item"
-          @change="filter.selected = !filter.selected"
-        />
       </div>
       <SfAccordion class="filters smartphone-only">
         <SfAccordionItem header="Show on page" class="filters__accordion-item">
@@ -394,7 +383,7 @@
         <div class="filters__buttons">
           <SfButton
             class="sf-button--full-width"
-            @click="isFilterSidebarOpen = false"
+            @click="filterByTypeAndEvent"
             >Done</SfButton
           >
           <SfButton
@@ -429,8 +418,10 @@ import {
   SfSelect,
   // SfRange
 } from "@storefront-ui/vue";
-import { API, Storage } from 'aws-amplify'
-import { listVenues } from '../graphql/queries'
+import { API, Auth, Storage, Hub } from 'aws-amplify'
+import { listVenues, listFavorites, searchVenues } from '../graphql/queries'
+import { createFavorite, deleteFavorite } from '../graphql/mutations'
+import { GRAPHQL_AUTH_MODE } from "@aws-amplify/api"
 
 let cslog = console.log
 
@@ -459,7 +450,7 @@ export default {
   data() {
     return {
       currentPage: 1,
-      sortBy: "Latest",
+      sortBy: "None",
       isFilterSidebarOpen: false,
       isGridView: true,
       category: "N.America",
@@ -494,6 +485,10 @@ export default {
         },
       },
       sortByOptions: [
+        {
+          value: "None",
+          label: "None",
+        },
         {
           value: "Latest",
           label: "Latest",
@@ -541,8 +536,8 @@ export default {
           ],
         },
       ],
-      showOnPage: ["20", "40", "60"],
-      products: [],
+      showOnPage: ["8", "16", "24"],
+      products: Array(8).fill({}),
       filters: {
         collection: [
           {
@@ -577,30 +572,31 @@ export default {
           { label: "Navy", value: "navy", color: "#656466", selected: false },
         ],
         size: [
-          { label: "Gallery", value: "18", count: "20", selected: false },
-          { label: "Party room", value: "17", count: "20", selected: false },
-          { label: "Meeting room", value: "16", count: "20", selected: false },
-          { label: "Restaurant", value: "15", count: "20", selected: false },
-          { label: "Boat", value: "14", count: "20", selected: false },
-          { label: "Coworking space", value: "13", count: "20", selected: false },
-          { label: "Cinema", value: "12", count: "20", selected: false },
-          { label: "Bar", value: "11", count: "20", selected: false },
-          { label: "Cafe", value: "10", count: "20", selected: false },
-          { label: "Club", value: "9", count: "20", selected: false },
-          { label: "Rooftop", value: "8", count: "20", selected: false },
-          { label: "Terrace", value: "7", count: "20", selected: false },
-          { label: "Unusual venue", value: "6", count: "20", selected: false },
-          { label: "Apartment", value: "5", count: "20", selected: false },
-          { label: "Studio", value: "4", count: "20", selected: false },
-          { label: "Villa", value: "3", count: "20", selected: false },
-          { label: "Loft", value: "2", count: "20", selected: false },
-          { label: "Atelier", value: "xxl", count: "20", selected: false },
-          { label: "Banquet hall", value: "xl", count: "20", selected: false },
-          { label: "Function Room", value: "1", count: "20", selected: false },
-          { label: "Boardroom", value: "l", count: "20", selected: false },
-          { label: "Business center", value: "m", count: "20", selected: false },
-          { label: "Film studio", value: "s", count: "20", selected: false },
-          { label: "Kitchen studio", value: "xs", count: "20", selected: false },
+          { label: "Gallery", value: "18", count: "", selected: false },
+          { label: "Party room", value: "17", count: "", selected: false },
+          { label: "Meeting room", value: "16", count: "", selected: false },
+          { label: "Restaurant", value: "15", count: "", selected: false },
+          { label: "Boat", value: "14", count: "", selected: false },
+          { label: "Coworking space", value: "13", count: "", selected: false },
+          { label: "Cinema", value: "12", count: "", selected: false },
+          { label: "Bar", value: "11", count: "", selected: false },
+          { label: "Cafe", value: "10", count: "", selected: false },
+          { label: "Club", value: "9", count: "", selected: false },
+          { label: "Rooftop", value: "8", count: "", selected: false },
+          { label: "Terrace", value: "7", count: "", selected: false },
+          { label: "Unusual venue", value: "6", count: "", selected: false },
+          { label: "Apartment", value: "5", count: "", selected: false },
+          { label: "Studio", value: "4", count: "", selected: false },
+          { label: "Villa", value: "3", count: "", selected: false },
+          { label: "Loft", value: "2", count: "", selected: false },
+          { label: "Atelier", value: "xxl", count: "", selected: false },
+          { label: "Banquet hall", value: "xl", count: "", selected: false },
+          { label: "Function Room", value: "1", count: "", selected: false },
+          { label: "Boardroom", value: "l", count: "", selected: false },
+          { label: "Business center", value: "m", count: "", selected: false },
+          { label: "Film studio", value: "s", count: "", selected: false },
+          { label: "Kitchen studio", value: "xs", count: "", selected: false },
+          { label: "Other", value: "xxs", count: "", selected: false },
         ],
         price: [
           {
@@ -617,29 +613,217 @@ export default {
           },
         ],
         material: [
-          [{"label":"Gallery","value":"gallery","count":"20","selected":false},{"label":"Party room","value":"party room","count":"20","selected":false},{"label":"Restaurant","value":"restaurant","count":"20","selected":false},{"label":"Boat","value":"boat","count":"20","selected":false},{"label":"Coworking space","value":"coworking space","count":"20","selected":false},{"label":"Cinema","value":"cinema","count":"20","selected":false},{"label":"Bar","value":"bar","count":"20","selected":false},{"label":"Cafe","value":"cafe","count":"20","selected":false},{"label":"Club","value":"club","count":"20","selected":false},{"label":"Rooftop","value":"rooftop","count":"20","selected":false},{"label":"Terrace","value":"terrace","count":"20","selected":false},{"label":"Studio","value":"studio","count":"20","selected":false},{"label":"Villa","value":"villa","count":"20","selected":false},{"label":"Loft","value":"loft","count":"20","selected":false},{"label":"Atelier","value":"atelier","count":"20","selected":false},{"label":"Banquet hall","value":"banquet hall","count":"20","selected":false},{"label":"Function Room","value":"function room","count":"20","selected":false},{"label":"Boardroom","value":"boardroom","count":"20","selected":false},{"label":"Business center","value":"business center","count":"20","selected":false},{"label":"Film studio","value":"film studio","count":"20","selected":false},{"label":"Kitchen studio","value":"kitchen studio","count":"20","selected":false},{"label":"Showroom","value":"showroom","count":"20","selected":false},{"label":"Consulting Room","value":"consulting room","count":"20","selected":false},{"label":"Apartment","value":"apartment","count":"20","selected":false},{"label":"Unusual venue","value":"unusual venue","count":"20","selected":false},{"label":"Lawn","value":"lawn","count":"20","selected":false},{"label":"Classic Location","value":"classic location","count":"20","selected":false},{"label":"Meeting room","value":"meeting room","count":"20","selected":false},{"label":"Recording Studio","value":"recording studio","count":"20","selected":false},{"label":"Photostudio","value":"photostudio","count":"20","selected":false},{"label":"Church","value":"church","count":"20","selected":false},{"label":"Party Bus","value":"party bus","count":"20","selected":false},{"label":"Textile Workshop","value":"textile workshop","count":"20","selected":false},{"label":"Carpentry","value":"carpentry","count":"20","selected":false},{"label":"Spa and Wellness","value":"spa and wellness","count":"20","selected":false},{"label":"Mobile Location","value":"mobile location","count":"20","selected":false},{"label":"Farm","value":"farm","count":"20","selected":false},{"label":"Beer Garden","value":"beer garden","count":"20","selected":false},{"label":"Exhibition Hall","value":"exhibition hall","count":"20","selected":false},{"label":"Waterside Location","value":"waterside location","count":"20","selected":false},{"label":"Off-Location","value":"off-location","count":"20","selected":false},{"label":"Wedding Venue","value":"wedding venue","count":"20","selected":false},{"label":"Sports Location","value":"sports location","count":"20","selected":false},{"label":"Open Air Location","value":"open air location","count":"20","selected":false},{"label":"Organization","value":"organization","count":"20","selected":false},{"label":"Corporate event spaces","value":"corporate event spaces","count":"20","selected":false},{"label":"Workshop spaces","value":"workshop spaces","count":"20","selected":false},{"label":"Hobby Workshop","value":"hobby workshop","count":"20","selected":false},{"label":"Conference Hotel","value":"conference hotel","count":"20","selected":false},{"label":"Day office","value":"day office","count":"20","selected":false},{"label":"Werkstatt","value":"werkstatt","count":"20","selected":false},{"label":"Conference rooms","value":"conference rooms","count":"20","selected":false},{"label":"Training rooms","value":"training rooms","count":"20","selected":false},{"label":"Seminar rooms","value":"seminar rooms","count":"20","selected":false}]
+          {
+            "label": "Meeting",
+            "value": "Meeting",
+            "count": "",
+            "selected": false
+          },
+          {
+            "label": "Panel Discussion",
+            "value": "Panel Discussion",
+            "count": "",
+            "selected": false
+          },
+          {
+            "label": "Presentation",
+            "value": "Presentation",
+            "count": "",
+            "selected": false
+          },
+          {
+            "label": "Party",
+            "value": "Party",
+            "count": "",
+            "selected": false
+          },
+          {
+            "label": "Brainstorming",
+            "value": "Brainstorming",
+            "count": "",
+            "selected": false
+          },
+          {
+            "label": "Workshop",
+            "value": "Workshop",
+            "count": "",
+            "selected": false
+          },
+          {
+            "label": "Corporate Training",
+            "value": "Corporate Training",
+            "count": "",
+            "selected": false
+          },
+          {
+            "label": "Coaching Session",
+            "value": "Coaching Session",
+            "count": "",
+            "selected": false
+          },
+          {
+            "label": "Hackathon",
+            "value": "Hackathon",
+            "count": "",
+            "selected": false
+          },
+          {
+            "label": "Screening",
+            "value": "Screening",
+            "count": "",
+            "selected": false
+          },
+          {
+            "label": "Interview",
+            "value": "Interview",
+            "count": "",
+            "selected": false
+          },
+          {
+            "label": "Product Shoot",
+            "value": "Product Shoot",
+            "count": "",
+            "selected": false
+          },
+          {
+            "label": "Networking Event",
+            "value": "Networking Event",
+            "count": "",
+            "selected": false
+          },
+          {
+            "label": "Concert",
+            "value": "Concert",
+            "count": "",
+            "selected": false
+          },
+          {
+            "label": "Conference",
+            "value": "Conference",
+            "count": "",
+            "selected": false
+          },
+          {
+            "label": "Reception",
+            "value": "Reception",
+            "count": "",
+            "selected": false
+          },
+          {
+            "label": "Seminar",
+            "value": "Seminar",
+            "count": "",
+            "selected": false
+          },
+          {
+            "label": "Business Dinner",
+            "value": "Business Dinner",
+            "count": "",
+            "selected": false
+          },
+          {
+            "label": "Business Lunch",
+            "value": "Business Lunch",
+            "count": "",
+            "selected": false
+          },
+          {
+            "label": "Exhibition",
+            "value": "Exhibition",
+            "count": "",
+            "selected": false
+          }
         ],
       },
       breadcrumbs: [
         {
           text: "Home",
-          route: {
-            link: "#",
-          },
+          link: "/",
         },
         {
           text: "All",
-          route: {
-            link: "#",
-          },
+          link: "#",
         },
       ],
-    };
+      currentUser: undefined,
+      favorites: [],
+      filterF: undefined,
+      sortF: undefined,
+      openSearch: false,
+    }
   },
   async created() {
-    this.pullVenues()
+    try {
+      this.currentUser = await Auth.currentAuthenticatedUser()
+    }
+    catch (err) {
+      const cred = await Auth.currentCredentials()
+      cslog(err, "- Using unauth cred...", 'Cred exp:', cred.expiration, "\n-------")
+    }
+    const searchValue = this.$route.query.searchValue
+    const event = this.$route.query.event
+    if (event) {
+      this.filterF = (v) => new Set(v.eventTypes.map(et => et.toLowerCase())).has(event.toLowerCase())
+    }
+    if (searchValue) {
+      this.showSearchResults(searchValue)
+    }
+    else {
+      this.pullVenues(this.filterF, this.sortF)
+    }
+
+    const vm = this
+    Hub.listen('OnPageSearch', (data) => {
+      const searchValue = data.payload.data.searchValue?.trim() || ""
+      if (data.payload.event == 'venueSearched' && searchValue && vm.searchValue != searchValue) {
+        vm.searchValue = searchValue
+        vm.showSearchResults(vm.searchValue)
+      }
+    })
+  },
+  watch: {
+    sortBy(updatedSortBy, oldSortBy) {
+      let sortF = undefined
+      if (updatedSortBy !== oldSortBy && updatedSortBy !== this.sortByOptions[0].value) {
+        switch (updatedSortBy) {
+          case this.sortByOptions[1].value:
+            sortF = (v1, v2) => v1.createdAt < v2.createdAt ? 1 : -1
+            break
+          case this.sortByOptions[2].value:
+            sortF = (v1, v2) => v1.pricing.perHour[0].price - v2.pricing.perHour[0].price
+            break
+          case this.sortByOptions[3].value:
+            sortF = (v1, v2) => v2.pricing.perHour[0].price - v1.pricing.perHour[0].price
+            break
+          default:
+            break
+        }
+        this.sortF = sortF
+        this.pullVenues(this.filterF, this.sortF)
+      }
+    }
   },
   methods: {
+    async showSearchResults(searchValue) {
+      try {
+        if (this.openSearch) {
+          const result = await API.graphql({
+            query: searchVenues,
+            variables: {filter: {name: {
+              "matchPhrase": searchValue,
+            }}},
+            authMode: GRAPHQL_AUTH_MODE.API_KEY,
+          })
+          console.info(`Search results`, result)
+          this.filterF = (v) => new Set(result.data.searchVenues.items.map(sv => sv.id)).has(v.id)
+        }
+        this.filterF = (v) => v.name?.toLowerCase().includes(searchValue?.toLowerCase()?.trim() || "");
+        await this.pullVenues(this.filterF, this.sortF)
+      }
+      catch (error) {
+        console.error("An error occurred when searching for your venues", error)
+      }
+    },
     clearAllFilters() {
       const filters = Object.keys(this.filters);
       filters.forEach((name) => {
@@ -649,17 +833,87 @@ export default {
         });
       });
     },
-    toggleWishlist(index) {
-      this.products[index].isInWishlist = !this.products[index].isInWishlist;
+    async filterByTypeAndEvent() {
+      const selectedTypes = this.filters.size.filter(t => t.selected).map(t => t.label)
+      const selectedEvents = this.filters.material.filter(e => e.selected).map(e => e.label)
+      this.filterF = (v) => (
+        new Set(selectedTypes).has(v.type)
+        || selectedEvents.some(se => new Set(v.eventTypes).has(se))
+      );
+      await this.pullVenues(this.filterF, this.sortF)
+      this.isFilterSidebarOpen = false
     },
-    async pullVenues(filterF) {
+    openViewPage(index) {
+      cslog({ venueId: this.products[index].id })
+      this.$router.push({
+        name: 'venue-details',
+        params: { venueId: this.products[index].id },
+      })
+    },
+    toggleWishlist(index) {
+      if (this.currentUser) {
+        if (this.products[index].isInWishlist) {
+          const delFavoriteId = this.favorites.filter(f => f.venue.id == this.products[index].id)[0].id
+          API.graphql({
+            query: deleteFavorite,
+            variables: {input: {id: delFavoriteId}},
+          })
+          .then(result => {
+            console.info(`Venue unfavorited`, result)
+          })
+          .catch(error => {
+            cslog(error)
+          })
+        }
+        else {
+          const inputData = {
+            favoriteVenueId: this.products[index].id,
+            userId: this.currentUser.attributes.sub,
+            owner: this.currentUser.username,
+          }
+          cslog("Fav input", inputData)
+
+          API.graphql({
+            query: createFavorite,
+            variables: {input: inputData},
+          })
+          .then(result => {
+            console.info("Venue favorited", result)
+          })
+          .catch(error => {
+            cslog(error)
+          })
+        }
+        this.products[index].isInWishlist = !this.products[index].isInWishlist
+      }
+    },
+    async pullVenues(filterF, sortF) {
       try {
-        const venues = await API.graphql({
-          query: listVenues,
-        })
-        cslog(venues)
+        let favVenueIds = new Set()
+        let venues = []
+        if (this.currentUser) {
+          venues = await API.graphql({
+            query: listVenues,
+          })
+          cslog(venues)
+
+          if (!this.favorites?.length) {
+            const favoriteResult = await API.graphql({
+              query: listFavorites,
+            })
+            this.favorites = favoriteResult.data.listFavorites.items
+          }
+          favVenueIds = new Set(this.favorites.map(f => f.venue.id))
+        }
+        else {
+          venues = await API.graphql({
+            query: listVenues,
+            authMode: GRAPHQL_AUTH_MODE.API_KEY,
+          })
+        }
+
         filterF = filterF || (v => true || v)
-        const publishedVenues = venues.data.listVenues.items.filter(v => v.published).filter(v => filterF(v))
+        const publishedVenues = venues.data.listVenues.items.filter(v => v.published).filter(filterF).sort(sortF)
         this.products = publishedVenues.map(v => (
           {
             title: this.trimmedStr(v.name),
@@ -669,7 +923,7 @@ export default {
             price: { regular: "$" + v.pricing.perHour[0].price },
             rating: { max: 5, score: this.avgRating(v) },
             reviewsCount: v.reviews.items.length,
-            isInWishlist: false,
+            isInWishlist: favVenueIds.has(v.id),
           }
         ))
         let vm = this

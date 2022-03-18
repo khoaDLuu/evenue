@@ -1800,6 +1800,14 @@
       "Value": {
         "Ref": "VenueTable"
       }
+    },
+    "transformerrootstackVenueVenueTableCE174226StreamArn": {
+      "Value": {
+        "Fn::GetAtt": [
+          "VenueTable",
+          "StreamArn"
+        ]
+      }
     }
   }
 }

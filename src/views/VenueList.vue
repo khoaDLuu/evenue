@@ -1,14 +1,14 @@
 <template>
   <div class="container px-4 md:mx-auto w-full md:w-3/5 my-6">
     <!-- <list-header @click:edit="openEditPage()" /> -->
-    <list-header />
+    <list-header title="Your venue list" :actions="{create: 'Create Venue'}" />
     <card-list :venues="venues" @item-deleted="refreshList" />
   </div>
 </template>
 
 <script>
-import ListHeader from '../components/venue/ListHeader.vue';
-import CardList from '../components/venue/CardList.vue';
+import ListHeader from '../components/venue/ListHeader.vue'
+import CardList from '../components/venue/CardList.vue'
 import { API, Auth } from 'aws-amplify'
 import { listVenues } from '../graphql/queries'
 
@@ -16,18 +16,11 @@ export default {
   name: "Category",
   components: {
     ListHeader,
-    CardList
+    CardList,
   },
   data() {
     return {
-      venues: [
-        // {
-        //   id: 1,
-        //   name: "Metaverse",
-        //   city: "Capitol",
-        //   published: false
-        // }
-      ],
+      venues: [],
       currentUser: {},
     }
   },
@@ -37,7 +30,7 @@ export default {
   methods: {
     async refreshList() {
       let vm = this
-      vm.currentUser = await Auth.currentAuthenticatedUser();
+      vm.currentUser = await Auth.currentAuthenticatedUser()
       API.graphql({
         query: listVenues,
         // variables: {input: {filter: {_version: 1}}},
@@ -55,17 +48,6 @@ export default {
         console.error(error)
       })
     }
-    // openCreatePage() {
-    //   this.$router.push({ path: `/venues/edit` })
-    // }, // Defined in `list-header`
-    // openEditPage(vid) {
-    //   this.$router.push({
-    //     name: 'venues-edit',
-    //     params: {
-    //       venue: this.venues.filter(v => v.id === vid)
-    //     }
-    //   })
-    // }, // Defined in `list-header`
   }
 };
 </script>

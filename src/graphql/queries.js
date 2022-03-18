@@ -42,6 +42,7 @@ export const recommendVenues = /* GraphQL */ `
       }
       reviews {
         id
+        bookingId
         venue {
           id
           name
@@ -94,7 +95,9 @@ export const recommendVenues = /* GraphQL */ `
           reviews {
             items {
               id
+              bookingId
               user
+              userName
               rating
               comment
               createdAt
@@ -110,6 +113,7 @@ export const recommendVenues = /* GraphQL */ `
           updatedAt
         }
         user
+        userName
         rating
         comment
         createdAt
@@ -119,6 +123,188 @@ export const recommendVenues = /* GraphQL */ `
         owner
       }
       owner
+    }
+  }
+`;
+export const getFavorite = /* GraphQL */ `
+  query GetFavorite($id: ID!) {
+    getFavorite(id: $id) {
+      id
+      venue {
+        id
+        name
+        headline
+        description
+        photos {
+          name
+          fullsize {
+            region
+            bucket
+            key
+          }
+          thumbnails {
+            region
+            bucket
+            key
+          }
+        }
+        address
+        city
+        pricing {
+          currency
+          perHour {
+            startHour
+            endHour
+            price
+          }
+          perDay
+        }
+        type {
+          name
+        }
+        eventTypes
+        published
+        extras {
+          name
+          type
+          price
+        }
+        capacity {
+          unit
+          floorSize
+          recommendedGuestCount
+        }
+        operatingHours {
+          daysOfWeek
+          startHour
+          endHour
+        }
+        reviews {
+          items {
+            id
+            bookingId
+            venue {
+              id
+              name
+              headline
+              description
+              address
+              city
+              eventTypes
+              published
+              owner
+              createdAt
+              updatedAt
+            }
+            user
+            userName
+            rating
+            comment
+            createdAt
+            updatedAt
+            userReviewsId
+            venueReviewsId
+            owner
+          }
+          nextToken
+        }
+        owner
+        createdAt
+        updatedAt
+      }
+      userId
+      owner
+      createdAt
+      updatedAt
+      favoriteVenueId
+    }
+  }
+`;
+export const listFavorites = /* GraphQL */ `
+  query ListFavorites(
+    $filter: ModelFavoriteFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listFavorites(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        venue {
+          id
+          name
+          headline
+          description
+          photos {
+            name
+            fullsize {
+              region
+              bucket
+              key
+            }
+            thumbnails {
+              region
+              bucket
+              key
+            }
+          }
+          address
+          city
+          pricing {
+            currency
+            perHour {
+              startHour
+              endHour
+              price
+            }
+            perDay
+          }
+          type {
+            name
+          }
+          eventTypes
+          published
+          extras {
+            name
+            type
+            price
+          }
+          capacity {
+            unit
+            floorSize
+            recommendedGuestCount
+          }
+          operatingHours {
+            daysOfWeek
+            startHour
+            endHour
+          }
+          reviews {
+            items {
+              id
+              bookingId
+              user
+              userName
+              rating
+              comment
+              createdAt
+              updatedAt
+              userReviewsId
+              venueReviewsId
+              owner
+            }
+            nextToken
+          }
+          owner
+          createdAt
+          updatedAt
+        }
+        userId
+        owner
+        createdAt
+        updatedAt
+        favoriteVenueId
+      }
+      nextToken
     }
   }
 `;
@@ -149,6 +335,7 @@ export const getUser = /* GraphQL */ `
       reviews {
         items {
           id
+          bookingId
           venue {
             id
             name
@@ -191,6 +378,7 @@ export const getUser = /* GraphQL */ `
             updatedAt
           }
           user
+          userName
           rating
           comment
           createdAt
@@ -239,6 +427,7 @@ export const listUsers = /* GraphQL */ `
         reviews {
           items {
             id
+            bookingId
             venue {
               id
               name
@@ -253,6 +442,7 @@ export const listUsers = /* GraphQL */ `
               updatedAt
             }
             user
+            userName
             rating
             comment
             createdAt
@@ -325,6 +515,7 @@ export const getVenue = /* GraphQL */ `
       reviews {
         items {
           id
+          bookingId
           venue {
             id
             name
@@ -367,6 +558,7 @@ export const getVenue = /* GraphQL */ `
             updatedAt
           }
           user
+          userName
           rating
           comment
           createdAt
@@ -442,6 +634,7 @@ export const listVenues = /* GraphQL */ `
         reviews {
           items {
             id
+            bookingId
             venue {
               id
               name
@@ -456,6 +649,7 @@ export const listVenues = /* GraphQL */ `
               updatedAt
             }
             user
+            userName
             rating
             comment
             createdAt
@@ -474,10 +668,129 @@ export const listVenues = /* GraphQL */ `
     }
   }
 `;
+export const searchVenues = /* GraphQL */ `
+  query SearchVenues(
+    $filter: SearchableVenueFilterInput
+    $sort: [SearchableVenueSortInput]
+    $limit: Int
+    $nextToken: String
+    $from: Int
+    $aggregates: [SearchableVenueAggregationInput]
+  ) {
+    searchVenues(
+      filter: $filter
+      sort: $sort
+      limit: $limit
+      nextToken: $nextToken
+      from: $from
+      aggregates: $aggregates
+    ) {
+      items {
+        id
+        name
+        headline
+        description
+        photos {
+          name
+          fullsize {
+            region
+            bucket
+            key
+          }
+          thumbnails {
+            region
+            bucket
+            key
+          }
+        }
+        address
+        city
+        pricing {
+          currency
+          perHour {
+            startHour
+            endHour
+            price
+          }
+          perDay
+        }
+        type {
+          name
+        }
+        eventTypes
+        published
+        extras {
+          name
+          type
+          price
+        }
+        capacity {
+          unit
+          floorSize
+          recommendedGuestCount
+        }
+        operatingHours {
+          daysOfWeek
+          startHour
+          endHour
+        }
+        reviews {
+          items {
+            id
+            bookingId
+            venue {
+              id
+              name
+              headline
+              description
+              address
+              city
+              eventTypes
+              published
+              owner
+              createdAt
+              updatedAt
+            }
+            user
+            userName
+            rating
+            comment
+            createdAt
+            updatedAt
+            userReviewsId
+            venueReviewsId
+            owner
+          }
+          nextToken
+        }
+        owner
+        createdAt
+        updatedAt
+      }
+      nextToken
+      total
+      aggregateItems {
+        name
+        result {
+          ... on SearchableAggregateScalarResult {
+            value
+          }
+          ... on SearchableAggregateBucketResult {
+            buckets {
+              key
+              doc_count
+            }
+          }
+        }
+      }
+    }
+  }
+`;
 export const getReview = /* GraphQL */ `
   query GetReview($id: ID!) {
     getReview(id: $id) {
       id
+      bookingId
       venue {
         id
         name
@@ -530,6 +843,7 @@ export const getReview = /* GraphQL */ `
         reviews {
           items {
             id
+            bookingId
             venue {
               id
               name
@@ -544,6 +858,7 @@ export const getReview = /* GraphQL */ `
               updatedAt
             }
             user
+            userName
             rating
             comment
             createdAt
@@ -559,6 +874,7 @@ export const getReview = /* GraphQL */ `
         updatedAt
       }
       user
+      userName
       rating
       comment
       createdAt
@@ -578,6 +894,7 @@ export const listReviews = /* GraphQL */ `
     listReviews(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
+        bookingId
         venue {
           id
           name
@@ -630,7 +947,9 @@ export const listReviews = /* GraphQL */ `
           reviews {
             items {
               id
+              bookingId
               user
+              userName
               rating
               comment
               createdAt
@@ -646,6 +965,7 @@ export const listReviews = /* GraphQL */ `
           updatedAt
         }
         user
+        userName
         rating
         comment
         createdAt

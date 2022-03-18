@@ -185,6 +185,9 @@ type Mutation {
   createBooking(input: CreateBookingInput!, condition: ModelBookingConditionInput): Booking
   updateBooking(input: UpdateBookingInput!, condition: ModelBookingConditionInput): Booking
   deleteBooking(input: DeleteBookingInput!, condition: ModelBookingConditionInput): Booking
+  createFavorite(input: CreateFavoriteInput!, condition: ModelFavoriteConditionInput): Favorite
+  updateFavorite(input: UpdateFavoriteInput!, condition: ModelFavoriteConditionInput): Favorite
+  deleteFavorite(input: DeleteFavoriteInput!, condition: ModelFavoriteConditionInput): Favorite
 }
 
 type VenueRecommendation {
@@ -204,15 +207,55 @@ type VenueRecommendation {
 
 type Query {
   recommendVenues(limit: Int): [VenueRecommendation] @aws_api_key @aws_iam @aws_cognito_user_pools
+  getFavorite(id: ID!): Favorite
+  listFavorites(filter: ModelFavoriteFilterInput, limit: Int, nextToken: String): ModelFavoriteConnection
   getUser(id: ID!): User @aws_api_key @aws_cognito_user_pools
   listUsers(filter: ModelUserFilterInput, limit: Int, nextToken: String): ModelUserConnection @aws_api_key @aws_cognito_user_pools
   getVenue(id: ID!): Venue @aws_api_key @aws_cognito_user_pools
   listVenues(filter: ModelVenueFilterInput, limit: Int, nextToken: String): ModelVenueConnection @aws_api_key @aws_cognito_user_pools
+  searchVenues(filter: SearchableVenueFilterInput, sort: [SearchableVenueSortInput], limit: Int, nextToken: String, from: Int, aggregates: [SearchableVenueAggregationInput]): SearchableVenueConnection @aws_api_key @aws_cognito_user_pools
   getReview(id: ID!): Review @aws_api_key @aws_cognito_user_pools
   listReviews(filter: ModelReviewFilterInput, limit: Int, nextToken: String): ModelReviewConnection @aws_api_key @aws_cognito_user_pools
   getBooking(id: ID!): Booking @aws_api_key @aws_cognito_user_pools
   listBookings(filter: ModelBookingFilterInput, limit: Int, nextToken: String): ModelBookingConnection @aws_api_key @aws_cognito_user_pools
 }
+
+type Favorite {
+  id: ID
+  venue: Venue
+  userId: String
+  owner: String
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+  favoriteVenueId: ID
+}
+
+type SearchableVenueConnection @aws_api_key @aws_cognito_user_pools {
+  items: [Venue!]!
+  nextToken: String
+  total: Int
+  aggregateItems: [SearchableAggregateResult!]!
+}
+
+type SearchableAggregateResult @aws_api_key @aws_cognito_user_pools {
+  name: String!
+  result: SearchableAggregateGenericResult
+}
+
+type SearchableAggregateScalarResult @aws_api_key @aws_cognito_user_pools {
+  value: Float!
+}
+
+type SearchableAggregateBucketResult @aws_api_key @aws_cognito_user_pools {
+  buckets: [SearchableAggregateBucketResultItem]
+}
+
+type SearchableAggregateBucketResultItem @aws_api_key @aws_cognito_user_pools {
+  key: String!
+  doc_count: Int!
+}
+
+union SearchableAggregateGenericResult = SearchableAggregateScalarResult | SearchableAggregateBucketResult
 
 input ModelStringInput {
   ne: String
@@ -362,6 +405,9 @@ input DeleteUserInput {
 }
 
 type Subscription {
+  onCreateFavorite(owner: String): Favorite @aws_subscribe(mutations: ["createFavorite"])
+  onUpdateFavorite(owner: String): Favorite @aws_subscribe(mutations: ["updateFavorite"])
+  onDeleteFavorite(owner: String): Favorite @aws_subscribe(mutations: ["deleteFavorite"])
   onCreateUser(owner: String): User @aws_subscribe(mutations: ["createUser"]) @aws_api_key @aws_cognito_user_pools
   onUpdateUser(owner: String): User @aws_subscribe(mutations: ["updateUser"]) @aws_api_key @aws_cognito_user_pools
   onDeleteUser(owner: String): User @aws_subscribe(mutations: ["deleteUser"]) @aws_api_key @aws_cognito_user_pools
@@ -598,5 +644,175 @@ input UpdateBookingInput {
 
 input DeleteBookingInput {
   id: ID!
+}
+
+type ModelFavoriteConnection {
+  items: [Favorite!]!
+  nextToken: String
+}
+
+input ModelFavoriteFilterInput {
+  id: ModelIDInput
+  userId: ModelStringInput
+  owner: ModelStringInput
+  and: [ModelFavoriteFilterInput]
+  or: [ModelFavoriteFilterInput]
+  not: ModelFavoriteFilterInput
+  favoriteVenueId: ModelIDInput
+}
+
+input ModelFavoriteConditionInput {
+  userId: ModelStringInput
+  owner: ModelStringInput
+  and: [ModelFavoriteConditionInput]
+  or: [ModelFavoriteConditionInput]
+  not: ModelFavoriteConditionInput
+  favoriteVenueId: ModelIDInput
+}
+
+input CreateFavoriteInput {
+  id: ID
+  userId: String
+  owner: String
+  favoriteVenueId: ID
+}
+
+input UpdateFavoriteInput {
+  id: ID!
+  userId: String
+  owner: String
+  favoriteVenueId: ID
+}
+
+input DeleteFavoriteInput {
+  id: ID!
+}
+
+input SearchableStringFilterInput {
+  ne: String
+  gt: String
+  lt: String
+  gte: String
+  lte: String
+  eq: String
+  match: String
+  matchPhrase: String
+  matchPhrasePrefix: String
+  multiMatch: String
+  exists: Boolean
+  wildcard: String
+  regexp: String
+  range: [String]
+}
+
+input SearchableIntFilterInput {
+  ne: Int
+  gt: Int
+  lt: Int
+  gte: Int
+  lte: Int
+  eq: Int
+  range: [Int]
+}
+
+input SearchableFloatFilterInput {
+  ne: Float
+  gt: Float
+  lt: Float
+  gte: Float
+  lte: Float
+  eq: Float
+  range: [Float]
+}
+
+input SearchableBooleanFilterInput {
+  eq: Boolean
+  ne: Boolean
+}
+
+input SearchableIDFilterInput {
+  ne: ID
+  gt: ID
+  lt: ID
+  gte: ID
+  lte: ID
+  eq: ID
+  match: ID
+  matchPhrase: ID
+  matchPhrasePrefix: ID
+  multiMatch: ID
+  exists: Boolean
+  wildcard: ID
+  regexp: ID
+  range: [ID]
+}
+
+input SearchableVenueFilterInput {
+  id: SearchableIDFilterInput
+  name: SearchableStringFilterInput
+  headline: SearchableStringFilterInput
+  description: SearchableStringFilterInput
+  address: SearchableStringFilterInput
+  city: SearchableStringFilterInput
+  eventTypes: SearchableStringFilterInput
+  published: SearchableBooleanFilterInput
+  owner: SearchableStringFilterInput
+  createdAt: SearchableStringFilterInput
+  updatedAt: SearchableStringFilterInput
+  and: [SearchableVenueFilterInput]
+  or: [SearchableVenueFilterInput]
+  not: SearchableVenueFilterInput
+}
+
+enum SearchableSortDirection {
+  asc
+  desc
+}
+
+enum SearchableVenueSortableFields {
+  id
+  name
+  headline
+  description
+  address
+  city
+  eventTypes
+  published
+  owner
+  createdAt
+  updatedAt
+}
+
+input SearchableVenueSortInput {
+  field: SearchableVenueSortableFields
+  direction: SearchableSortDirection
+}
+
+enum SearchableAggregateType {
+  terms
+  avg
+  min
+  max
+  sum
+}
+
+enum SearchableVenueAggregateField {
+  id
+  name
+  headline
+  description
+  address
+  city
+  eventTypes
+  published
+  owner
+  createdAt
+  updatedAt
+}
+
+input SearchableVenueAggregationInput {
+  name: String!
+  type: SearchableAggregateType!
+  field: SearchableVenueAggregateField!
 }
 

@@ -4,6 +4,7 @@
       class="breadcrumbs desktop-only"
       :breadcrumbs="breadcrumbs"
     />
+    <SfLoader :loading="loading">
     <SfContentPages
       title="My Account"
       :active="activePage"
@@ -16,9 +17,38 @@
             :account="account"
             data-testid="my-profile-tabs"
             :personalInputsLabels="['Given name', 'Family Name', 'Email', 'Phone Number']"
-            personalDataDescription="Edit any of your details below (except email) so your profile is always up to date"
+            personalDataDescription="Edit any of your details below (except email) so your profile is always up to date:"
             @update:personal="updateUser"
             @update:password="changePassword">
+            <template #password-change-description>
+              <p class="message">
+                Your current email address is
+                <span class="message__label text-green-600">{{ account.email }}</span>.
+                <br>
+                If you want to change the password to access your account, enter the
+                following information:<br />
+              </p>
+            </template>
+            <template #personal-data-description="{ personalDataDescription }">
+              <p class="message">
+                {{ personalDataDescription }}
+              </p>
+              <SfInput
+                v-model="additionalDetails.phone"
+                label="Phone Number"
+                name="phone"
+                class="form__element"
+              />
+            </template>
+            <template #personal-data-notice>
+              <p class="notice">
+                At <span class="text-sm text-green-600 font-semibold">Evenue</span>, we
+                attach great importance to privacy issues and are
+                committed to protecting the personal data of our users.
+                Learn more about how we care and use your personal data in the
+                <a href="" class="text-green-600">Privacy Policy.</a>
+              </p>
+            </template>
           </SfMyProfile>
         </SfContentPage>
         <!-- <SfContentPage title="Shipping details" data-testid="shipping-details">
@@ -45,18 +75,21 @@
       </SfContentCategory>
       <SfContentPage title="Log out" />
     </SfContentPages>
+    </SfLoader>
   </div>
 </template>
 
 <script>
-import { SfBreadcrumbs, SfContentPages } from "@storefront-ui/vue";
 import {
   SfMyProfile,
   // SfShippingDetails,
   // SfMyNewsletter,
   // SfOrderHistory,
-  // SfInput,
+  SfInput,
   SfButton,
+  SfBreadcrumbs,
+  SfContentPages,
+  SfLoader,
 } from "@storefront-ui/vue";
 import { countries } from "@storefront-ui/vue/src/components/templates/internalData.js";
 import { Auth } from "aws-amplify"
@@ -70,8 +103,9 @@ export default {
     // SfShippingDetails,
     // SfMyNewsletter,
     // SfOrderHistory,
-    // SfInput,
+    SfInput,
     SfButton,
+    SfLoader,
   },
   data() {
     return {
@@ -79,15 +113,11 @@ export default {
       breadcrumbs: [
         {
           text: "Home",
-          route: {
-            link: "/",
-          },
+          link: "/",
         },
         {
           text: "My Account",
-          route: {
-            link: "#",
-          },
+          link: "#",
         },
       ],
       account: {
@@ -128,7 +158,11 @@ export default {
         ],
       },
       countries,
-    };
+      additionalDetails: {
+        phone: "",
+      },
+      loading: false,
+    }
   },
   async created() {
     try {
@@ -142,6 +176,7 @@ export default {
         email: user.attributes.email,
         phone: user.attributes.phone_number,
       }
+      this.additionalDetails.phone = user.attributes.phone_number
     } catch (error) {
       console.log('error get auth user:', error);
     }
@@ -149,8 +184,10 @@ export default {
   methods: {
     async changeActivePage(title) {
       if (title === "Log out") {
+        this.loading = true
         try {
-          await Auth.signOut();
+          await Auth.signOut()
+          this.loading = false
           this.$router.push({ path: "/" })
         } catch (error) {
           console.log('error signing out: ', error);
@@ -161,12 +198,13 @@ export default {
     },
     async updateUser($event) {
       try {
-        this.account = { ...this.account, ...$event }
+        this.account = { ...this.account, ...$event, ...this.additionalDetails }
         console.log(this.account)
         const user = await Auth.currentAuthenticatedUser();
         await Auth.updateUserAttributes(user, {
-          'given_name': this.account.firstName,
-          'family_name': this.account.lastName,
+          'given_name': this.account.firstName || "",
+          'family_name': this.account.lastName || "",
+          'name': `${this.account.firstName || ""} ${this.account.lastName || ""}`,
           // 'email': this.account.email, // forbidden?
           'phone_number': this.account.phone,
         });

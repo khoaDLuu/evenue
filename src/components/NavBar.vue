@@ -4,16 +4,30 @@
       :logo="appLogo"
       :title="appName"
       :search-placeholder="searchPlaceholder"
+      :search-value="searchValue"
       cartIcon="list"
       active-icon="cart"
       @click:cart="showVenueList"
-      @click:account="showProfile">
+      @click:account="showProfile"
+      @click:wishlist="openFavListPage">
       <template #navigation>
+        <!-- use v-show to hide protected links from guest users -->
         <SfHeaderNavigationItem
           v-for="(category, key) in rootCategories"
           :key="`sf-header-navigation-item-${key}`"
-          :link="category == 'Venues' ? `/venues/search` : `/bookings/yours`"
+          v-show="!!user || category == 'Discover'"
+          :link="category == 'Discover' ? `/venues/search` : (category == 'Events' ? `/events` : `/bookings/yours`)"
           :label="category"
+        />
+      </template>
+      <template #search="{ searchValue: searchVal, searchPlaceholder }">
+        <SfSearchBar
+          :value="searchVal"
+          :placeholder="searchPlaceholder"
+          aria-label="Search"
+          class="sf-header__search"
+          @input="searchValue = $event"
+          @keyup.enter="openSearchResults(searchValue)"
         />
       </template>
     </SfHeader>
@@ -24,115 +38,7 @@
       @close="openModal = false"
     >
       <transition name="sf-fade" mode="out-in">
-        <amplify-authenticator></amplify-authenticator>
-        <!-- <div
-          v-if="isLogIn"
-          key="log-in"
-          class="modal-content"
-          data-testid="login-modal"
-        >
-          <p class="text-xl text-gray-800 font-semibold my-8 pt-2 w-full">LOGIN</p>
-          <form class="form" @submit.prevent="() => false">
-            <SfInput
-              v-model="email"
-              name="email"
-              label="Your email"
-              class="form__element"
-              type="email"
-            />
-            <SfInput
-              v-model="password"
-              name="password"
-              label="Password"
-              type="password"
-              class="form__element"
-              :has-show-password="true"
-            />
-            <SfCheckbox
-              v-model="rememberMe"
-              name="remember-me"
-              label="Remember me"
-              class="form__element form__checkbox"
-            />
-            <SfButton
-              type="submit"
-              class="sf-button--full-width form__submit"
-              data-testid="log-in-button"
-              @click="logIn"
-            >
-              Log In
-            </SfButton>
-          </form>
-          <SfButton
-            class="sf-button--text action-button"
-            data-testid="forgotten-password-button"
-          >
-            Forgotten password?
-          </SfButton>
-          <div class="aside">
-            <SfHeading
-              title="Don't have an account yet?"
-              :level="4"
-              class="aside__heading"
-            />
-            <SfButton
-              class="sf-button--text"
-              data-testid="register-now-button"
-              @click="isLogIn = false"
-            >
-              Register now
-            </SfButton>
-          </div>
-        </div> -->
-        <!-- <div
-          v-else
-          key="sign-up"
-          class="modal-content"
-          data-testid="signin-modal"
-        >
-          <form class="form" @submit.prevent="() => false">
-            <SfInput
-              v-model="firstName"
-              name="first-name"
-              label="Name"
-              class="form__element"
-            />
-            <SfInput
-              v-model="lastName"
-              name="last-name"
-              label="Last Name"
-              class="form__element"
-            />
-            <SfInput
-              v-model="email"
-              name="email"
-              label="Your email"
-              class="form__element"
-              type="email"
-            />
-            <SfInput
-              v-model="password"
-              name="password"
-              label="Password"
-              type="password"
-              class="form__element"
-            />
-            <SfButton
-              type="submit"
-              class="sf-button--full-width form__submit"
-              data-testid="create-acount-button"
-            >
-              Create an account
-            </SfButton>
-          </form>
-          <SfButton
-            class="sf-button--text action-button"
-            data-testid="log-in-account"
-            @click="isLogIn = true"
-          >
-            or Log In To Your Account
-          </SfButton>
-        </div> -->
+        <amplify-authenticator username-alias="email"></amplify-authenticator>
       </transition>
     </SfModal>
   </div>
@@ -142,40 +48,26 @@
 import {
   SfHeader,
   SfModal,
-  // SfInput,
-  // SfButton,
-  // SfCheckbox,
-  // SfHeading,
-} from "@storefront-ui/vue";
-import { Auth } from 'aws-amplify'
-import { onAuthUIStateChange } from '@aws-amplify/ui-components';
+  SfSearchBar,
+} from "@storefront-ui/vue"
+import { Auth, Hub } from 'aws-amplify'
+import { onAuthUIStateChange } from '@aws-amplify/ui-components'
 
 export default {
   name: 'NavBar',
   components: {
     SfHeader,
     SfModal,
-    // SfInput,
-    // SfButton,
-    // SfCheckbox,
-    // SfHeading,
-  },
-  created() {
-    this.unsubscribeAuth = onAuthUIStateChange((authState, authData) => {
-      this.authState = authState;
-      this.user = authData;
-    });
-  },
-  beforeDestroy() {
-    this.unsubscribeAuth();
+    SfSearchBar,
   },
   data() {
     return {
       isMobile: false,
       appLogo: "/assets/logo.png",
       appName: "Evenue",
-      rootCategories: ["Bookings", /* "Messages", "Schedule", */ "Venues"],
+      rootCategories: ["Bookings", "Events",/* "Messages", "Schedule", */ "Discover"],
       searchPlaceholder: "Search for venues",
+      searchValue: "",
       isLogIn: true,
       email: "",
       password: "",
@@ -187,6 +79,7 @@ export default {
       user: undefined,
       authState: undefined,
       unsubscribeAuth: undefined,
+      currentNavRoute: undefined,
     };
   },
   computed: {
@@ -204,38 +97,117 @@ export default {
       this.lastName = "";
     },
   },
+  async created() {
+    try {
+      this.user = await Auth.currentAuthenticatedUser()
+    }
+    catch (err) { console.log(err) }
+
+    // const vm = this ??
+    this.unsubscribeAuth = onAuthUIStateChange((authState, authData) => {
+      this.authState = authState
+      this.user = authData
+      if (this.user && this.user?.username) {
+        this.openModal = false
+        if (this.$route.path !== this.currentNavRoute && !window.location.href.includes("bookings/new") /* dirty hack again */) {
+          // To avoid error: NavigationDuplicated: Avoided redundant navigation to current location
+          this.$router.push({ path: this.currentNavRoute })
+        }
+      }
+    })
+    // try {
+    //   const currentUser = await Auth.currentAuthenticatedUser()
+    //   console.log(currentUser)
+    //   this.user = currentUser
+    // }
+    // catch (err) {
+    //   console.log(err)
+    // }
+
+    const vm = this
+    Hub.listen('CustomAuth', (data) => {
+      console.log(data)
+      vm.openModal = true
+    })
+    Hub.listen('auth', async (data) => {
+      try {
+        vm.user = await Auth.currentAuthenticatedUser()
+      }
+      catch (err) { console.log(err) }
+
+      switch (data.payload.event) {
+        case 'signIn':
+          break
+        case 'signUp':
+          break
+        case 'signOut':
+          vm.user = undefined
+          break
+        case 'signIn_failure':
+          break
+        case 'configured':
+          break
+        default:
+          vm.user = undefined
+      }
+    })
+  },
+  beforeDestroy() {
+    this.unsubscribeAuth()
+  },
   methods: {
     logIn() {
-      //
       this.openModal = false
     },
     signUp() {
-      //
       this.openModal = false
-    },
-    showVenueList() {
-      this.$router.push({ path: `/venues/yours` })
     },
     toggleModal() {
       this.openModal = !this.openModal;
     },
-    async showProfile() {
+    async navigate(path) {
+      this.currentNavRoute = path
       try {
         const currentUser = await Auth.currentAuthenticatedUser()
-        console.log(currentUser)
         this.user = currentUser
+
         if (this.user) {
-          this.$router.push({ path: `/profile` })
+          this.$router.push({ path })
         }
         else {
-          this.openModal = true;
+          this.openModal = true
         }
       }
       catch (err) {
         console.log(err)
-        this.openModal = true;
+        this.openModal = true
       }
-    }
+    },
+    async showVenueList() {
+      await this.navigate(`/venues/yours`)
+    },
+    async showProfile() {
+      await this.navigate(`/profile`)
+    },
+    async openFavListPage() {
+      await this.navigate(`/favorites`)
+    },
+    openSearchResults(searchValue) {
+      console.log("Nav - searchVal", searchValue)
+      if (window.location.href.includes("venues/search")) {
+        Hub.dispatch(
+          'OnPageSearch',
+          {
+            event: 'venueSearched',
+            data: { searchValue },
+            message: '',
+          }
+        )
+      }
+      else {
+        this.$router.push({ path: '/venues/search', query: { searchValue }})
+      }
+    },
   }
 };
 </script>
